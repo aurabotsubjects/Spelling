@@ -1,0 +1,3195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpellingHub Spelling Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
+:root {
+  --accent:#F5C518; --primary-dark:#1a1a2e;
+  --bg:#f4f1eb; --card:#fff; --text:#1a1a2e; --muted:#8a8aaa; --border:#e4ddd4;
+  --shadow:0 4px 24px rgba(0,0,0,.07); --radius:18px;
+  --y4:#e8547a; --y5:#7c5cbf; --y6:#f07844; --y7:#3aaa6b; --y8:#2fa8d5;
+  --green:#3aaa6b; --red:#e8547a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{background:var(--primary-dark);padding:0 28px;display:flex;align-items:center;gap:14px;height:62px;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.logo{font-family:'Fredoka One',cursive;font-size:1.55rem;color:var(--accent);}
+.logo span{color:#fff;}
+header nav{margin-left:auto;display:flex;gap:6px;}
+
+header nav button{background:transparent;border:2px solid rgba(255,255,255,.18);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:.82rem;padding:6px 15px;border-radius:50px;cursor:pointer;transition:all .18s;}
+header nav button:hover,header nav button.active{background:var(--accent);border-color:var(--accent);color:var(--primary-dark);}
+
+main{max-width:1160px;margin:0 auto;padding:30px 22px;}
+.page{display:none;animation:fadeIn .25s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.section-title{font-family:'Fredoka One',cursive;font-size:1.75rem;color:var(--primary-dark);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+.pill{font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:900;background:var(--accent);color:var(--primary-dark);padding:3px 12px;border-radius:50px;}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;border:1px solid var(--border);}
+
+/* STUDENT GRID */
+.student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-top:16px;}
+.student-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 18px;border:2px solid var(--border);cursor:pointer;transition:all .2s;position:relative;text-align:center;}
+.student-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.12);border-color:var(--accent);}
+.avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.3rem;color:#fff;margin:0 auto 10px;}
+.sname{font-weight:900;font-size:.97rem;}
+.year-badge{display:inline-block;margin-top:6px;font-size:.72rem;font-weight:800;padding:2px 11px;border-radius:50px;color:#fff;}
+.donut-wrap{position:relative;width:64px;height:64px;margin:10px auto 4px;}
+.donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.67rem;font-weight:900;line-height:1.2;text-align:center;}
+.prog-text{font-size:.73rem;font-weight:700;color:var(--muted);}
+.delete-btn{position:absolute;top:8px;right:8px;background:none;border:none;color:#ccc;font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;transition:all .15s;}
+.delete-btn:hover{background:#fee;color:#e55;}
+
+/* FORMS */
+.form-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:.77rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+input[type="text"],select{font-family:'Nunito',sans-serif;font-size:.93rem;font-weight:700;padding:9px 13px;border:2px solid var(--border);border-radius:10px;background:#fff;color:var(--text);outline:none;transition:border-color .2s;}
+input[type="text"]:focus,select:focus{border-color:var(--accent);}
+
+/* BUTTONS */
+.btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:.88rem;padding:9px 20px;border:none;border-radius:10px;cursor:pointer;transition:all .18s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--accent);color:var(--primary-dark);}
+.btn-primary:hover{background:#e0b010;transform:translateY(-1px);}
+.btn-danger{background:#fee;color:#e55;border:2px solid #fcc;}
+.btn-danger:hover{background:#fdd;}
+.btn-ghost{background:transparent;color:var(--muted);border:2px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text);}
+.btn-dark{background:var(--primary-dark);color:#fff;}
+.btn-dark:hover{background:#2a2a4e;}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--muted);cursor:pointer;margin-bottom:18px;padding:6px 0;background:none;border:none;font-family:'Nunito',sans-serif;font-size:.88rem;}
+.back-btn:hover{color:var(--text);}
+
+/* STUDENT DETAIL HEADER */
+.student-header{display:flex;align-items:center;gap:20px;margin-bottom:24px;flex-wrap:wrap;}
+.big-avatar{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.9rem;color:#fff;flex-shrink:0;}
+.student-header h2{font-family:'Fredoka One',cursive;font-size:1.7rem;}
+.student-header .sub{font-size:.83rem;color:var(--muted);font-weight:700;margin-top:3px;}
+.header-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+
+/* DETAIL TABS */
+.detail-tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--border);overflow-x:auto;}
+.dtab{font-family:'Nunito',sans-serif;font-weight:800;font-size:.86rem;padding:9px 18px;border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .18s;color:var(--muted);white-space:nowrap;border-radius:8px 8px 0 0;}
+.dtab:hover{color:var(--text);}
+.dtab.active{color:var(--text);border-bottom-color:var(--accent);background:#fff;}
+
+/* SET CARD */
+.set-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:18px;}
+.set-header{padding:13px 22px;font-family:'Fredoka One',cursive;font-size:1.05rem;color:#fff;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.set-header .hcount{font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:800;background:rgba(255,255,255,.25);padding:2px 10px;border-radius:50px;margin-left:auto;}
+
+/* WORD LIST - DUAL CHECKBOX SYSTEM */
+.word-list{padding:14px 18px;display:flex;flex-direction:column;gap:5px;}
+
+.word-row{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;gap:0;
+  border-radius:10px;border:1.5px solid var(--border);
+  background:#faf8f4;transition:background .2s,border-color .2s;
+  overflow:hidden;
+}
+/* Word text + attempt badges — left side */
+.word-left{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;
+}
+.word-text{font-weight:700;font-size:.95rem;flex:1;}
+.word-meta{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.attempt-badge{
+  font-size:.68rem;font-weight:800;padding:2px 7px;border-radius:50px;
+  display:inline-flex;align-items:center;gap:3px;
+}
+.attempt-badge.correct{background:#dcf5e8;color:#1e7a48;}
+.attempt-badge.incorrect{background:#fde8ea;color:#b02030;}
+.word-date{font-size:.7rem;color:var(--muted);font-weight:700;white-space:nowrap;}
+
+/* Completed word styling */
+.word-row.mastered{background:#f0faf4;border-color:#a8dfb8;}
+.word-row.mastered .word-text{text-decoration:line-through;color:#7aaa8a;}
+
+/* Right side — checkbox buttons */
+.word-actions{
+  display:flex;align-items:stretch;border-left:1.5px solid var(--border);
+}
+.cb-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:46px;min-height:44px;
+  border:none;background:transparent;cursor:pointer;
+  font-size:1.1rem;transition:background .15s;
+  position:relative;
+}
+.cb-btn:first-child{border-right:1px solid var(--border);}
+.cb-btn.cb-correct:hover{background:#e6f9ee;}
+.cb-btn.cb-incorrect:hover{background:#fdeaec;}
+
+/* Locked state — word mastered, no more clicks */
+.cb-btn.locked{
+  opacity:.3;cursor:not-allowed;pointer-events:none;
+}
+/* Checked/active state */
+.cb-btn.cb-correct.active{background:#3aaa6b;color:#fff;}
+.cb-btn.cb-incorrect.active-red{background:#e8547a;color:#fff;}
+
+/* Legend */
+.cb-legend{
+  display:flex;align-items:center;gap:16px;
+  font-size:.78rem;font-weight:800;color:var(--muted);
+  margin-bottom:10px;padding:0 4px;
+}
+.cb-legend-item{display:flex;align-items:center;gap:5px;}
+.leg-dot{width:12px;height:12px;border-radius:3px;}
+
+/* PROGRESS */
+.progress-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-bottom:20px;}
+.stat-box{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:16px;text-align:center;}
+.stat-box .sv{font-family:'Fredoka One',cursive;font-size:2rem;}
+.stat-box .sl{font-size:.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.chart-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);padding:22px;margin-bottom:18px;}
+.chart-card h3{font-family:'Fredoka One',cursive;font-size:1.05rem;margin-bottom:14px;}
+
+/* LEVEL UP BANNER */
+.levelup-banner{background:linear-gradient(135deg,#f5c518,#ff9f43);border-radius:var(--radius);padding:22px 26px;margin-bottom:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 6px 30px rgba(245,197,24,.3);}
+.levelup-banner .lico{font-size:2.6rem;}
+.levelup-banner h3{font-family:'Fredoka One',cursive;font-size:1.25rem;color:#1a1a2e;}
+.levelup-banner p{font-size:.84rem;font-weight:700;color:#4a3800;margin-top:2px;}
+.levelup-banner .lactions{margin-left:auto;display:flex;gap:8px;}
+
+/* WORD LISTS PAGE */
+.year-tabs-wl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.year-tab{font-family:'Nunito',sans-serif;font-weight:800;font-size:.83rem;padding:7px 18px;border:2px solid var(--border);border-radius:50px;background:var(--card);cursor:pointer;transition:all .2s;color:var(--text);}
+.year-tab.active{color:#fff;border-color:transparent;}
+.wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px;padding:16px;}
+.wl-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-size:.88rem;font-weight:700;text-align:center;}
+
+/* CATCH-UP MODE */
+.catchup-checkbox{
+  width:22px;height:22px;cursor:pointer;accent-color:var(--green);
+  border-radius:5px;
+}
+.catchup-banner{background:#fff8e1;border:2px solid var(--accent);border-radius:10px;padding:8px 14px;margin-bottom:10px;font-size:.82rem;font-weight:700;color:#7a5800;display:flex;align-items:center;gap:8px;}
+
+.search-wrap{position:relative;max-width:270px;margin-bottom:14px;}
+.search-wrap input{width:100%;padding-left:34px;}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-state .emoji{font-size:2.8rem;margin-bottom:10px;}
+.empty-state p{font-size:.95rem;font-weight:700;}
+
+.archive-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.archive-row:last-child{border-bottom:none;}
+
+/* PRINT */
+@page{size:A4 portrait;margin:15mm 15mm 15mm 15mm;}
+@media print{
+  header,.back-btn,.header-actions,.detail-tabs,.delete-btn,
+  #page-students,#page-wordlists,#page-data,#page-student-detail,#page-lessons{display:none!important;}
+  body{background:#fff;}
+  #print-report{display:block!important;}
+  #print-wordlist{display:block!important;}
+  #print-lesson{display:block!important;}
+  #print-report[style*="display: none"],#print-report[style*="display:none"]{display:none!important;}
+  #print-wordlist[style*="display: none"],#print-wordlist[style*="display:none"]{display:none!important;}
+  #print-lesson[style*="display: none"],#print-lesson[style*="display:none"]{display:none!important;}
+}
+#print-report{display:none;}
+#print-wordlist{display:none;}
+#print-lesson{display:none;}
+
+/* Word list print styles */
+.wlp-page{font-family:'Nunito',sans-serif;max-width:720px;margin:0 auto;padding:18pt 24pt;}
+.wlp-header{border-bottom:3px solid #ccc;padding-bottom:10pt;margin-bottom:14pt;}
+.wlp-name{font-size:20pt;font-weight:900;margin:0 0 2pt;}
+.wlp-sub{font-size:9pt;color:#666;margin:0;}
+.wlp-sets{display:flex;flex-wrap:wrap;gap:16pt;}
+.wlp-set{flex:1;min-width:200pt;page-break-inside:avoid;}
+.wlp-set-title{font-size:11pt;font-weight:900;text-transform:uppercase;letter-spacing:.5px;margin:0 0 7pt;padding-bottom:4pt;border-bottom:2px solid #eee;}
+.wlp-words{list-style:none;padding:0;margin:0;column-count:2;column-gap:10pt;}
+.wlp-word{font-size:10pt;font-weight:700;padding:3pt 0 3pt 16pt;position:relative;break-inside:avoid;}
+.wlp-word::before{content:'';position:absolute;left:2pt;top:50%;transform:translateY(-50%);width:7pt;height:7pt;border:1.5pt solid #999;border-radius:2pt;}
+.wlp-word.mastered{color:#aaa;text-decoration:line-through;}
+.wlp-word.mastered::before{background:#000;border-color:#000;content:'✓';color:#fff;font-size:6pt;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.wlp-footer{margin-top:18pt;padding-top:6pt;border-top:1px solid #ddd;font-size:7pt;color:#bbb;text-align:center;}
+.wlp-progress{display:flex;gap:12pt;margin-bottom:12pt;flex-wrap:wrap;}
+.wlp-stat{text-align:center;background:#f8f8f8;padding:7pt 12pt;border-radius:5pt;flex:1;min-width:60pt;}
+.wlp-stat .sv{font-size:16pt;font-weight:900;}
+.wlp-stat .sl{font-size:6.5pt;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-top:1pt;}
+.wlp-bar-wrap{background:#f0ece6;border-radius:50px;height:8px;overflow:hidden;margin:0 0 3pt;}
+.wlp-bar-fill{height:100%;border-radius:50px;}
+.wlp-bar-label{font-size:7.5pt;color:#888;font-weight:700;margin-bottom:12pt;}
+
+/* LESSON PLANNER */
+.word-chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;}
+.wchip{font-size:.83rem;font-weight:800;padding:6px 13px;border-radius:50px;background:#faf8f4;border:1.5px solid var(--border);}
+.wchip.carried{background:#fff3d6;border-color:#f0c96a;}
+.wchip.mastered{background:#e8f8ef;border-color:#8fd6ac;color:#1e7a48;text-decoration:line-through;}
+.day-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0;}
+.day-chip{font-family:'Nunito',sans-serif;font-weight:800;font-size:.8rem;padding:8px 16px;border-radius:50px;border:2px solid var(--border);background:#fff;cursor:pointer;transition:all .18s;}
+.day-chip.active{background:var(--primary-dark);color:#fff;border-color:var(--primary-dark);}
+.activity-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-top:18px;}
+.activity-head{padding:20px 24px;color:#fff;}
+.activity-head .atitle{font-family:'Fredoka One',cursive;font-size:1.4rem;display:flex;align-items:center;gap:10px;}
+.activity-head .agroup{display:inline-block;margin-top:6px;font-size:.72rem;font-weight:900;background:rgba(255,255,255,.25);padding:3px 12px;border-radius:50px;}
+.activity-body{padding:22px 24px;}
+.activity-blurb{font-size:.92rem;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.6;}
+.materials-box{background:#faf8f4;border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:.85rem;font-weight:700;}
+.materials-box span{color:var(--muted);text-transform:uppercase;font-size:.7rem;letter-spacing:.5px;display:block;margin-bottom:4px;}
+.step-row{display:flex;gap:14px;padding:11px 0;border-bottom:1px dashed var(--border);}
+.step-row:last-child{border-bottom:none;}
+.step-time{flex-shrink:0;width:64px;font-family:'Fredoka One',cursive;font-size:.85rem;color:var(--primary-dark);background:var(--bg);border-radius:8px;text-align:center;padding:4px 0;height:fit-content;}
+.step-text{font-size:.88rem;font-weight:700;line-height:1.55;}
+.puzzle-wrap{margin-top:18px;background:#faf8f4;border:1.5px solid var(--border);border-radius:14px;padding:18px;}
+.ws-grid{display:grid;gap:2px;justify-content:center;margin:14px 0;}
+.ws-cell{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;background:#fff;border:1px solid var(--border);border-radius:4px;font-family:'Courier New',monospace;}
+.puzzle-word-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px;}
+.scramble-grid,.missing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:12px;}
+.scramble-item,.missing-item{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;}
+.scramble-item .sword{font-family:'Fredoka One',cursive;font-size:1.15rem;letter-spacing:2px;color:var(--primary-dark);}
+.missing-item .mword{font-family:'Courier New',monospace;font-size:1.2rem;font-weight:900;letter-spacing:3px;}
+.reveal-btn{margin-top:8px;font-size:.72rem;font-weight:800;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.activity-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+
+/* STOP SPELL SMELL */
+.sss-picker{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 22px;}
+.sss-pick-chip{font-size:.85rem;font-weight:800;padding:8px 15px;border-radius:12px;border:2px solid var(--border);background:#fff;cursor:pointer;transition:all .15s;}
+.sss-pick-chip.picked{background:var(--accent);border-color:var(--accent);color:var(--primary-dark);}
+.sss-word-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+.sss-word-card h4{font-family:'Fredoka One',cursive;font-size:1.15rem;margin-bottom:12px;color:var(--primary-dark);}
+.sss-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 6px;}
+.sss-line{border:none;border-bottom:2px solid var(--border);background:transparent;font-size:1rem;font-weight:700;padding:6px 4px;width:100%;font-family:'Nunito',sans-serif;outline:none;margin-bottom:6px;}
+.sss-line:focus{border-bottom-color:var(--accent);}
+.sss-draw-box{border:2px dashed var(--border);border-radius:10px;height:130px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;font-weight:700;background:#fcfbf8;}
+
+/* FRIDAY TEST */
+.ftest-row{display:grid;grid-template-columns:1fr auto;align-items:center;border:1.5px solid var(--border);border-radius:10px;background:#faf8f4;margin-bottom:6px;overflow:hidden;}
+.ftest-word{padding:12px 16px;font-weight:800;font-size:.98rem;}
+.ftest-actions{display:flex;border-left:1.5px solid var(--border);}
+.ftest-btn{width:50px;min-height:46px;border:none;background:transparent;cursor:pointer;font-size:1.15rem;transition:background .15s;}
+.ftest-btn:first-child{border-right:1px solid var(--border);}
+.ftest-btn.correct-active{background:#3aaa6b;color:#fff;}
+.ftest-btn.incorrect-active{background:#e8547a;color:#fff;}
+.test-done-banner{background:#e8f8ef;border:2px solid #8fd6ac;border-radius:12px;padding:14px 18px;font-weight:800;color:#1e7a48;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+/* PRINT — LESSON WORKSHEETS */
+.lsnp-page{font-family:'Nunito',sans-serif;max-width:720px;margin:0 auto;padding:18pt 24pt;}
+.lsnp-header{border-bottom:3px solid #ccc;padding-bottom:8pt;margin-bottom:14pt;}
+.lsnp-header h1{font-size:18pt;margin:0 0 3pt;}
+.lsnp-header p{font-size:9pt;color:#666;margin:0;}
+.lsnp-word-block{border:1.5pt solid #ddd;border-radius:8pt;padding:12pt 14pt;margin-bottom:12pt;page-break-inside:avoid;}
+.lsnp-word-block h3{font-size:13pt;margin:0 0 8pt;}
+.lsnp-write-lines div{border-bottom:1pt solid #999;height:20pt;margin-bottom:4pt;}
+.lsnp-draw{border:1.5pt dashed #999;border-radius:6pt;height:100pt;margin:8pt 0;}
+.lsnp-sentence-line{border-bottom:1pt solid #999;height:20pt;}
+.lsnp-label{font-size:8pt;text-transform:uppercase;letter-spacing:.5px;color:#888;font-weight:800;margin:8pt 0 3pt;}
+
+/* AUTH MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,46,.55);z-index:900;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:440px;width:100%;max-height:88vh;overflow-y:auto;padding:28px 26px;}
+.modal-box h2{font-family:'Fredoka One',cursive;font-size:1.35rem;color:var(--primary-dark);margin-bottom:6px;}
+.modal-box p.sub{color:var(--muted);font-size:.85rem;font-weight:700;margin-bottom:18px;}
+.role-pick-row{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
+.role-pick-btn{flex:1;min-width:90px;padding:20px 10px;border:2px solid var(--border);border-radius:14px;background:#faf8f4;cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;transition:all .15s;}
+.role-pick-btn:hover{border-color:var(--accent);background:#fffdf0;}
+.role-pick-btn .rico{font-size:1.8rem;display:block;margin-bottom:6px;}
+.role-pick-btn .rlabel{font-weight:900;font-size:.95rem;color:var(--primary-dark);}
+.class-code-box{background:#fff8e1;border:2px solid var(--accent);border-radius:12px;padding:14px 16px;text-align:center;margin:14px 0;}
+.class-code-box .ccode{font-family:'Fredoka One',cursive;font-size:1.6rem;letter-spacing:4px;color:var(--primary-dark);}
+.class-code-box .cclabel{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:#8a6200;margin-bottom:4px;}
+.modal-field{margin-bottom:13px;}
+.modal-field label{display:block;font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:4px;}
+.modal-field input,.modal-field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'Nunito',sans-serif;font-weight:700;font-size:.92rem;}
+.modal-actions{display:flex;gap:10px;margin-top:16px;}
+.modal-back{background:none;border:none;color:var(--muted);font-weight:800;font-size:.8rem;cursor:pointer;margin-bottom:10px;padding:0;}
+.modal-error{background:#fde8ea;color:#b02030;border:1.5px solid #f3b6bd;border-radius:9px;padding:8px 12px;font-size:.82rem;font-weight:700;margin-bottom:12px;}
+.modal-note{background:#fff8e1;border:1.5px solid var(--accent);border-radius:9px;padding:8px 12px;font-size:.78rem;font-weight:700;color:#7a5800;margin-top:14px;}
+.auth-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1.5px solid var(--accent);border-radius:50px;padding:5px 8px 5px 12px;color:#fff;font-size:.78rem;font-weight:800;}
+.auth-badge button{background:var(--accent);color:var(--primary-dark);border:none;border-radius:50px;padding:4px 11px;font-weight:900;font-size:.72rem;cursor:pointer;}
+.admin-list-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap;}
+.admin-list-item .who{flex:1;min-width:140px;}
+.admin-list-item .who strong{display:block;font-size:.9rem;}
+.admin-list-item .who span{color:var(--muted);font-size:.76rem;font-weight:700;}
+.tiny-btn{font-size:.72rem;font-weight:800;padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;}
+.tiny-btn.approve{background:#e8f8ef;border-color:#8fd6ac;color:#1e7a48;}
+.tiny-btn.reject,.tiny-btn.danger{background:#fde8ea;border-color:#f3b6bd;color:#b02030;}
+.status-pill{font-size:.68rem;font-weight:900;padding:2px 9px;border-radius:50px;text-transform:uppercase;}
+.status-pill.pending{background:#fff3d6;color:#8a6200;}
+.status-pill.approved{background:#e8f8ef;color:#1e7a48;}
+
+/* QUIET ZONE */
+.qz-setup{text-align:center;padding:20px 10px;}
+.qz-score-row{display:flex;gap:14px;justify-content:center;margin:16px 0;}
+.qz-score-card{background:#faf8f4;border:2px solid var(--border);border-radius:14px;padding:14px 22px;text-align:center;min-width:120px;}
+.qz-score-card.turn{border-color:var(--accent);background:#fffdf0;}
+.qz-score-card .qname{font-weight:900;font-size:.85rem;color:var(--primary-dark);}
+.qz-score-card .qpts{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--accent);}
+.qz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:480px;margin:16px auto;}
+.qz-tile{aspect-ratio:1;border-radius:12px;background:var(--primary-dark);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.1rem;cursor:pointer;user-select:none;transition:transform .15s;border:none;}
+.qz-tile:active{transform:scale(.94);}
+.qz-tile.flipped{background:#fff;color:var(--primary-dark);border:2px solid var(--accent);}
+.qz-tile.matched{background:#e8f8ef;color:#1e7a48;border:2px solid #8fd6ac;cursor:default;}
+.shhh-panel{background:#faf8f4;border:2px solid var(--border);border-radius:14px;padding:14px 18px;margin:16px 0;text-align:center;}
+.shhh-meter-track{height:14px;border-radius:50px;background:#e4ddd4;overflow:hidden;margin:8px 0;}
+.shhh-meter-fill{height:100%;background:linear-gradient(90deg,#3aaa6b,#F5C518,#e8547a);width:0%;transition:width .08s;}
+.shhh-chooser{position:fixed;inset:0;background:rgba(26,26,46,.6);display:flex;align-items:center;justify-content:center;z-index:950;}
+.shhh-chooser-box{background:#fff;border-radius:20px;padding:26px;text-align:center;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.shhh-name-btn{display:block;width:100%;padding:14px;margin:8px 0;border-radius:12px;border:2px solid var(--border);background:#faf8f4;font-weight:900;font-size:1rem;cursor:pointer;}
+.shhh-name-btn:hover{border-color:var(--red);background:#fde8ea;}
+
+@media(max-width:600px){
+  header{padding:0 12px;}.logo{font-size:1.2rem;}
+  header nav button{font-size:.72rem;padding:5px 9px;}
+  main{padding:16px 10px;}
+  .header-actions{margin-left:0;}
+  .cb-btn{width:38px;}
+  .qz-grid{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div id="boot-overlay" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+  <div style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--primary-dark);">Spelling<span style="color:var(--accent);">Hub</span></div>
+  <div class="boot-msg" style="font-weight:800;color:var(--muted);font-size:.9rem;">Loading…</div>
+  <div style="width:36px;height:36px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:boot-spin 0.8s linear infinite;"></div>
+</div>
+<style>@keyframes boot-spin{to{transform:rotate(360deg);}}</style>
+
+
+<header>
+  <div class="logo" onclick="openLoginModal()" style="cursor:pointer;" title="Teacher / Admin login">Spelling<span>Hub</span></div>
+  <span id="auth-status" style="display:none;"></span>
+  <nav>
+    <button class="active" onclick="showPage('students')">Students</button>
+    <button onclick="showPage('lessons')">📅 Lesson Planner</button>
+    <button onclick="showPage('wordlists')">Word Lists</button>
+    <button id="nav-data-btn" onclick="showPage('data')" style="display:none;">Data</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ════ STUDENTS ════ -->
+<div class="page active" id="page-students">
+  <div class="section-title">My Students <span class="pill" id="student-count">0</span> <span class="pill" id="teacher-classcode-pill" style="display:none;background:#fff;border:2px solid var(--accent);cursor:pointer;" title="Click to copy" onclick="copyClassCode()">🎓 Code: <span id="teacher-classcode-value"></span></span></div>
+  <div class="card" style="margin-bottom:16px;" id="add-student-card">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Student Name</label>
+        <input type="text" id="new-student-name" placeholder="e.g. Aroha Smith" style="width:210px;">
+      </div>
+      <div class="form-group">
+        <label>Year Level</label>
+        <select id="new-student-year">
+          <option value="4">Year 4</option><option value="5">Year 5</option>
+          <option value="6">Year 6</option><option value="7">Year 7</option>
+          <option value="8">Year 8</option><option value="9">Year 9</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="addStudent()">＋ Add Student</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+    <div class="search-wrap" style="margin-bottom:0;">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="student-search" placeholder="Search students…" oninput="renderStudents()">
+    </div>
+    <div class="form-group" style="flex-direction:row;align-items:center;gap:7px;margin-bottom:0;">
+      <label style="margin:0;white-space:nowrap;">Sort by</label>
+      <select id="student-sort" onchange="renderStudents()" style="padding:8px 12px;font-size:.85rem;">
+        <option value="alpha">Name (A–Z)</option>
+        <option value="year">Year group</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="margin-left:auto;" onclick="printClassReport()" title="Download a PDF with all students' reports in one document">🖨 Class PDF</button>
+    <button class="btn btn-ghost" onclick="printClassWordLists()" title="Print word lists for every student">📋 Class Word Lists</button>
+  </div>
+  <div id="student-grid" class="student-grid"></div>
+</div>
+
+<!-- ════ STUDENT DETAIL ════ -->
+<div class="page" id="page-student-detail">
+  <button class="back-btn" onclick="showPage('students')">← Back to Students</button>
+  <div class="student-header">
+    <div class="big-avatar" id="detail-avatar"></div>
+    <div>
+      <h2 id="detail-name"></h2>
+      <div class="sub" id="detail-sub"></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="openProgressTab()">📈 Progress</button>
+      <button class="btn btn-ghost" onclick="printWordList()">📋 Word List</button>
+      <button class="btn btn-primary" onclick="printReport()">⬇ PDF Report</button>
+    </div>
+  </div>
+  <div id="levelup-banner"></div>
+  <div id="helper-login-banner"></div>
+  <div class="detail-tabs" id="detail-tabs"></div>
+  <div id="detail-tab-content"></div>
+</div>
+
+<!-- ════ WORD LISTS ════ -->
+<div class="page" id="page-wordlists">
+  <div class="section-title">Spelling Word Lists</div>
+  <div class="year-tabs-wl" id="year-tabs-wl"></div>
+  <div id="wordlist-content"></div>
+</div>
+
+<!-- ════ LESSON PLANNER ════ -->
+<div class="page" id="page-lessons">
+  <div class="section-title">📅 Weekly Lesson Planner <span class="pill">20 min a day</span></div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="form-row" style="margin-bottom:0;">
+      <div class="form-group">
+        <label>Student</label>
+        <select id="lp-student" onchange="renderLessonContent()" style="min-width:190px;"></select>
+      </div>
+      <div class="form-group">
+        <label>Term</label>
+        <select id="lp-term" onchange="renderLessonContent()">
+          <option value="1">Term 1</option><option value="2">Term 2</option>
+          <option value="3">Term 3</option><option value="4">Term 4</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Week</label>
+        <select id="lp-week" onchange="renderLessonContent()">
+          <option value="1">Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option>
+          <option value="4">Week 4</option><option value="5">Week 5</option><option value="6">Week 6</option>
+          <option value="7">Week 7</option><option value="8">Week 8</option><option value="9">Week 9</option>
+          <option value="10">Week 10</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Day</label>
+        <select id="lp-day" onchange="renderLessonContent()">
+          <option value="0">Monday</option><option value="1">Tuesday</option>
+          <option value="2">Wednesday</option><option value="3">Thursday — Stop, Spell, Smell</option>
+          <option value="4">Friday — Spelling Test</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="lesson-content"></div>
+</div>
+
+<!-- ════ DATA ════ -->
+<div class="page" id="page-data">
+  <div class="section-title">Data Management</div>
+  <div class="card" style="margin-bottom:16px;border-left:4px solid var(--accent);background:#fffdf0;">
+    <h3 style="font-family:'Fredoka One',cursive;margin-bottom:8px;">🔄 Updating to a New Version?</h3>
+    <p style="font-size:.88rem;color:#7a5800;font-weight:700;line-height:1.8;margin-bottom:12px;">
+      Your student data is stored in your <strong>browser's local storage</strong> — not inside the HTML file itself. 
+      This means <strong>simply replacing the file won't delete your data</strong> as long as you open the new file in the same browser on the same computer.<br><br>
+      To be safe, always <strong>export a backup JSON</strong> before replacing the file, then load it into the new version using <em>Load JSON</em> if needed.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="exportData()">⬇ Export Backup JSON</button>
+      <label class="btn btn-ghost" style="cursor:pointer;">⬆ Load JSON<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <h3 style="font-family:'Fredoka One',cursive;margin-bottom:10px;">💾 Save &amp; Load</h3>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px;font-weight:700;">Export all student data including attempt history as a <strong>.json</strong> file. Load it back any time.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="exportData()">⬇ Export JSON</button>
+      <label class="btn btn-ghost" style="cursor:pointer;">⬆ Load JSON<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+      <button class="btn btn-danger" onclick="clearAll()">🗑 Clear All Data</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="font-family:'Fredoka One',cursive;margin-bottom:10px;">ℹ️ How Checkboxes Work</h3>
+    <p style="font-size:.88rem;color:var(--muted);font-weight:700;line-height:1.9;">
+      Each word has two buttons: <strong style="color:#3aaa6b;">✓ Correct</strong> and <strong style="color:#e8547a;">✗ Incorrect</strong>.<br>
+      You can mark a word correct or incorrect as many times as needed across multiple test sessions.<br>
+      Once marked <strong>correct</strong>, the word is highlighted green and the buttons lock — the word is mastered.<br>
+      The progress charts and PDF report show correct vs incorrect attempt totals for each student.
+    </p>
+  </div>
+</div>
+
+</main>
+
+<div id="print-report"></div>
+<div id="print-wordlist"></div>
+<div id="print-lesson"></div>
+
+<!-- ════ AUTH MODAL ════ -->
+<div id="auth-modal-overlay" class="modal-overlay" onclick="if(event.target===this&&!isLocked())closeAuthModal()">
+  <div class="modal-box" id="auth-modal-box"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//   SUPABASE CONFIG
+// ════════════════════════════════════════════════════════
+const SUPABASE_URL='https://azfeakgdxjtntookkiaa.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZmVha2dkeGp0bnRvb2traWFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5OTcyMTIsImV4cCI6MjA5OTU3MzIxMn0.w-rkZztaCmoHiaY57Y9pJibTTV43EFrvv5FSt8QTRYo';
+let SB=null;
+try{
+  if(typeof supabase!=='undefined'){
+    SB=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+  }else{
+    console.error('Supabase library failed to load — running in local-only mode.');
+  }
+}catch(e){console.error('Supabase init failed — running in local-only mode.',e);}
+function sbReady(){return !!SB;}
+if(SB){
+  SB.auth.onAuthStateChange((event,session)=>{
+    if(event==='PASSWORD_RECOVERY')showPasswordResetModal();
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//   WORD DATABASE
+// ════════════════════════════════════════════════════════
+const WL = {
+  4:{
+    "Words":["address","allowed","answer","appear","April","arrive","believe","below","bought","breakfast","build","busy","caught","centre","certain","circle","dead","December","decide","died","different","disappear","doesn't","dollars","done","early","earth","eighth","enough","everything","family","famous","father","favourite","field","finished","forward","Friday","front","fruit","group","guide","happy","heart","high","hopped","important","July","June","learn","length","light","luckily","March","might","minute","Monday","myself","naughty","notice","November","October","often","own","paper","parents","perhaps","picture","plant","police","potatoes","presents","pulled","question","quiet","quite","recent","Saturday","scared","second","sentence","September","straight","strange","Sunday","surprise","threw","Thursday","Tuesday","watch","we're","Wednesday","while","whole","without","woman","won't","words","year","you're"]
+  },
+  5:{
+    "Words":["accident","actually","adventure","afraid","against","August","beautiful","bicycle","bought","breath","breathe","business","chocolate","colour","complete","consider","continue","country","cousin","describe","difficult","disappeared","divide","easy","equal","everybody","everywhere","excited","exercise","experience","experiment","extreme","February","finally","follow","forty","frightened","guard","happened","height","history","holidays","hospital","imagine","increase","instead","interest","interesting","island","January","knowledge","laugh","library","lightning","material","measure","medicine","mention","money","natural","nearly","ninth","occasionally","opposite","ordinary","pattern","peculiar","popular","position","possible","pressure","probably","problem","programme","promise","purpose","quarter","received","regular","remember","separate","since","special","strength","suppose","table","temperature","they're","though","tomorrow","twelfth","until","various","voice","weight"]
+  },
+  6:{
+    "Words":["aeroplane","although","ancient","argument","astronaut","attached","available","average","awful","bargain","basically","becoming","beginning","between","bruise","calendar","ceiling","communicate","community","competition","completely","conversation","cupboard","cushion","daughter","definite","develop","dictionary","disappoint","discovery","dishonest","during","electricity","encouragement","especially","expensive","figure","forecast","forgotten","frequently","ground","guitar","happiness","incredible","individual","interrupt","language","listen","muscle","neighbour","nuisance","occasion","physical","pleasure","preferred","properly","queue","receive","recommend","rhythm","sentence","serious","several","should","shoulder","similar","slowly","soldier","stomach","suggest","symbol","system","tattoo","terrible","together","tongue","towards","truly","vacuum","variety","vegetable","vehicle","weather","weird","world"]
+  },
+  7:{
+    "Words":["absence","achieve","anniversary","apologise","apostrophe","apparently","appearance","appreciate","autumn","awkward","bizarre","committee","compliment","continuous","criticise","curiosity","cyclinder","definitely","description","desperate","determined","distastrous","embarrass","environment","equipment","equipped","examination","excellent","existence","explantation","familiar","fascinated","fault","fiery","foreign","genius","gist","grammar","heavier","immediately","independent","individual","instalment","interfere","licence","lollipop","machinery","magnificent","maintenance","mathematics","messager","microphone","miniature","necessary","noticeable","occurred","opportunity","orchestra","original","paragraph","particular","permission","persistent","personal","persuade","possession","profession","publicity","raspberry","recognise","referred","relations","religious","responsible","restaurant","schedule","secretary","succeed","successful","sufficient","swerve","therefore","thorough","unfortunately","unidentified","usually","vacancy","visible","wherever","yacht"]
+  },
+  8:{
+    "Words":["acceptable","accidentally","accommodate","accompany","according","achievement","advertisement","aggressive","amateur","appreciation","arctic","assassination","believable","category","cemetery","collectible","committed","conscience","conscious","controversy","convenience","correspond","courteous","descendant","dilemma","disappearance","discipline","ecstasy","exaggerate","exception","exhibition","extraordinary","fascinating","ferocious","fluorescent","foreseeable","glamorous","government","guarantee","harass","honorary","humorous","hygiene","identity","illusion","incidentally","irresistible","itinerary","jewellery","leisure","manageable","marvellous","millionaire","mischievous","mortgage","murmur","mysterious","occurrence","parliament","permanent","perseverance","politician","pollution","practice","practise","prejudice","prescription","privilege","procedure","pronunciation","propaganda","questionnaire","relevant","resistance","retrieve","sacrifice","satellite","siege","signature","sincerely","skilful","strategy","suspicious","syllable","technique","tendency","travelled","unforeseen","unnecessary","voluntary"]
+  },
+  9:{
+    "Extra Words 1":["abundance","accelerate","accessible","accessory","accomplish","accordion","accumulate","acknowledge","acquaintance","acquire","acquitted","allege","amend","analysis","analyse","anoint","apparatus","apparent","approximate","attendance","barbecue","beggar","beneficial","boundaries","broccoli","camouflage","candidate","catarrh","characteristic","colonel","column","commission","commitment","competent","condemn","conscientious","consciousness","consequence","consequently","consensus","consignment","consistent","controlled","controversial","convenient"],
+    "Extra Words 2":["coolly","correspondence","counterfeit","courtesy","creation","criticism","debt","deceive","defendant","defiance","definition","deodorise","dependent","desiccate","desirable","despair","dissatisfied","dominant","drunkenness","exceed","efficiency","eligible","eliminate","emperor","employee","entirely","equivalent","excellence","extinguish","fatigue","financially","foresee","fuelling","fulfil","gauge","generally","governor","guidance","handkerchief","hoarse","hypocrisy","ideally","ignorance","imaginary","impertinent"],
+    "Extra Words 3":["implement","independence","indigenous","indignant","indispensable","inevitable","infallible","influential","information","innumerable","inoculate","insurance","intelligence","intelligent","intercede","interference","introduce","irrelevant","irritable","jealousy","judgement","judicial","laboratory","latter","legitimate","levelling","liaise","liaison","lieutenant","likelihood","liquefy","loneliness","luxury","magazine","manoeuvre","manufacture","marriage","memento","millennium","miniscule","miscellaneous","mischievously","miseries","missile","misspell"],
+    "Extra Words 4":["misspelt","monarch","mosquito","mosquitoes","narrative","naturally","naive","necessity","negligible","neutron","obedience","obstacle","omission","opponent","optimism","optimistic","ordinarily","outrageous","parallel","paralleled","parallelism","pavillion","penetrate","perceive","permissible","persistence","personnel","perspiration","persuasion","physician","pitiful","possess","possibility","potato","practically","practitioner","preference","preparation","presence","prevalent","primitive","proceed","professor","prominent","pronounce"],
+    "Extra Words 5":["prophecy","prophet","psychology","publicly","pursue","quantity","quarantine","realistically","recede","receipt","receiver","reference","relevance","relieving","remembrance","reminiscence","repetition","representative","resemblance","reservoir","resistant","restaurateur","rheumatism","rhythmical","riddance","ridiculous","sergeant","severely","shepherd","signalled","simile","simultaneous","souvenir","spaghetti","specifically","specimen","sponsor","spontaneous","stationary","stationery","statistics","stubbornness","subordinate","subtle","supersede"],
+    "Extra Words 6":["supposition","suppress","survivor","susceptible","symmetrical","syphon","technical","temperamental","theories","threshold","tournament","tragedy","tyranny","unanimous","undoubtedly","unforgettable","unique","upholstery","usable","vaporise","vegetarian","veterinarian","vicious","vigorous","vigour","violence","vocabulary","warrant","warriors","withdrawal","wondrous","wrangle","wrestle","xylophone","zoology"],
+    "Commonly Confused":["accept","except","advice","advise","affect","effect","allowed","aloud","alter","altar","complement","compliment","continuous","continual","councillor","counsellor","course","coarse","current","currant","defuse","diffuse","desert","dessert","die","dye","draft","draught","dual","duel","emigrant","immigrant","envelop","envelope","fawn","faun","flounder","founder","forego","forgo","formerly","formally","grisly","grizzly","hoard","horde","imply","infer","its","it's","leant","lent","lightning","lightening","loath","loathe","loose","lose","luxuriant","luxurious","palate","palette","pedal","peddle","piece","peace","practice","practise","principal","principle","regretful","regrettable","shear","sheer","stationary","stationery","story","storey","your","you're","tortuous","torturous","waist","waste"]
+  }
+};
+
+const YC={4:'#e8547a',5:'#7c5cbf',6:'#f07844',7:'#3aaa6b',8:'#2fa8d5',9:'#9b59b6'};
+const AVC=['#e8547a','#7c5cbf','#2fa8d5','#3aaa6b','#f07844','#e84393','#40c9a2','#f56042','#a259ff','#3b82f6'];
+
+// ════════════════════════════════════════════════════════
+//   DATA LAYER
+//   Progress entry per word: { mastered:bool, masteredDate:str, correct:int, incorrect:int }
+// ════════════════════════════════════════════════════════
+const LS={
+  students:()=>{try{return JSON.parse(localStorage.getItem('wl_s')||'[]')}catch{return[]}},
+  saveStudents:d=>{localStorage.setItem('wl_s',JSON.stringify(d));debounceSync('students',()=>syncStudents(d));},
+  progress:()=>{try{return JSON.parse(localStorage.getItem('wl_p')||'{}')}catch{return{}}},
+  saveProgress:d=>{localStorage.setItem('wl_p',JSON.stringify(d));debounceSync('progress',()=>syncProgress(d));},
+  history:()=>{try{return JSON.parse(localStorage.getItem('wl_h')||'{}')}catch{return{}}},
+  saveHistory:d=>{localStorage.setItem('wl_h',JSON.stringify(d));debounceSync('history',()=>syncHistory(d));},
+  archives:()=>{try{return JSON.parse(localStorage.getItem('wl_a')||'{}')}catch{return{}}},
+  saveArchives:d=>{localStorage.setItem('wl_a',JSON.stringify(d));debounceSync('archives',()=>syncArchives(d));},
+  weeklyLists:()=>{try{return JSON.parse(localStorage.getItem('wl_wk')||'{}')}catch{return{}}},
+  saveWeeklyLists:d=>{localStorage.setItem('wl_wk',JSON.stringify(d));debounceSync('weeklyLists',()=>syncWeeklyLists(d));},
+};
+
+// ════════════════════════════════════════════════════════
+//   SUPABASE SYNC LAYER
+//   The rest of the app reads/writes localStorage exactly as
+//   before (fast, synchronous, unchanged) — this layer mirrors
+//   every save out to Supabase in the background, and loads a
+//   teacher's data back in from Supabase on login / page load.
+// ════════════════════════════════════════════════════════
+const syncTimers={};
+function debounceSync(key,fn,delay=1200){
+  clearTimeout(syncTimers[key]);
+  syncTimers[key]=setTimeout(fn,delay);
+}
+
+async function loadClassroomData(teacherId){
+  if(!sbReady()){hideBootOverlay();renderStudents();return;}
+  showBootOverlay('Loading your class…');
+  try{
+    const {data:students,error:e1}=await SB.from('students').select('*').eq('teacher_id',teacherId).order('created_at');
+    if(e1)throw e1;
+    const mapped=(students||[]).map(s=>({id:s.id,name:s.name,year:s.year,color:s.color,startDate:s.start_date,isTrusted:!!s.is_trusted,helperPass:s.helper_pass||''}));
+    localStorage.setItem('wl_s',JSON.stringify(mapped));
+    const ids=mapped.map(s=>s.id);
+
+    if(ids.length){
+      const [{data:wp},{data:hs},{data:ar},{data:wl}]=await Promise.all([
+        SB.from('word_progress').select('*').in('student_id',ids),
+        SB.from('history_snapshots').select('*').in('student_id',ids).order('date'),
+        SB.from('archives').select('*').in('student_id',ids),
+        SB.from('weekly_lists').select('*').in('student_id',ids),
+      ]);
+      const prog={};
+      (wp||[]).forEach(r=>{if(!prog[r.student_id])prog[r.student_id]={};prog[r.student_id][r.word]={mastered:r.mastered,correct:r.correct_count,incorrect:r.incorrect_count,masteredDate:r.mastered_date||''};});
+      localStorage.setItem('wl_p',JSON.stringify(prog));
+
+      const hist={};
+      (hs||[]).forEach(r=>{if(!hist[r.student_id])hist[r.student_id]=[];hist[r.student_id].push({date:r.date,mastered:r.mastered,total:r.total,correct:r.correct,incorrect:r.incorrect,year:r.year});});
+      localStorage.setItem('wl_h',JSON.stringify(hist));
+
+      const arch={};
+      (ar||[]).forEach(r=>{if(!arch[r.student_id])arch[r.student_id]=[];arch[r.student_id].push({year:r.year,completedDate:r.completed_date,totalWords:r.total_words,totalCorrect:r.total_correct,totalIncorrect:r.total_incorrect});});
+      localStorage.setItem('wl_a',JSON.stringify(arch));
+
+      const wkl={};
+      (wl||[]).forEach(r=>{if(!wkl[r.student_id])wkl[r.student_id]={};wkl[r.student_id][r.week_index]={words:r.words,results:r.results,testDone:r.test_done,testDate:r.test_date||''};});
+      localStorage.setItem('wl_wk',JSON.stringify(wkl));
+    }else{
+      localStorage.setItem('wl_p','{}');localStorage.setItem('wl_h','{}');localStorage.setItem('wl_a','{}');localStorage.setItem('wl_wk','{}');
+    }
+  }catch(err){
+    console.error('Failed to load classroom data from Supabase',err);
+    alert('Could not reach the server to load your class — showing the last saved copy on this device instead. Check your internet connection and try reloading.');
+  }
+  hideBootOverlay();
+  renderStudents();
+}
+
+async function syncStudents(students){
+  if(!isTeacher()||!sbReady())return;
+  const teacherId=getActiveTeacherId();if(!teacherId)return;
+  try{
+    const {data:existing}=await SB.from('students').select('id').eq('teacher_id',teacherId);
+    const currentIds=students.map(s=>s.id);
+    const toDelete=(existing||[]).map(r=>r.id).filter(id=>!currentIds.includes(id));
+    if(toDelete.length)await SB.from('students').delete().in('id',toDelete);
+    if(students.length){
+      const rows=students.map(s=>({id:s.id,teacher_id:teacherId,name:s.name,year:s.year,color:s.color,start_date:s.startDate,is_trusted:!!s.isTrusted,helper_pass:s.helperPass||null}));
+      await SB.from('students').upsert(rows);
+    }
+  }catch(err){console.error('Student sync failed',err);}
+}
+
+async function syncProgress(progObj){
+  if(!isTeacher()||!sbReady())return;
+  try{
+    for(const [sid,words] of Object.entries(progObj)){
+      const sidNum=parseInt(sid);
+      const wordList=Object.keys(words);
+      const {data:existing}=await SB.from('word_progress').select('word').eq('student_id',sidNum);
+      const toDelete=(existing||[]).map(r=>r.word).filter(w=>!wordList.includes(w));
+      if(toDelete.length)await SB.from('word_progress').delete().eq('student_id',sidNum).in('word',toDelete);
+      if(wordList.length){
+        const rows=wordList.map(w=>({student_id:sidNum,word:w,mastered:!!words[w].mastered,correct_count:words[w].correct||0,incorrect_count:words[w].incorrect||0,mastered_date:words[w].masteredDate||null}));
+        await SB.from('word_progress').upsert(rows,{onConflict:'student_id,word'});
+      }
+    }
+  }catch(err){console.error('Progress sync failed',err);}
+}
+
+async function syncHistory(histObj){
+  if(!isTeacher()||!sbReady())return;
+  try{
+    const rows=[];
+    Object.entries(histObj).forEach(([sid,entries])=>{
+      const byDate={};
+      entries.forEach(e=>{byDate[e.date]=e;}); // last write per date wins, matches chart logic
+      Object.values(byDate).forEach(e=>{rows.push({student_id:parseInt(sid),date:e.date,mastered:e.mastered,total:e.total,correct:e.correct,incorrect:e.incorrect,year:e.year});});
+    });
+    if(rows.length)await SB.from('history_snapshots').upsert(rows,{onConflict:'student_id,date'});
+  }catch(err){console.error('History sync failed',err);}
+}
+
+async function syncArchives(archObj){
+  if(!isTeacher()||!sbReady())return;
+  try{
+    for(const [sid,entries] of Object.entries(archObj)){
+      const sidNum=parseInt(sid);
+      await SB.from('archives').delete().eq('student_id',sidNum);
+      if(entries.length){
+        const rows=entries.map(e=>({student_id:sidNum,year:e.year,completed_date:e.completedDate,total_words:e.totalWords,total_correct:e.totalCorrect,total_incorrect:e.totalIncorrect}));
+        await SB.from('archives').insert(rows);
+      }
+    }
+  }catch(err){console.error('Archive sync failed',err);}
+}
+
+async function syncWeeklyLists(wkObj){
+  if(!isTeacher()||!sbReady())return;
+  try{
+    const rows=[];
+    Object.entries(wkObj).forEach(([sid,weeks])=>{
+      Object.entries(weeks).forEach(([wIdx,wl])=>{
+        rows.push({student_id:parseInt(sid),week_index:parseInt(wIdx),words:wl.words,results:wl.results,test_done:!!wl.testDone,test_date:wl.testDate||null});
+      });
+    });
+    if(rows.length)await SB.from('weekly_lists').upsert(rows,{onConflict:'student_id,week_index'});
+  }catch(err){console.error('Weekly list sync failed',err);}
+}
+
+function showBootOverlay(msg){
+  const el=document.getElementById('boot-overlay');
+  if(el){el.querySelector('.boot-msg').textContent=msg||'Loading…';el.style.display='flex';}
+}
+function hideBootOverlay(){
+  const el=document.getElementById('boot-overlay');
+  if(el)el.style.display='none';
+}
+
+
+function totalWords(yr){return Object.values(WL[yr]).flat().length;}
+
+// ════════════════════════════════════════════════════════
+//   CUSTOM CONFIRM MODAL — replaces window.confirm(), which
+//   can be silently blocked in sandboxed preview contexts
+//   (leaving buttons that look like they "do nothing").
+// ════════════════════════════════════════════════════════
+function showConfirmModal(message,onYes,yesLabel){
+  document.getElementById('confirm-modal-overlay')?.remove();
+  const ov=document.createElement('div');
+  ov.className='modal-overlay active';
+  ov.id='confirm-modal-overlay';
+  ov.onclick=(e)=>{if(e.target===ov)ov.remove();};
+  ov.innerHTML=`<div class="modal-box" style="max-width:360px;text-align:center;">
+    <div style="font-size:1.8rem;margin-bottom:8px;">⚠️</div>
+    <p style="font-weight:800;font-size:.95rem;margin-bottom:18px;line-height:1.5;">${esc(message)}</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1;" id="confirm-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;" id="confirm-yes-btn">${esc(yesLabel||'Yes')}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  document.getElementById('confirm-cancel-btn').onclick=()=>ov.remove();
+  document.getElementById('confirm-yes-btn').onclick=()=>{ov.remove();onYes();};
+}
+
+// ════════════════════════════════════════════════════════
+//   AUTH SYSTEM — Admin / Teacher login
+//   NOTE: this is a classroom-appropriate access gate stored
+//   in the browser, not bank-grade security — anyone with the
+//   HTML source could bypass it. It's designed to keep curious
+//   students out of the Friday test / Data / Add Student areas,
+//   not to protect sensitive information.
+// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//   AUTH SYSTEM — Supabase Auth (Admin / Teacher login)
+//   Real accounts, real passwords — handled entirely by
+//   Supabase, never touched or stored by this app directly.
+// ════════════════════════════════════════════════════════
+let currentProfile=null; // {id,name,email,role,status} while logged in this tab
+function getActiveTeacherId(){return localStorage.getItem('sh_active_teacher')||null;}
+function isTeacher(){return !!currentProfile&&currentProfile.role==='teacher'&&currentProfile.status==='approved';}
+function isAdmin(){return !!currentProfile&&currentProfile.role==='admin';}
+function isLocked(){return !getActiveTeacherId()&&!currentProfile;}
+
+// ── TRUSTED TESTER (student helper) ──
+// A lightweight, per-student password (set by the teacher) that lets a
+// fast-finishing student unlock Friday's test screen to help test their
+// classmates. This is NOT a real account — just enough friction to stop
+// other students from stumbling into the test screen. It resets whenever
+// the page reloads (session-only, in memory), which is intentional.
+let helperSession=null; // {studentId, name} while active
+function isHelperActive(){return !!helperSession;}
+
+// ── RELIEVER TEACHER ──
+// A per-teacher password (set by the regular teacher) that lets a substitute
+// log in — through the same Teacher login form, typing "Reliever" as the
+// email — to run Lesson Planner testing, without unlocking Add Student or Data.
+let relieverSession=null; // {teacherId, teacherName} while active
+function isRelieverActive(){return !!relieverSession;}
+function simpleHash(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;}return 'h'+h;}
+
+function applyGating(){
+  const addCard=document.getElementById('add-student-card');
+  const dataBtn=document.getElementById('nav-data-btn');
+  const badge=document.getElementById('auth-status');
+  const ccPill=document.getElementById('teacher-classcode-pill');
+  if(addCard)addCard.style.display=isTeacher()?'':'none';
+  if(dataBtn)dataBtn.style.display=isTeacher()?'':'none';
+  if(ccPill){
+    if(isTeacher()&&currentProfile.class_code){
+      ccPill.style.display='inline-block';
+      document.getElementById('teacher-classcode-value').textContent=currentProfile.class_code;
+    }else{
+      ccPill.style.display='none';
+    }
+  }
+  if(currentProfile){
+    const roleLabel=currentProfile.role==='admin'?'🛡️ Admin':'👩‍🏫 '+(currentProfile.name||currentProfile.email);
+    badge.style.display='flex';
+    badge.className='auth-badge';
+    badge.innerHTML=`${esc(roleLabel)} <button onclick="logOut()">Log out</button>`;
+  }else if(isRelieverActive()){
+    badge.style.display='flex';
+    badge.className='auth-badge';
+    badge.innerHTML=`🧑‍🏫 Reliever (${esc(relieverSession.teacherName)}'s Class) <button onclick="relieverLogOut()">Log out</button>`;
+  }else if(isHelperActive()){
+    badge.style.display='flex';
+    badge.className='auth-badge';
+    badge.innerHTML=`🌟 Trusted Tester: ${esc(helperSession.name)} <button onclick="helperLogOut()">Log out</button>`;
+  }else if(getActiveTeacherId()){
+    const className=localStorage.getItem('sh_active_teacher_name');
+    badge.style.display='flex';
+    badge.className='auth-badge';
+    badge.innerHTML=`🎓 Viewing${className?': '+esc(className)+"'s Class":''} <button onclick="leaveClass()">Leave Class</button>`;
+  }else{
+    badge.style.display='none';
+  }
+  if(!isTeacher()&&document.getElementById('page-data')?.classList.contains('active')){showPage('students');}
+  if(document.getElementById('page-lessons')?.classList.contains('active')&&document.getElementById('lp-student'))renderLessonContent();
+
+  if(isLocked()&&!passwordRecoveryPending){
+    const overlay=document.getElementById('auth-modal-overlay');
+    if(overlay&&!overlay.classList.contains('active'))openLoginModal();
+  }
+}
+
+function clearDeviceScope(){
+  localStorage.removeItem('sh_active_teacher');
+  localStorage.removeItem('sh_active_teacher_name');
+  localStorage.setItem('wl_s','[]');localStorage.setItem('wl_p','{}');
+  localStorage.setItem('wl_h','{}');localStorage.setItem('wl_a','{}');localStorage.setItem('wl_wk','{}');
+}
+
+function logOut(){
+  showConfirmModal('Log out and lock this device? Anyone using it afterwards will need a class code or login to see any student information again.',async()=>{
+    if(sbReady())await SB.auth.signOut();
+    currentProfile=null;
+    clearDeviceScope();
+    renderStudents();
+    applyGating();
+    closeAuthModal();
+    showPage('students');
+  },'Log Out');
+}
+
+function leaveClass(){
+  showConfirmModal('Leave this class and lock the device? You\'ll need the class code again to view it on this device.',()=>{
+    clearDeviceScope();
+    renderStudents();
+    applyGating();
+    showPage('students');
+  },'Leave Class');
+}
+
+function helperLogOut(){
+  helperSession=null;
+  applyGating();
+  showPage('students');
+}
+
+function relieverLogOut(){
+  relieverSession=null;
+  applyGating();
+  showPage('students');
+}
+
+// ── Modal open/close ──
+function openLoginModal(){
+  if(currentProfile){renderLoggedInPanel();}
+  else{renderRoleChoice();}
+  document.getElementById('auth-modal-overlay').classList.add('active');
+}
+function closeAuthModal(){
+  if(isLocked()||passwordRecoveryPending)return; // can't dismiss the gate without a valid class code or login, or mid password-reset
+  document.getElementById('auth-modal-overlay').classList.remove('active');
+}
+function box(html){document.getElementById('auth-modal-box').innerHTML=html;}
+
+function renderLoggedInPanel(){
+  if(currentProfile.role==='admin'){renderAdminPanel();return;}
+  box(`
+    <h2>👩‍🏫 Signed in</h2>
+    <p class="sub">You're logged in as <strong>${esc(currentProfile.name||currentProfile.email)}</strong>. Friday testing, Add Student, and the Data page are unlocked.</p>
+    <div class="class-code-box">
+      <div class="cclabel">Your Class Code</div>
+      <div class="ccode">${esc(currentProfile.class_code||'—')}</div>
+    </div>
+    <p class="sub" style="text-align:center;">Give this code to your students — entering it on any device shows them your class (view only, no editing).</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1;" onclick="regenerateClassCode()">🔄 New Code</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="closeAuthModal()">Close</button>
+    </div>
+
+    <h3 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 0 8px;">🧑‍🏫 Reliever Access</h3>
+    <p class="sub">Set a password so a reliever can log in — choose Teacher, type <strong>Reliever</strong> as the email, and this password — to run Lesson Planner testing and print word lists (they won't see Add Student or Data).</p>
+    ${currentProfile.reliever_pass?'<p style="font-size:.78rem;color:var(--muted);font-weight:700;margin-bottom:8px;">✅ A reliever password is currently set.</p>':''}
+    <div class="modal-field"><input type="text" id="reliever-pass-input" placeholder="Reliever password"></div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:6px;" onclick="setRelieverPassword()">${currentProfile.reliever_pass?'Update':'Set'} Reliever Password</button>
+
+    <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="logOut()">Log out</button>
+  `);
+}
+
+async function setRelieverPassword(){
+  const pass=document.getElementById('reliever-pass-input').value.trim();
+  if(!pass||pass.length<3){alert('Please enter a password with at least 3 characters.');return;}
+  const hash=simpleHash(pass);
+  const {error}=await SB.from('profiles').update({reliever_pass:hash}).eq('id',currentProfile.id);
+  if(error){alert('Could not save reliever password: '+error.message);return;}
+  currentProfile.reliever_pass=hash;
+  renderLoggedInPanel();
+  alert('Reliever password saved. Share it with your reliever along with "Reliever" as the login name.');
+}
+
+async function regenerateClassCode(){
+  showConfirmModal('Generate a new class code? Students using the old code will need the new one.',async()=>{
+    let newCode=generateClassCode(),error=null;
+    for(let attempt=0;attempt<5;attempt++){
+      const res=await SB.from('profiles').update({class_code:newCode}).eq('id',currentProfile.id);
+      error=res.error;
+      if(!error)break;
+      newCode=generateClassCode();
+    }
+    if(!error){currentProfile.class_code=newCode;renderLoggedInPanel();}
+    else{alert('Could not generate a new code: '+error.message);}
+  },'Generate New Code');
+}
+
+function generateClassCode(){
+  const chars='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L, avoids mix-ups
+  let code='';
+  for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function copyClassCode(){
+  if(!currentProfile?.class_code)return;
+  navigator.clipboard?.writeText(currentProfile.class_code).then(()=>{
+    const pill=document.getElementById('teacher-classcode-pill');
+    const original=pill.innerHTML;
+    pill.innerHTML='✅ Copied!';
+    setTimeout(()=>{pill.innerHTML=`🎓 Code: <span id="teacher-classcode-value">${esc(currentProfile.class_code)}</span>`;},1200);
+  }).catch(()=>{});
+}
+
+function renderRoleChoice(){
+  const locked=isLocked();
+  box(`
+    <h2>${locked?'🔒 ':''}Log in to SpellingHub</h2>
+    <p class="sub">${locked?'This class\'s information is private. Choose an option to continue.':'Choose an option to continue.'}</p>
+    <div class="role-pick-row">
+      <button class="role-pick-btn" onclick="renderClassCodeEntry()"><span class="rico">🎓</span><span class="rlabel">Class Code</span></button>
+      <button class="role-pick-btn" onclick="renderTeacherLogin()"><span class="rico">👩‍🏫</span><span class="rlabel">Teacher</span></button>
+      <button class="role-pick-btn" onclick="renderAdminLogin()"><span class="rico">🛡️</span><span class="rlabel">Admin</span></button>
+    </div>
+    ${locked?'':'<div class="modal-actions"><button class="btn btn-ghost" style="flex:1;" onclick="closeAuthModal()">Cancel</button></div>'}
+  `);
+}
+
+function renderClassCodeEntry(err){
+  box(`
+    <button class="modal-back" onclick="renderRoleChoice()">← Back</button>
+    <h2>🎓 Enter Class Code</h2>
+    <p class="sub">Ask your teacher for your class's code.</p>
+    ${err?`<div class="modal-error">${esc(err)}</div>`:''}
+    <div class="modal-field"><input type="text" id="cc-modal-input" placeholder="e.g. R7XQPK" maxlength="8" style="text-align:center;text-transform:uppercase;letter-spacing:3px;font-weight:900;" onkeydown="if(event.key==='Enter')submitClassCodeModal();"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="submitClassCodeModal()">Enter Class</button></div>
+  `);
+}
+
+async function submitClassCodeModal(){
+  const code=document.getElementById('cc-modal-input').value.trim().toUpperCase();
+  if(!sbReady()){renderClassCodeEntry('Cannot reach the server right now.');return;}
+  if(!code){renderClassCodeEntry('Enter a class code first.');return;}
+  const {data,error}=await SB.rpc('resolve_class_code',{code});
+  if(error||!data||!data.length){renderClassCodeEntry('Class code not found. Check with your teacher.');return;}
+  localStorage.setItem('sh_active_teacher',data[0].teacher_id);
+  localStorage.setItem('sh_active_teacher_name',data[0].teacher_name||'');
+  closeAuthModal();
+  await loadClassroomData(data[0].teacher_id);
+  applyGating();
+}
+
+function renderTeacherLogin(err){
+  box(`
+    <button class="modal-back" onclick="renderRoleChoice()">← Back</button>
+    <h2>👩‍🏫 Teacher Log In</h2>
+    <p class="sub">Enter your email and password.</p>
+    ${err?`<div class="modal-error">${esc(err)}</div>`:''}
+    <div class="modal-field"><label>Email</label><input type="text" id="t-login-email" autocapitalize="off"></div>
+    <div class="modal-field"><label>Password</label><input type="password" id="t-login-pass"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" id="t-login-btn" onclick="submitTeacherLogin()">Log In</button></div>
+    <p class="sub" style="margin:14px 0 0;text-align:center;">New here? <a href="#" onclick="renderTeacherSignup();return false;" style="color:var(--primary-dark);font-weight:800;">Request an account</a></p>
+    <p class="sub" style="margin:8px 0 0;text-align:center;"><a href="#" onclick="submitPasswordReset('teacher');return false;" style="color:var(--muted);font-weight:700;font-size:.75rem;">Forgot your password?</a></p>
+    <p class="sub" style="margin:10px 0 0;text-align:center;font-size:.74rem;">Reliever teacher? Type <strong>Reliever</strong> as the email, and the password your regular teacher gave you.</p>
+  `);
+}
+
+async function submitRelieverLogin(pass){
+  const teacherId=getActiveTeacherId();
+  if(!teacherId){renderTeacherLogin('Enter this class\'s Class Code first (from the login options), then log in as Reliever.');return;}
+  if(!pass){renderTeacherLogin('Enter the reliever password.');return;}
+  if(!sbReady()){renderTeacherLogin('Cannot reach the server right now.');return;}
+  const {data,error}=await SB.rpc('verify_reliever_password',{p_teacher_id:teacherId,p_password_hash:simpleHash(pass)});
+  if(error||!data){renderTeacherLogin('Incorrect reliever password, or no reliever access has been set up for this class yet.');return;}
+  relieverSession={teacherId,teacherName:localStorage.getItem('sh_active_teacher_name')||''};
+  closeAuthModal();
+  applyGating();
+}
+
+async function submitTeacherLogin(){
+  if(!sbReady()){renderTeacherLogin('Cannot reach the server right now. Check your internet connection and try again.');return;}
+  const email=document.getElementById('t-login-email').value.trim().toLowerCase();
+  const pass=document.getElementById('t-login-pass').value;
+  if(email==='reliever'){await submitRelieverLogin(pass);return;}
+  const btn=document.getElementById('t-login-btn');btn.disabled=true;btn.textContent='Logging in…';
+  const {data,error}=await SB.auth.signInWithPassword({email,password:pass});
+  if(error){renderTeacherLogin('Incorrect email or password.');return;}
+  const {data:profile,error:perr}=await SB.from('profiles').select('*').eq('id',data.user.id).single();
+  if(perr||!profile){renderTeacherLogin('No profile found for this account.');await SB.auth.signOut();return;}
+  if(profile.role!=='teacher'){renderTeacherLogin('This is not a teacher account.');await SB.auth.signOut();return;}
+  if(profile.status==='pending'){renderTeacherLogin('Your account is still waiting for admin approval.');await SB.auth.signOut();return;}
+  if(profile.status==='rejected'){renderTeacherLogin('This account request was declined. Please contact your admin.');await SB.auth.signOut();return;}
+  if(!profile.class_code){
+    let newCode=generateClassCode(),cerr=null;
+    for(let attempt=0;attempt<5;attempt++){
+      const res=await SB.from('profiles').update({class_code:newCode}).eq('id',profile.id);
+      cerr=res.error;
+      if(!cerr)break;
+      newCode=generateClassCode();
+    }
+    if(!cerr)profile.class_code=newCode;
+  }
+  currentProfile=profile;
+  localStorage.setItem('sh_active_teacher',profile.id);
+  localStorage.setItem('sh_active_teacher_name',profile.name||'');
+  closeAuthModal();
+  await loadClassroomData(profile.id);
+  applyGating();
+}
+
+function renderTeacherSignup(err){
+  box(`
+    <button class="modal-back" onclick="renderTeacherLogin()">← Back</button>
+    <h2>Request a Teacher Account</h2>
+    <p class="sub">Your admin will need to approve this before you can log in.</p>
+    ${err?`<div class="modal-error">${esc(err)}</div>`:''}
+    <div class="modal-field"><label>Your Name</label><input type="text" id="t-signup-name"></div>
+    <div class="modal-field"><label>Email</label><input type="email" id="t-signup-email"></div>
+    <div class="modal-field"><label>Choose a Password</label><input type="password" id="t-signup-pass"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" id="t-signup-btn" onclick="submitTeacherSignup()">Send Request</button></div>
+  `);
+}
+
+async function submitTeacherSignup(){
+  if(!sbReady()){renderTeacherSignup('Cannot reach the server right now. Check your internet connection and try again.');return;}
+  const name=document.getElementById('t-signup-name').value.trim();
+  const email=document.getElementById('t-signup-email').value.trim().toLowerCase();
+  const pass=document.getElementById('t-signup-pass').value;
+  if(!name||!email||!pass){renderTeacherSignup('Please fill in every field.');return;}
+  if(pass.length<6){renderTeacherSignup('Password must be at least 6 characters.');return;}
+  const btn=document.getElementById('t-signup-btn');btn.disabled=true;btn.textContent='Sending…';
+  const {data,error}=await SB.auth.signUp({email,password:pass});
+  if(error){renderTeacherSignup(error.message);return;}
+  if(!data.session){
+    box(`<h2>📧 Check your email</h2><p class="sub">We've sent a confirmation link to ${esc(email)}. Once you click it, come back and log in — your account will still need admin approval after that.</p><div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="closeAuthModal()">Done</button></div>`);
+    return;
+  }
+  const {error:perr}=await SB.from('profiles').insert({id:data.user.id,name,email,role:'teacher',status:'pending'});
+  if(perr){renderTeacherSignup('Could not create profile: '+perr.message);return;}
+  let classCode=generateClassCode(),cerr=null;
+  for(let attempt=0;attempt<5;attempt++){
+    const res=await SB.from('profiles').update({class_code:classCode}).eq('id',data.user.id);
+    cerr=res.error;
+    if(!cerr)break;
+    classCode=generateClassCode();
+  }
+  await SB.auth.signOut();
+  box(`
+    <h2>✅ Request sent!</h2>
+    <p class="sub">Your account request has been sent to the admin for approval. You'll be able to log in once it's approved.</p>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="closeAuthModal()">Done</button></div>
+  `);
+}
+
+async function submitPasswordReset(kind){
+  if(!sbReady()){alert('Cannot reach the server right now. Check your internet connection and try again.');return;}
+  const emailFieldId=kind==='teacher'?'t-login-email':'a-login-email';
+  const email=document.getElementById(emailFieldId)?.value.trim();
+  if(!email){alert('Type your email into the box above first, then tap "Forgot your password?" again.');return;}
+  const {error}=await SB.auth.resetPasswordForEmail(email);
+  if(error){alert('Could not send reset email: '+error.message);return;}
+  alert(`If ${email} has an account, a password reset link has been sent.`);
+}
+
+// ── Password recovery landing (triggered by the link in the reset email) ──
+let passwordRecoveryPending=false;
+function showPasswordResetModal(){
+  passwordRecoveryPending=true;
+  box(`
+    <h2>🔑 Set a New Password</h2>
+    <p class="sub">Choose a new password for your account.</p>
+    <div id="pw-reset-error"></div>
+    <div class="modal-field"><input type="password" id="new-pass-input" placeholder="New password" onkeydown="if(event.key==='Enter')submitNewPassword();"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="submitNewPassword()">Set Password</button></div>
+  `);
+  document.getElementById('auth-modal-overlay').classList.add('active');
+}
+async function submitNewPassword(){
+  const pass=document.getElementById('new-pass-input').value;
+  const errEl=document.getElementById('pw-reset-error');
+  if(!pass||pass.length<6){errEl.innerHTML='<div class="modal-error">Password must be at least 6 characters.</div>';return;}
+  const {error}=await SB.auth.updateUser({password:pass});
+  if(error){errEl.innerHTML=`<div class="modal-error">${esc(error.message)}</div>`;return;}
+  passwordRecoveryPending=false;
+  await SB.auth.signOut();
+  currentProfile=null;
+  applyGating();
+  box(`
+    <h2>✅ Password Updated</h2>
+    <p class="sub">Your password has been changed. Please log in with your new password.</p>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" onclick="renderRoleChoice()">Continue</button></div>
+  `);
+}
+
+function renderAdminLogin(err){
+  box(`
+    <button class="modal-back" onclick="renderRoleChoice()">← Back</button>
+    <h2>🛡️ Admin Log In</h2>
+    <p class="sub">Enter the admin email and password.</p>
+    ${err?`<div class="modal-error">${esc(err)}</div>`:''}
+    <div class="modal-field"><label>Email</label><input type="email" id="a-login-email"></div>
+    <div class="modal-field"><label>Password</label><input type="password" id="a-login-pass"></div>
+    <div class="modal-actions"><button class="btn btn-primary" style="flex:1;" id="a-login-btn" onclick="submitAdminLogin()">Log In</button></div>
+    <p class="sub" style="margin:8px 0 0;text-align:center;"><a href="#" onclick="submitPasswordReset('admin');return false;" style="color:var(--muted);font-weight:700;font-size:.75rem;">Forgot your password?</a></p>
+  `);
+}
+
+async function submitAdminLogin(){
+  if(!sbReady()){renderAdminLogin('Cannot reach the server right now. Check your internet connection and try again.');return;}
+  const email=document.getElementById('a-login-email').value.trim().toLowerCase();
+  const pass=document.getElementById('a-login-pass').value;
+  const btn=document.getElementById('a-login-btn');btn.disabled=true;btn.textContent='Logging in…';
+  const {data,error}=await SB.auth.signInWithPassword({email,password:pass});
+  if(error){renderAdminLogin('Incorrect email or password.');return;}
+  const {data:profile,error:perr}=await SB.from('profiles').select('*').eq('id',data.user.id).single();
+  if(perr||!profile||profile.role!=='admin'){renderAdminLogin('This account is not an admin account.');await SB.auth.signOut();return;}
+  currentProfile=profile;
+  applyGating();
+  renderAdminPanel();
+}
+
+async function renderAdminPanel(){
+  if(!sbReady()){box('<h2>🛡️ Admin Panel</h2><div class="modal-error">Cannot reach the server right now.</div><div class="modal-actions"><button class="btn btn-ghost" style="flex:1;" onclick="closeAuthModal()">Close</button></div>');return;}
+  box(`<h2>🛡️ Admin Panel</h2><p class="sub">Loading teacher accounts…</p>`);
+  const {data:teachers,error}=await SB.from('profiles').select('*').eq('role','teacher').order('created_at',{ascending:false});
+  if(error){box(`<h2>🛡️ Admin Panel</h2><div class="modal-error">Could not load teacher accounts: ${esc(error.message)}</div><div class="modal-actions"><button class="btn btn-ghost" style="flex:1;" onclick="closeAuthModal()">Close</button></div>`);return;}
+  const pending=(teachers||[]).filter(t=>t.status==='pending');
+  const approved=(teachers||[]).filter(t=>t.status==='approved');
+  box(`
+    <h2>🛡️ Admin Panel</h2>
+    <p class="sub">Approve teacher requests, and manage existing teacher accounts.</p>
+
+    <h3 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:16px 0 8px;">Pending Requests (${pending.length})</h3>
+    ${pending.length?pending.map(t=>`
+      <div class="admin-list-item">
+        <div class="who"><strong>${esc(t.name)}</strong><span>${esc(t.email)}</span></div>
+        <button class="tiny-btn approve" onclick="approveTeacher('${t.id}')">✓ Approve</button>
+        <button class="tiny-btn reject" onclick="rejectTeacher('${t.id}')">✗ Decline</button>
+      </div>`).join(''):'<p class="sub">No pending requests.</p>'}
+
+    <h3 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 0 8px;">Teachers (${approved.length})</h3>
+    ${approved.length?approved.map(t=>`
+      <div class="admin-list-item">
+        <div class="who"><strong>${esc(t.name)}</strong><span>${esc(t.email)} · Class code: ${esc(t.class_code||'—')}</span></div>
+        <button class="tiny-btn" onclick="editTeacherPrompt('${t.id}','${esc(t.name).replace(/'/g,"\\'")}')">✏️ Rename</button>
+        <button class="tiny-btn" onclick="resetTeacherPasswordPrompt('${esc(t.email)}')">📧 Reset Email</button>
+        <button class="tiny-btn danger" onclick="deleteTeacher('${t.id}')">🗑️</button>
+      </div>`).join(''):'<p class="sub">No approved teachers yet.</p>'}
+
+    <div class="modal-note">Deleting a teacher here removes their access to the app, but doesn't delete their underlying login account — for full account deletion, remove them from Authentication → Users in your Supabase dashboard.</div>
+
+    <h3 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 0 8px;">Change My Password</h3>
+    <div class="modal-field"><input type="password" id="admin-newpass" placeholder="New password"></div>
+    <button class="btn btn-ghost" style="width:100%;margin-bottom:6px;" onclick="changeAdminPassword()">Update My Password</button>
+
+    <div class="modal-actions"><button class="btn btn-ghost" style="flex:1;" onclick="closeAuthModal()">Close</button><button class="btn btn-primary" style="flex:1;" onclick="logOut()">Log out</button></div>
+  `);
+}
+
+async function approveTeacher(id){
+  await SB.from('profiles').update({status:'approved'}).eq('id',id);
+  renderAdminPanel();
+}
+function rejectTeacher(id){
+  showConfirmModal('Decline this request?',async()=>{
+    await SB.from('profiles').update({status:'rejected'}).eq('id',id);
+    renderAdminPanel();
+  },'Decline');
+}
+function deleteTeacher(id){
+  showConfirmModal('Remove this teacher\'s access to SpellingHub? Their login will remain in Supabase unless removed there too.',async()=>{
+    await SB.from('profiles').delete().eq('id',id);
+    renderAdminPanel();
+  },'Remove Access');
+}
+async function editTeacherPrompt(id,currentName){
+  const newName=prompt('Teacher name:',currentName);if(newName===null||!newName.trim())return;
+  await SB.from('profiles').update({name:newName.trim()}).eq('id',id);
+  renderAdminPanel();
+}
+async function resetTeacherPasswordPrompt(email){
+  const {error}=await SB.auth.resetPasswordForEmail(email);
+  if(error){alert('Could not send reset email: '+error.message);return;}
+  alert(`A password reset link has been sent to ${email}.`);
+}
+async function changeAdminPassword(){
+  const np=document.getElementById('admin-newpass').value;
+  if(!np){alert('Enter a new password first.');return;}
+  if(np.length<6){alert('Password must be at least 6 characters.');return;}
+  const {error}=await SB.auth.updateUser({password:np});
+  if(error){alert('Could not update password: '+error.message);return;}
+  alert('Password updated.');
+  document.getElementById('admin-newpass').value='';
+}
+
+function masteredCount(sid,yr){
+  const p=LS.progress()[sid]||{};
+  return Object.values(WL[yr]).flat().filter(w=>p[w]?.mastered).length;
+}
+
+function attemptTotals(sid,yr){
+  const p=LS.progress()[sid]||{};
+  let correct=0,incorrect=0;
+  Object.values(WL[yr]).flat().forEach(w=>{
+    const wd=p[w];
+    if(!wd)return;
+    if(wd.catchup){
+      // exclude catch-up words from running totals/accuracy
+      return;
+    }
+    correct+=(wd.correct||0);
+    incorrect+=(wd.incorrect||0);
+  });
+  return {correct,incorrect};
+}
+
+// ════════════════════════════════════════════════════════
+//   STUDENT CRUD
+// ════════════════════════════════════════════════════════
+function addStudent(){
+  const name=document.getElementById('new-student-name').value.trim();
+  const year=parseInt(document.getElementById('new-student-year').value);
+  if(!name){alert('Please enter a name.');return;}
+  const students=LS.students();
+  if(students.find(s=>s.name.toLowerCase()===name.toLowerCase())){alert('Name already exists.');return;}
+  students.push({id:Date.now(),name,year,color:AVC[students.length%AVC.length],startDate:tod(),isTrusted:false,helperPass:''});
+  LS.saveStudents(students);
+  document.getElementById('new-student-name').value='';
+  renderStudents();
+}
+
+function removeStudent(id){
+  showConfirmModal('Remove this student and all their progress?',()=>{
+    LS.saveStudents(LS.students().filter(s=>s.id!==id));
+    renderStudents();
+  },'Remove');
+}
+
+// ════════════════════════════════════════════════════════
+//   DASHBOARD
+// ════════════════════════════════════════════════════════
+let donutMap={};
+function renderStudents(){
+  const all=LS.students();
+  const q=(document.getElementById('student-search')?.value||'').toLowerCase();
+  const sortBy=document.getElementById('student-sort')?.value||'alpha';
+  let list=q?all.filter(s=>s.name.toLowerCase().includes(q)):all;
+  document.getElementById('student-count').textContent=all.length;
+  Object.values(donutMap).forEach(c=>{try{c.destroy()}catch{}});
+  donutMap={};
+  const grid=document.getElementById('student-grid');
+  if(!all.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="emoji">📚</div><p>No students yet — add one above!</p></div>`;return;}
+  if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="emoji">🔍</div><p>No students match.</p></div>`;return;}
+
+  // Sort alphabetically always; for year mode we group after sorting
+  list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+
+  function cardHtml(s){
+    const tot=totalWords(s.year),dn=masteredCount(s.id,s.year);
+    const at=attemptTotals(s.id,s.year);
+    const pct=tot?Math.round(dn/tot*100):0;
+    return `<div class="student-card" onclick="openStudent(${s.id})">
+      <button class="delete-btn" onclick="event.stopPropagation();removeStudent(${s.id})" title="Remove">✕</button>
+      <div class="avatar" style="background:${s.color}">${ini(s.name)}</div>
+      <div class="sname">${esc(s.name)}</div>
+      <span class="year-badge" style="background:${YC[s.year]}">Year ${s.year}</span>
+      <div class="donut-wrap">
+        <canvas id="dn-${s.id}" width="64" height="64"></canvas>
+        <div class="donut-pct" id="dnpct-${s.id}">${pct}%</div>
+      </div>
+      <div class="prog-text" id="pt-${s.id}">${dn}/${tot} mastered</div>
+      <div class="prog-text" style="margin-top:2px;font-size:.7rem;">
+        <span style="color:#3aaa6b;">✓${at.correct}</span>
+        &nbsp;
+        <span style="color:#e8547a;">✗${at.incorrect}</span>
+      </div>
+    </div>`;
+  }
+
+  if(sortBy==='year'){
+    // Group by year level, sorted numerically; within each group, students are alphabetical
+    const groups={};
+    list.forEach(s=>{if(!groups[s.year])groups[s.year]=[];groups[s.year].push(s);});
+    grid.innerHTML=Object.keys(groups).sort((a,b)=>a-b).map(yr=>`
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:10px;">
+        <span style="font-family:'Fredoka One',cursive;font-size:1.1rem;color:${YC[yr]}">Year ${yr}</span>
+        <span style="flex:1;height:2px;background:${YC[yr]}22;border-radius:2px;"></span>
+        <span style="font-size:.75rem;font-weight:800;color:var(--muted);">${groups[yr].length} student${groups[yr].length!==1?'s':''}</span>
+      </div>
+      ${groups[yr].map(cardHtml).join('')}
+    `).join('');
+  } else {
+    grid.innerHTML=list.map(cardHtml).join('');
+  }
+
+  requestAnimationFrame(()=>{
+    list.forEach(s=>{
+      const tot=totalWords(s.year),dn=masteredCount(s.id,s.year);
+      const cv=document.getElementById('dn-'+s.id);
+      if(!cv)return;
+      donutMap[s.id]=new Chart(cv,{
+        type:'doughnut',
+        data:{datasets:[{data:[dn,tot-dn],backgroundColor:[YC[s.year],'#f0ece6'],borderWidth:0}]},
+        options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:700}}
+      });
+    });
+  });
+}
+
+function refreshDashboardCard(sid){
+  const s=LS.students().find(s=>s.id==sid);
+  if(!s||!donutMap[s.id])return;
+  const tot=totalWords(s.year),dn=masteredCount(s.id,s.year),at=attemptTotals(s.id,s.year);
+  donutMap[s.id].data.datasets[0].data=[dn,tot-dn];
+  donutMap[s.id].update();
+  const pct=tot?Math.round(dn/tot*100):0;
+  const dpct=document.getElementById('dnpct-'+sid);
+  const dpt=document.getElementById('pt-'+sid);
+  if(dpct)dpct.textContent=pct+'%';
+  if(dpt)dpt.textContent=`${dn}/${tot} mastered`;
+}
+
+// ════════════════════════════════════════════════════════
+//   STUDENT DETAIL
+// ════════════════════════════════════════════════════════
+let activeId=null,activeTab=0;
+
+function openStudent(id){activeId=id;activeTab=0;renderDetail();showPage('student-detail');}
+
+function renderDetail(){
+  const s=LS.students().find(s=>s.id===activeId);if(!s)return;
+  const tot=totalWords(s.year),dn=masteredCount(s.id,s.year);
+  const at=attemptTotals(s.id,s.year);
+
+  document.getElementById('detail-avatar').textContent=ini(s.name);
+  document.getElementById('detail-avatar').style.background=s.color;
+  document.getElementById('detail-name').textContent=s.name;
+  document.getElementById('detail-sub').textContent=
+    `Year ${s.year} · ${dn}/${tot} mastered · ✓${at.correct} correct · ✗${at.incorrect} incorrect`;
+
+  // level-up banner
+  const bn=document.getElementById('levelup-banner');
+  if(dn===tot&&tot>0&&s.year<9){
+    bn.innerHTML=`<div class="levelup-banner"><div class="lico">🎉</div><div><h3>All Year ${s.year} words mastered!</h3><p>Amazing — ready to move up to Year ${s.year+1}?</p></div><div class="lactions"><button class="btn btn-dark" onclick="levelUp(${s.id})">Move to Year ${s.year+1} →</button></div></div>`;
+  }else if(dn===tot&&tot>0&&s.year===9){
+    bn.innerHTML=`<div class="levelup-banner"><div class="lico">🏆</div><div><h3>All spelling lists complete!</h3><p>${esc(s.name)} has mastered every word across Years 4–9!</p></div></div>`;
+  }else{bn.innerHTML='';}
+
+  // trusted-tester login banner
+  const hb=document.getElementById('helper-login-banner');
+  if(hb){
+    if(s.isTrusted&&isHelperActive()&&helperSession.studentId===s.id){
+      hb.innerHTML=`<div class="test-done-banner" style="background:#e8f8ef;border-color:#8fd6ac;color:#1e7a48;">✅ You're logged in as a trusted tester! Go to Lesson Planner → Friday to test other students. <button class="btn btn-ghost" style="margin-left:auto;" onclick="helperLogOut()">🔒 Log Out</button></div>`;
+    }else if(s.isTrusted&&!isTeacher()&&!isHelperActive()){
+      hb.innerHTML=`<div class="levelup-banner" style="background:linear-gradient(135deg,#7c5cbf,#5b3fa0);">
+        <div class="lico">🌟</div>
+        <div style="flex:1;min-width:200px;">
+          <h3 style="color:#fff;">Trusted Tester Login</h3>
+          <p style="color:#eee;">Enter your password to help test other students today.</p>
+          <div id="helper-login-error"></div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <input type="password" id="helper-login-pass" placeholder="Password" style="padding:9px 12px;border-radius:8px;border:none;font-weight:700;flex:1;min-width:140px;" onkeydown="if(event.key==='Enter')submitHelperLogin(${s.id})">
+            <button class="btn btn-dark" onclick="submitHelperLogin(${s.id})">Unlock Testing</button>
+          </div>
+        </div>
+      </div>`;
+    }else{
+      hb.innerHTML='';
+    }
+  }
+
+  const sets=Object.keys(WL[s.year]);
+  document.getElementById('detail-tabs').innerHTML=
+    [...sets,'📈 Progress'].map((t,i)=>`<button class="dtab ${i===activeTab?'active':''}" onclick="switchTab(${i})">${t}</button>`).join('');
+  renderTab();
+}
+
+function switchTab(i){
+  activeTab=i;
+  document.querySelectorAll('.dtab').forEach((b,j)=>b.classList.toggle('active',j===i));
+  renderTab();
+}
+function openProgressTab(){
+  const s=LS.students().find(s=>s.id===activeId);if(!s)return;
+  switchTab(Object.keys(WL[s.year]).length);
+}
+
+function renderTab(){
+  const s=LS.students().find(s=>s.id===activeId);if(!s)return;
+  const sets=Object.keys(WL[s.year]);
+  const el=document.getElementById('detail-tab-content');
+  if(activeTab<sets.length){
+    renderWordTab(s,sets[activeTab],el);
+  }else{
+    renderProgressTabContent(s,el);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//   WORD TAB — dual checkbox UI
+// ════════════════════════════════════════════════════════
+let catchupMode=false;
+
+function toggleCatchup(sid,setName){
+  catchupMode=!catchupMode;
+  const s=LS.students().find(s=>s.id===sid);
+  if(s)renderWordTab(s,setName,document.getElementById('detail-tab-content'));
+}
+
+function tickAllCatchup(sid,setName){
+  const s=LS.students().find(s=>s.id===sid);if(!s)return;
+  const words=WL[s.year][setName];
+  const p=LS.progress()[s.id]||{};
+  words.forEach(w=>{
+    if(p[w]?.mastered)return; // skip already mastered
+    const encW=encodeURIComponent(w).replace(/'/g,'%27');
+    const cb=document.getElementById(`cu-cb-${encW}`);
+    if(cb)cb.checked=true;
+  });
+}
+
+function saveAllCatchup(sid,setName){
+  const s=LS.students().find(s=>s.id===sid);if(!s)return;
+  const words=WL[s.year][setName];
+  const p=LS.progress()[s.id]||{};
+  const prog=LS.progress();
+  if(!prog[sid])prog[sid]={};
+  let anyChange=false;
+
+  words.forEach(w=>{
+    if(p[w]?.mastered)return;
+    const encW=encodeURIComponent(w).replace(/'/g,'%27');
+    const cb=document.getElementById(`cu-cb-${encW}`);
+    if(!cb||!cb.checked)return;
+    if(!prog[sid][w])prog[sid][w]={mastered:false,correct:0,incorrect:0,masteredDate:''};
+    const wd=prog[sid][w];
+    if(wd.mastered)return;
+    wd.correct=(wd.correct||0)+1;
+    wd.mastered=true;
+    wd.masteredDate=tod();
+    wd.catchup=true;
+    anyChange=true;
+  });
+
+  if(!anyChange)return;
+  LS.saveProgress(prog);
+  // Re-render the whole tab so rows lock and counts update
+  renderWordTab(s,setName,document.getElementById('detail-tab-content'));
+  renderDetailHeader(sid);
+  refreshDashboardCard(sid);
+}
+
+function renderWordTab(s,setName,el){
+  const words=WL[s.year][setName];
+  const p=LS.progress()[s.id]||{};
+  const masteredInSet=words.filter(w=>p[w]?.mastered).length;
+  const allMastered=masteredInSet===words.length;
+
+  const rows=words.map(w=>{
+    const wd=p[w]||{mastered:false,correct:0,incorrect:0,masteredDate:''};
+    const locked=wd.mastered;
+    const correctBadge=wd.correct>0?`<span class="attempt-badge correct">✓ ${wd.correct}</span>`:'';
+    const incorrectBadge=wd.incorrect>0?`<span class="attempt-badge incorrect">✗ ${wd.incorrect}</span>`:'';
+    const dateBadge=locked?`<span class="word-date">Mastered ${wd.masteredDate}</span>`:'';
+    const encW=encodeURIComponent(w).replace(/'/g,'%27');
+
+    const actionsHtml=locked
+      ? `<div class="word-actions">
+           <button class="cb-btn cb-correct locked" disabled>✓</button>
+           <button class="cb-btn cb-incorrect locked" disabled>✗</button>
+         </div>`
+      : catchupMode
+        ? `<div class="word-actions" style="padding:0 16px;display:flex;align-items:center;justify-content:center;">
+             <input type="checkbox" id="cu-cb-${encW}" class="catchup-checkbox" title="Mark as mastered">
+           </div>`
+        : `<div class="word-actions">
+             <button class="cb-btn cb-correct"
+               onclick="markWord(${s.id},'${encW}','correct','${setName}')"
+               title="Mark correct">✓</button>
+             <button class="cb-btn cb-incorrect"
+               onclick="markWord(${s.id},'${encW}','incorrect','${setName}')"
+               title="Mark incorrect">✗</button>
+           </div>`;
+
+    return `
+      <div class="word-row ${locked?'mastered':''}" id="wr-${s.id}-${encW}">
+        <div class="word-left">
+          <span class="word-text">${esc(w)}</span>
+          <div class="word-meta">
+            ${correctBadge}${incorrectBadge}${dateBadge}
+          </div>
+        </div>
+        ${actionsHtml}
+      </div>`;
+  }).join('');
+
+  const catchupBanner=catchupMode
+    ? `<div class="catchup-banner">📥 Catch-up mode — tick words already mastered before today. These won't affect progress charts.</div>`
+    : '';
+
+  const catchupFooter=catchupMode
+    ? `<div style="padding:12px 18px;display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);">
+         ${!allMastered?`<button class="btn btn-ghost" style="font-size:.82rem;" onclick="tickAllCatchup(${s.id},'${esc(setName)}')">☑ Tick all</button>`:''}
+         <button class="btn btn-primary" style="margin-left:auto;" onclick="saveAllCatchup(${s.id},'${esc(setName)}')">Save mastered words</button>
+       </div>`
+    : '';
+
+  el.innerHTML=`
+    <div class="set-card">
+      <div class="set-header" style="background:${YC[s.year]}">
+        📚 ${setName}
+        <span class="hcount">${masteredInSet}/${words.length} mastered</span>
+      </div>
+      <div style="padding:12px 18px 4px;">
+        <div class="cb-legend">
+          <div class="cb-legend-item"><div class="leg-dot" style="background:#3aaa6b;"></div> Correct attempt</div>
+          <div class="cb-legend-item"><div class="leg-dot" style="background:#e8547a;"></div> Incorrect attempt</div>
+          <div class="cb-legend-item" style="margin-left:auto;">
+            <button class="btn ${catchupMode?'btn-primary':'btn-ghost'}" style="font-size:.75rem;padding:5px 13px;"
+              onclick="toggleCatchup(${s.id},'${esc(setName)}')"
+              title="Enter previous attempt counts without affecting charts">
+              ${catchupMode?'✕ Exit catch-up':'📥 Catch-up entry'}
+            </button>
+          </div>
+        </div>
+        ${catchupBanner}
+      </div>
+      <div class="word-list">${rows}</div>
+      ${catchupFooter}
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//   MARK WORD — correct or incorrect
+// ════════════════════════════════════════════════════════
+function markWord(sid,encodedWord,type,setName){
+  const word=decodeURIComponent(encodedWord);
+  const prog=LS.progress();
+  if(!prog[sid])prog[sid]={};
+  if(!prog[sid][word])prog[sid][word]={mastered:false,correct:0,incorrect:0,masteredDate:''};
+  const wd=prog[sid][word];
+  if(wd.mastered)return; // locked
+
+  if(type==='correct'){
+    wd.correct=(wd.correct||0)+1;
+    wd.mastered=true;
+    wd.masteredDate=tod();
+    recordSnapshot(sid,'correct');
+  }else{
+    wd.incorrect=(wd.incorrect||0)+1;
+    recordSnapshot(sid,'incorrect');
+  }
+
+  LS.saveProgress(prog);
+
+  // Partial re-render for performance — just update the row
+  updateWordRow(sid,word,encodedWord,prog[sid][word]);
+
+  // Update set header count
+  const s=LS.students().find(s=>s.id==sid);
+  if(s){
+    const words=WL[s.year][setName];
+    const p=LS.progress()[sid]||{};
+    const mc=words.filter(w=>p[w]?.mastered).length;
+    const hcount=document.querySelector('.set-header .hcount');
+    if(hcount)hcount.textContent=`${mc}/${words.length} mastered`;
+  }
+
+  // Update detail header
+  renderDetailHeader(sid);
+  refreshDashboardCard(sid);
+
+  // Check level-up
+  const sf=LS.students().find(s=>s.id==sid);
+  if(sf){
+    const tot=totalWords(sf.year),dn=masteredCount(sid,sf.year);
+    if(dn===tot&&tot>0&&type==='correct')renderDetail();
+  }
+}
+
+
+function updateWordRow(sid,word,encodedWord,wd){
+  const row=document.getElementById(`wr-${sid}-${encodedWord}`);
+  if(!row)return;
+  const locked=wd.mastered;
+  const correctBadge=wd.correct>0?`<span class="attempt-badge correct">✓ ${wd.correct}</span>`:'';
+  const incorrectBadge=wd.incorrect>0?`<span class="attempt-badge incorrect">✗ ${wd.incorrect}</span>`:'';
+  const dateBadge=locked?`<span class="word-date">Mastered ${wd.masteredDate}</span>`:'';
+  row.className=`word-row ${locked?'mastered':''}`;
+  row.querySelector('.word-meta').innerHTML=correctBadge+incorrectBadge+dateBadge;
+  row.querySelector('.cb-correct').className=`cb-btn cb-correct ${locked?'locked':''}`;
+  row.querySelector('.cb-incorrect').className=`cb-btn cb-incorrect ${locked?'locked':''}`;
+}
+
+function renderDetailHeader(sid){
+  const s=LS.students().find(s=>s.id==sid);if(!s)return;
+  const tot=totalWords(s.year),dn=masteredCount(sid,s.year),at=attemptTotals(sid,s.year);
+  const sub=document.getElementById('detail-sub');
+  if(sub)sub.textContent=`Year ${s.year} · ${dn}/${tot} mastered · ✓${at.correct} correct · ✗${at.incorrect} incorrect`;
+}
+
+// ════════════════════════════════════════════════════════
+//   HISTORY SNAPSHOTS
+// ════════════════════════════════════════════════════════
+function recordSnapshot(sid,type){
+  const s=LS.students().find(s=>s.id==sid);if(!s)return;
+  const hist=LS.history();if(!hist[sid])hist[sid]=[];
+  // snapshot includes mastered count + attempt totals
+  const at=attemptTotals(sid,s.year);
+  const dn=masteredCount(sid,s.year)+(type==='correct'?1:0); // +1 for this new correct
+  hist[sid].push({
+    date:tod(),
+    mastered:type==='correct'?dn:masteredCount(sid,s.year),
+    total:totalWords(s.year),
+    correct:at.correct+(type==='correct'?1:0),
+    incorrect:at.incorrect+(type==='incorrect'?1:0),
+    year:s.year
+  });
+  LS.saveHistory(hist);
+}
+
+// ════════════════════════════════════════════════════════
+//   PROGRESS TAB
+// ════════════════════════════════════════════════════════
+let pCharts=[];
+function renderProgressTabContent(s,el){
+  pCharts.forEach(c=>{try{c.destroy()}catch{}});pCharts=[];
+  const tot=totalWords(s.year),dn=masteredCount(s.id,s.year);
+  const pct=tot?Math.round(dn/tot*100):0;
+  const at=attemptTotals(s.id,s.year);
+  const p=LS.progress()[s.id]||{};
+  const archives=LS.archives()[s.id]||[];
+  const hist=(LS.history()[s.id]||[]).filter(h=>h.year===s.year);
+
+  // Per-set breakdown
+  const setData=Object.entries(WL[s.year]).map(([sn,ws])=>{
+    let sc=0,si=0;
+    ws.forEach(w=>{sc+=(p[w]?.correct||0);si+=(p[w]?.incorrect||0);});
+    return {name:sn,mastered:ws.filter(w=>p[w]?.mastered).length,total:ws.length,correct:sc,incorrect:si};
+  });
+
+  // Accuracy
+  const totalAtt=at.correct+at.incorrect;
+  const accuracy=totalAtt?Math.round(at.correct/totalAtt*100):0;
+
+  // Archive section
+  let archHtml='';
+  if(archives.length){
+    archHtml=`<div class="chart-card"><h3>📜 Archived Year Lists</h3>${archives.map(a=>`<div class="archive-row"><span class="year-badge" style="background:${YC[a.year]};padding:4px 14px;">Year ${a.year}</span><span style="font-weight:700;font-size:.9rem;">Completed ${a.completedDate}</span><span style="color:#3aaa6b;font-weight:800;font-size:.82rem;margin-left:8px;">✓${a.totalCorrect||0}</span><span style="color:#e8547a;font-weight:800;font-size:.82rem;margin-left:4px;">✗${a.totalIncorrect||0}</span><span style="font-weight:700;font-size:.82rem;color:var(--muted);margin-left:auto;">${a.totalWords} words</span></div>`).join('')}</div>`;
+  }
+
+  el.innerHTML=`
+    <div class="progress-stats">
+      <div class="stat-box"><div class="sv" style="color:${YC[s.year]}">${dn}</div><div class="sl">Mastered</div></div>
+      <div class="stat-box"><div class="sv">${tot-dn}</div><div class="sl">Remaining</div></div>
+      <div class="stat-box"><div class="sv" style="color:#3aaa6b">${at.correct}</div><div class="sl">Correct ✓</div></div>
+      <div class="stat-box"><div class="sv" style="color:#e8547a">${at.incorrect}</div><div class="sl">Incorrect ✗</div></div>
+      <div class="stat-box"><div class="sv" style="color:${YC[s.year]}">${accuracy}%</div><div class="sl">Accuracy</div></div>
+      <div class="stat-box"><div class="sv">${pct}%</div><div class="sl">Complete</div></div>
+    </div>
+
+    <div class="chart-card">
+      <h3>📊 Set Breakdown — Mastered vs Remaining</h3>
+      <canvas id="bar-c" height="110"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3>✓✗ Correct vs Incorrect Attempts by Set</h3>
+      <canvas id="att-c" height="110"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3>📈 Mastery Progress Over Time — Year ${s.year}</h3>
+      ${hist.length<1?'<p style="color:var(--muted);font-weight:700;font-size:.88rem;">Mark words as correct to see your progress graph build here!</p>':''}
+      <canvas id="line-c" height="155"></canvas>
+    </div>
+
+    ${archHtml}`;
+
+  requestAnimationFrame(()=>{
+    // Bar — mastered vs remaining
+    const bc=document.getElementById('bar-c');
+    if(bc){pCharts.push(new Chart(bc,{type:'bar',data:{
+      labels:setData.map(x=>x.name),
+      datasets:[
+        {label:'Mastered',data:setData.map(x=>x.mastered),backgroundColor:YC[s.year],borderRadius:7},
+        {label:'Remaining',data:setData.map(x=>x.total-x.mastered),backgroundColor:'#f0ece6',borderRadius:7}
+      ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}}}));}
+
+    // Bar — correct vs incorrect attempts
+    const ac=document.getElementById('att-c');
+    if(ac){pCharts.push(new Chart(ac,{type:'bar',data:{
+      labels:setData.map(x=>x.name),
+      datasets:[
+        {label:'Correct ✓',data:setData.map(x=>x.correct),backgroundColor:'#3aaa6b',borderRadius:7},
+        {label:'Incorrect ✗',data:setData.map(x=>x.incorrect),backgroundColor:'#e8547a',borderRadius:7}
+      ]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:false},y:{beginAtZero:true}}}}));}
+
+    // Line — mastery over time
+    const lc=document.getElementById('line-c');
+    if(lc&&hist.length>=1){
+      // Deduplicate by date — take latest per date
+      const byDate={};
+      hist.forEach(h=>{byDate[h.date]=h;});
+      const dates=Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b));
+      const masteredPts=dates.map(d=>byDate[d].mastered);
+      const correctPts=dates.map(d=>byDate[d].correct);
+      const incorrectPts=dates.map(d=>byDate[d].incorrect);
+      pCharts.push(new Chart(lc,{type:'line',data:{
+        labels:dates,
+        datasets:[
+          {label:'Mastered',data:masteredPts,borderColor:YC[s.year],backgroundColor:YC[s.year]+'28',fill:true,tension:0.4,pointBackgroundColor:YC[s.year],pointRadius:5,pointHoverRadius:7,yAxisID:'y'},
+          {label:'Correct ✓',data:correctPts,borderColor:'#3aaa6b',backgroundColor:'transparent',fill:false,tension:0.4,pointBackgroundColor:'#3aaa6b',pointRadius:4,borderDash:[],yAxisID:'y2'},
+          {label:'Incorrect ✗',data:incorrectPts,borderColor:'#e8547a',backgroundColor:'transparent',fill:false,tension:0.4,pointBackgroundColor:'#e8547a',pointRadius:4,borderDash:[4,4],yAxisID:'y2'}
+        ]},options:{responsive:true,
+          plugins:{legend:{position:'bottom'}},
+          scales:{
+            y:{beginAtZero:true,max:tot,title:{display:true,text:'Mastered'},ticks:{stepSize:Math.max(1,Math.ceil(tot/8))}},
+            y2:{beginAtZero:true,position:'right',title:{display:true,text:'Attempts'},grid:{drawOnChartArea:false}}
+          }}}));
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//   LEVEL UP
+// ════════════════════════════════════════════════════════
+function levelUp(sid){
+  const students=LS.students();
+  const s=students.find(s=>s.id===sid);
+  if(!s||s.year>=9)return;
+  showConfirmModal(`Move ${s.name} from Year ${s.year} to Year ${s.year+1}? Year ${s.year} progress will be archived.`,()=>{
+    const at=attemptTotals(sid,s.year);
+    const arc=LS.archives();if(!arc[sid])arc[sid]=[];
+    arc[sid].push({year:s.year,completedDate:tod(),totalWords:totalWords(s.year),totalCorrect:at.correct,totalIncorrect:at.incorrect});
+    LS.saveArchives(arc);
+    const prog=LS.progress();prog[sid]={};LS.saveProgress(prog);
+    s.year=s.year+1;s.startDate=tod();
+    LS.saveStudents(students);
+    const hist=LS.history();if(!hist[sid])hist[sid]=[];
+    hist[sid].push({date:tod(),mastered:0,total:totalWords(s.year),correct:0,incorrect:0,year:s.year});
+    LS.saveHistory(hist);
+    openStudent(sid);
+  },'Level Up');
+}
+
+// ════════════════════════════════════════════════════════
+//   PDF PRINT REPORT
+//   Renders two Chart.js charts to offscreen canvases,
+//   converts to dataURLs, injects into print HTML, then prints.
+// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//   REPORT GENERATION — shared between single and class PDF
+// ════════════════════════════════════════════════════════
+
+// Returns a Promise<string> of the inner report HTML for one student
+function buildStudentReportHTML(s){
+  return new Promise(resolve=>{
+    const tot=totalWords(s.year),dn=masteredCount(s.id,s.year),pct=tot?Math.round(dn/tot*100):0;
+    const at=attemptTotals(s.id,s.year);
+    const totalAtt=at.correct+at.incorrect;
+    const accuracy=totalAtt?Math.round(at.correct/totalAtt*100):0;
+    const p=LS.progress()[s.id]||{};
+    const archives=LS.archives()[s.id]||[];
+    const rawHist=(LS.history()[s.id]||[]).filter(h=>h.year===s.year);
+
+    const byDate={};
+    rawHist.forEach(h=>{byDate[h.date]=h;});
+    const hist=Object.keys(byDate).sort((a,b)=>new Date(a)-new Date(b)).map(d=>byDate[d]);
+
+    const sessionDates=hist.map(h=>h.date);
+    const sessionCorrect=hist.map((h,i)=>i===0?h.correct:(h.correct-(hist[i-1].correct||0)));
+    const sessionIncorrect=hist.map((h,i)=>i===0?h.incorrect:(h.incorrect-(hist[i-1].incorrect||0)));
+    const sessionAccuracy=hist.map(h=>{const t=h.correct+h.incorrect;return t?Math.round(h.correct/t*100):0;});
+
+    const wordTables=Object.entries(WL[s.year]).map(([sn,ws])=>{
+      let sc=0,si=0;
+      ws.forEach(w=>{const wd=p[w];if(!wd||wd.catchup)return;sc+=(wd.correct||0);si+=(wd.incorrect||0);});
+      return `<div style="page-break-inside:avoid;margin-bottom:18pt;">
+        <h3 style="font-size:12pt;margin:0 0 4pt;color:${YC[s.year]};">${sn} — ${ws.filter(w=>p[w]?.mastered).length}/${ws.length} mastered</h3>
+        <div style="font-size:8pt;color:#666;margin-bottom:5pt;">
+          Set totals: <strong style="color:#1e7a48;">✓ ${sc} correct</strong> &nbsp; <strong style="color:#b02030;">✗ ${si} incorrect</strong>
+          <span style="color:#999;margin-left:6pt;">(excludes catch-up entries)</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:8.5pt;">
+          <thead><tr style="background:#f0f0f0;">
+            <th style="text-align:left;padding:3pt 6pt;border:1px solid #ddd;">Word</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;width:48pt;">Mastered</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;width:48pt;">Correct ✓</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;width:48pt;">Incorrect ✗</th>
+            <th style="text-align:left;padding:3pt 6pt;border:1px solid #ddd;width:68pt;">Date Mastered</th>
+          </tr></thead>
+          <tbody>${ws.map(w=>{
+            const wd=p[w]||{};const isCatchup=!!wd.catchup;
+            return `<tr style="${wd.mastered?'background:#f0faf4;':''}">
+              <td style="padding:3pt 6pt;border:1px solid #eee;${wd.mastered?'text-decoration:line-through;color:#7aaa8a;':''}">${esc(w)}${isCatchup?'<span style="font-size:6.5pt;background:#fff3cd;color:#856404;border-radius:3pt;padding:1pt 4pt;margin-left:5pt;font-weight:bold;">catch-up</span>':''}</td>
+              <td style="text-align:center;border:1px solid #eee;">${wd.mastered?'✓':''}</td>
+              <td style="text-align:center;border:1px solid #eee;color:${isCatchup?'#aaa':'#1e7a48'};font-weight:bold;">${wd.correct||0}</td>
+              <td style="text-align:center;border:1px solid #eee;color:${isCatchup?'#aaa':'#b02030'};font-weight:bold;">${wd.incorrect||0}</td>
+              <td style="padding:3pt 6pt;border:1px solid #eee;font-size:7.5pt;color:#666;">${wd.masteredDate||''}</td>
+            </tr>`;}).join('')}
+          </tbody>
+        </table>
+      </div>`;}).join('');
+
+    const archiveTable=archives.length?`
+      <div style="page-break-inside:avoid;margin-bottom:18pt;">
+        <h3 style="font-size:12pt;margin:0 0 6pt;">Archived Year Lists</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:9pt;">
+          <thead><tr style="background:#f0f0f0;">
+            <th style="text-align:left;padding:3pt 6pt;border:1px solid #ddd;">Year</th>
+            <th style="text-align:left;padding:3pt 6pt;border:1px solid #ddd;">Completed</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;">Words</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;">Correct ✓</th>
+            <th style="text-align:center;padding:3pt 6pt;border:1px solid #ddd;">Incorrect ✗</th>
+          </tr></thead>
+          <tbody>${archives.map(a=>`<tr>
+            <td style="padding:3pt 6pt;border:1px solid #eee;">Year ${a.year}</td>
+            <td style="padding:3pt 6pt;border:1px solid #eee;">${a.completedDate}</td>
+            <td style="text-align:center;border:1px solid #eee;">${a.totalWords}</td>
+            <td style="text-align:center;border:1px solid #eee;color:#1e7a48;font-weight:bold;">${a.totalCorrect||0}</td>
+            <td style="text-align:center;border:1px solid #eee;color:#b02030;font-weight:bold;">${a.totalIncorrect||0}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`:'';
+
+    function buildHTML(accImgSrc, barImgSrc){
+      const chartsSection=(hist.length>=2&&accImgSrc&&barImgSrc)?`
+        <div style="page-break-inside:avoid;margin-bottom:18pt;">
+          <h3 style="font-size:12pt;margin:0 0 6pt;">Cumulative Accuracy Over Time</h3>
+          <p style="font-size:8pt;color:#888;margin-bottom:8pt;">Running accuracy (%) based on all correct vs incorrect attempts recorded each session.</p>
+          <img src="${accImgSrc}" style="width:100%;border:1px solid #eee;border-radius:6pt;" />
+        </div>
+        <div style="page-break-inside:avoid;margin-bottom:18pt;">
+          <h3 style="font-size:12pt;margin:0 0 6pt;">Correct vs Incorrect Attempts Per Session</h3>
+          <p style="font-size:8pt;color:#888;margin-bottom:8pt;">Number of correct (green) and incorrect (red) attempts recorded at each weekly test session.</p>
+          <img src="${barImgSrc}" style="width:100%;border:1px solid #eee;border-radius:6pt;" />
+        </div>`:'';
+
+      return `<div style="font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:20pt 24pt;">
+        <div style="border-bottom:3px solid ${YC[s.year]};padding-bottom:12pt;margin-bottom:16pt;">
+          <div style="font-size:8pt;color:#999;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:4pt;">SpellingHub Spelling Tracker</div>
+          <h1 style="font-size:20pt;margin:0 0 3pt;">${esc(s.name)}</h1>
+          <div style="font-size:9.5pt;color:#666;">Year ${s.year} · Report generated ${tod()}</div>
+        </div>
+        <div style="display:flex;gap:14pt;margin-bottom:14pt;">
+          <div style="flex:1;text-align:center;background:#f8f8f8;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;color:${YC[s.year]};">${dn}</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Mastered</div>
+          </div>
+          <div style="flex:1;text-align:center;background:#f8f8f8;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;">${tot-dn}</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Remaining</div>
+          </div>
+          <div style="flex:1;text-align:center;background:#f0faf4;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;color:#1e7a48;">${at.correct}</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Correct ✓</div>
+          </div>
+          <div style="flex:1;text-align:center;background:#fde8ea;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;color:#b02030;">${at.incorrect}</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Incorrect ✗</div>
+          </div>
+          <div style="flex:1;text-align:center;background:#f8f8f8;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;color:${YC[s.year]};">${accuracy}%</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Accuracy</div>
+          </div>
+          <div style="flex:1;text-align:center;background:#f8f8f8;padding:9pt;border-radius:5pt;">
+            <div style="font-size:19pt;font-weight:900;color:${YC[s.year]};">${pct}%</div>
+            <div style="font-size:7pt;text-transform:uppercase;letter-spacing:.5px;color:#888;">Complete</div>
+          </div>
+        </div>
+        <div style="background:#f0f0f0;border-radius:50px;height:11px;overflow:hidden;margin:0 0 3pt;">
+          <div style="background:${YC[s.year]};width:${pct}%;height:100%;border-radius:50px;"></div>
+        </div>
+        <div style="font-size:8pt;color:#888;font-weight:bold;margin-bottom:18pt;">${pct}% of Year ${s.year} words mastered</div>
+        ${chartsSection}
+        ${archiveTable}
+        ${wordTables}
+        <div style="margin-top:20pt;padding-top:8pt;border-top:1px solid #ddd;font-size:7.5pt;color:#bbb;text-align:center;">
+          Generated by SpellingHub Spelling Tracker
+        </div>
+      </div>`;
+    }
+
+    if(hist.length<2){resolve(buildHTML('',''));return;}
+
+    const offscreen=document.createElement('div');
+    offscreen.style.cssText='position:fixed;left:-9999px;top:0;width:680px;background:#fff;';
+    document.body.appendChild(offscreen);
+    const cvAcc=document.createElement('canvas');cvAcc.width=680;cvAcc.height=220;offscreen.appendChild(cvAcc);
+    const cvBar=document.createElement('canvas');cvBar.width=680;cvBar.height=240;offscreen.appendChild(cvBar);
+
+    let accImgSrc='',barImgSrc='',done=0;
+    function chartDone(){
+      done++;
+      if(done<2)return;
+      document.body.removeChild(offscreen);
+      resolve(buildHTML(accImgSrc,barImgSrc));
+    }
+
+    const stackedTotalPlugin={
+      id:'stackedTotal',
+      afterDatasetsDraw(chart){
+        const{ctx,data,scales:{x,y}}=chart;
+        const totals=data.labels.map((_,i)=>data.datasets.reduce((sum,ds)=>sum+(ds.data[i]||0),0));
+        ctx.save();ctx.font='bold 11px sans-serif';ctx.fillStyle='#333';ctx.textAlign='center';ctx.textBaseline='bottom';
+        data.labels.forEach((_,i)=>{const total=totals[i];if(!total)return;const xPos=x.getPixelForValue(i);const yPos=y.getPixelForValue(total);ctx.fillText(total,xPos,yPos-3);});
+        ctx.restore();
+      }
+    };
+
+    const accChart=new Chart(cvAcc,{
+      type:'line',
+      data:{labels:sessionDates,datasets:[{label:'Cumulative Accuracy %',data:sessionAccuracy,borderColor:YC[s.year],backgroundColor:YC[s.year]+'22',fill:true,tension:0.4,pointBackgroundColor:YC[s.year],pointRadius:5,pointHoverRadius:7,borderWidth:2.5}]},
+      options:{responsive:false,animation:{duration:0},plugins:{legend:{display:false},title:{display:true,text:'Cumulative Accuracy % Per Session',font:{size:13},color:'#333'}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{min:0,max:100,ticks:{callback:v=>v+'%',font:{size:10}},title:{display:true,text:'Accuracy %',font:{size:10}}}}}
+    });
+    setTimeout(()=>{accImgSrc=cvAcc.toDataURL('image/png');accChart.destroy();chartDone();},150);
+
+    const barChart=new Chart(cvBar,{
+      type:'bar',
+      data:{labels:sessionDates,datasets:[
+        {label:'Correct ✓',data:sessionCorrect,backgroundColor:'#3aaa6b',borderRadius:0,borderSkipped:false,stack:'stack'},
+        {label:'Incorrect ✗',data:sessionIncorrect,backgroundColor:'#e8547a',borderRadius:4,borderSkipped:'bottom',stack:'stack'}
+      ]},
+      options:{responsive:false,animation:{duration:0},plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyleWidth:14}},title:{display:true,text:'Correct vs Incorrect Attempts Per Session',font:{size:13},color:'#333'}},scales:{x:{stacked:true,ticks:{font:{size:10},maxRotation:45}},y:{stacked:true,beginAtZero:true,ticks:{font:{size:10},stepSize:1},title:{display:true,text:'Attempts',font:{size:10}}}}},
+      plugins:[stackedTotalPlugin]
+    });
+    setTimeout(()=>{barImgSrc=cvBar.toDataURL('image/png');barChart.destroy();chartDone();},150);
+  });
+}
+
+// Single-student print (from student detail page)
+function printReport(){
+  const s=LS.students().find(s=>s.id===activeId);if(!s)return;
+  buildStudentReportHTML(s).then(html=>{
+    document.getElementById('print-report').innerHTML=html;
+    document.getElementById('print-report').style.display='block';
+    const orig=setPrintTitle(s.name);
+    setTimeout(()=>{window.print();document.getElementById('print-report').style.display='none';document.title=orig;},300);
+  });
+}
+
+// Class PDF — all students alphabetically, one after the other
+function printClassReport(){
+  const all=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
+  if(!all.length){alert('No students to print.');return;}
+  const btn=document.querySelector('[onclick="printClassReport()"]');
+  if(btn){btn.textContent='⏳ Generating…';btn.disabled=true;}
+  // Build reports sequentially to avoid canvas conflicts
+  const reports=[];
+  function next(i){
+    if(i>=all.length){
+      if(btn){btn.textContent='🖨 Class PDF';btn.disabled=false;}
+      const sep='<div style="page-break-after:always;"></div>';
+      document.getElementById('print-report').innerHTML=reports.join(sep);
+      document.getElementById('print-report').style.display='block';
+      const orig=setPrintTitle('class');
+      setTimeout(()=>{window.print();document.getElementById('print-report').style.display='none';document.title=orig;},300);
+      return;
+    }
+    buildStudentReportHTML(all[i]).then(html=>{reports.push(html);next(i+1);});
+  }
+  next(0);
+}
+
+
+// ════════════════════════════════════════════════════════
+//   WORD LIST PRINT — student-facing, no stats/charts
+// ════════════════════════════════════════════════════════
+
+function buildStudentWordListHTML(s){
+  const p=LS.progress()[s.id]||{};
+  const tot=totalWords(s.year),dn=masteredCount(s.id,s.year);
+  const pct=tot?Math.round(dn/tot*100):0;
+  const color=YC[s.year];
+
+  const setBlocks=Object.entries(WL[s.year]).map(([sn,ws])=>{
+    const masteredInSet=ws.filter(w=>p[w]?.mastered).length;
+    const wordItems=ws.map(w=>{
+      const mastered=p[w]?.mastered;
+      return `<li class="wlp-word${mastered?' mastered':''}">${esc(w)}</li>`;
+    }).join('');
+    return `<div class="wlp-set">
+      <div class="wlp-set-title" style="color:${color};">${sn} <span style="font-size:8pt;color:#999;font-weight:700;">(${masteredInSet}/${ws.length})</span></div>
+      <ul class="wlp-words">${wordItems}</ul>
+    </div>`;
+  }).join('');
+
+  return `<div class="wlp-page">
+    <div class="wlp-header" style="border-bottom-color:${color};">
+      <div style="font-size:7pt;color:#999;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:3pt;">SpellingHub Spelling Tracker</div>
+      <div class="wlp-name">${esc(s.name)}</div>
+      <div class="wlp-sub">Year ${s.year} Word List · Printed ${tod()}</div>
+    </div>
+    <div class="wlp-progress">
+      <div class="wlp-stat"><div class="sv" style="color:${color};">${dn}</div><div class="sl">Mastered ✓</div></div>
+      <div class="wlp-stat"><div class="sv">${tot-dn}</div><div class="sl">To Go</div></div>
+      <div class="wlp-stat"><div class="sv" style="color:${color};">${pct}%</div><div class="sl">Complete</div></div>
+    </div>
+    <div class="wlp-bar-wrap"><div class="wlp-bar-fill" style="width:${pct}%;background:${color};"></div></div>
+    <div class="wlp-bar-label">${pct}% of Year ${s.year} words mastered</div>
+    <div class="wlp-sets">${setBlocks}</div>
+    <div class="wlp-footer">SpellingHub Spelling Tracker</div>
+  </div>`;
+}
+
+function printWordList(){
+  const s=LS.students().find(s=>s.id===activeId);if(!s)return;
+  const html=buildStudentWordListHTML(s);
+  const el=document.getElementById('print-wordlist');
+  el.innerHTML=html;
+  el.style.display='block';
+  // hide the detailed report if showing
+  document.getElementById('print-report').style.display='none';
+  const orig=setPrintTitle(s.name+'_wordlist');
+  setTimeout(()=>{window.print();el.style.display='none';document.title=orig;},200);
+}
+
+function printClassWordLists(){
+  const all=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
+  if(!all.length){alert('No students to print.');return;}
+  const sep='<div style="page-break-after:always;"></div>';
+  const html=all.map(s=>buildStudentWordListHTML(s)).join(sep);
+  const el=document.getElementById('print-wordlist');
+  el.innerHTML=html;
+  el.style.display='block';
+  document.getElementById('print-report').style.display='none';
+  const orig=setPrintTitle('class_wordlists');
+  setTimeout(()=>{window.print();el.style.display='none';document.title=orig;},200);
+}
+// ════════════════════════════════════════════════════════
+let wlY=4;
+function renderWordListPage(){
+  document.getElementById('year-tabs-wl').innerHTML=[4,5,6,7,8].map(y=>`<button class="year-tab ${y===wlY?'active':''}" style="${y===wlY?`background:${YC[y]};`:''}" onclick="wlSw(${y})">Year ${y}</button>`).join('');
+  document.getElementById('wordlist-content').innerHTML=Object.entries(WL[wlY]).map(([sn,ws])=>`<div class="set-card" style="margin-bottom:16px;"><div class="set-header" style="background:${YC[wlY]}">📚 ${sn}<span class="hcount">${ws.length} words</span></div><div class="wl-grid">${ws.map(w=>`<div class="wl-chip">${esc(w)}</div>`).join('')}</div></div>`).join('');
+}
+function wlSw(y){wlY=y;renderWordListPage();}
+
+// ════════════════════════════════════════════════════════
+//   LESSON PLANNER — weekly word-list engine
+//   Each student works through their OWN rolling list of 10
+//   words. Words gotten wrong on Friday's test roll into next
+//   week; new words top the list back up to 10.
+// ════════════════════════════════════════════════════════
+function masterBank(year){return Object.values(WL[year]).flat();}
+
+function getWeekList(sid,weekIndex){
+  const s=LS.students().find(x=>x.id===sid);if(!s)return null;
+  const all=LS.weeklyLists();
+  if(!all[sid])all[sid]={};
+  for(let w=1;w<=weekIndex;w++){
+    if(all[sid][w])continue;
+    const prev=w>1?all[sid][w-1]:null;
+    const prog=LS.progress()[sid]||{};
+    let carried=[];
+    if(prev){
+      carried=prev.words.filter(word=>prev.results[word]==='incorrect' && !(prog[word]&&prog[word].mastered));
+    }
+    const used=new Set();
+    for(let k=1;k<w;k++){(all[sid][k]?.words||[]).forEach(x=>used.add(x));}
+    const bank=masterBank(s.year);
+    const fresh=bank.filter(word=>!used.has(word)&&!carried.includes(word)&&!(prog[word]&&prog[word].mastered));
+    const need=Math.max(0,10-carried.length);
+    const words=carried.concat(fresh.slice(0,need)).slice(0,10);
+    all[sid][w]={words,results:{},testDone:false,testDate:''};
+  }
+  LS.saveWeeklyLists(all);
+  return all[sid][weekIndex];
+}
+
+function setWeeklyResult(sid,weekIndex,word,type){
+  const all=LS.weeklyLists();
+  const wl=all[sid]?.[weekIndex];if(!wl)return;
+  const prog=LS.progress();if(!prog[sid])prog[sid]={};
+  if(!prog[sid][word])prog[sid][word]={mastered:false,correct:0,incorrect:0,masteredDate:''};
+  const wd=prog[sid][word];
+  const prevType=wl.results[word];
+  if(prevType==='correct'){wd.correct=Math.max(0,(wd.correct||0)-1);wd.mastered=false;wd.masteredDate='';}
+  if(prevType==='incorrect'){wd.incorrect=Math.max(0,(wd.incorrect||0)-1);}
+  if(type==='correct'){wd.correct=(wd.correct||0)+1;wd.mastered=true;wd.masteredDate=tod();recordSnapshot(sid,'correct');}
+  else if(type==='incorrect'){wd.incorrect=(wd.incorrect||0)+1;recordSnapshot(sid,'incorrect');}
+  wl.results[word]=type;
+  LS.saveProgress(prog);
+  LS.saveWeeklyLists(all);
+  refreshDashboardCard(sid);
+}
+
+function finalizeWeeklyTest(sid,weekIndex){
+  const all=LS.weeklyLists();
+  const wl=all[sid]?.[weekIndex];if(!wl)return;
+  const missing=wl.words.filter(w=>!wl.results[w]);
+  if(missing.length){alert(`Please mark all ${wl.words.length} words correct or incorrect first.`);return;}
+  wl.testDone=true;wl.testDate=tod();
+  LS.saveWeeklyLists(all);
+  getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
+  renderLessonContent();
+}
+
+function redoWeeklyTest(sid,weekIndex){
+  showConfirmModal('Reopen this test for editing?',()=>{
+    const all=LS.weeklyLists();
+    const wl=all[sid]?.[weekIndex];if(!wl)return;
+    wl.testDone=false;
+    LS.saveWeeklyLists(all);
+    renderLessonContent();
+  },'Reopen');
+}
+
+// ════════════════════════════════════════════════════════
+//   PUZZLE GENERATORS
+// ════════════════════════════════════════════════════════
+function scrambleWord(word){
+  let a=word.split('');
+  let out=word;
+  let tries=0;
+  while((out.toLowerCase()===word.toLowerCase()||out.includes(' '))&&tries<20){
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    out=a.join('');tries++;
+  }
+  return out.toUpperCase().split('').join(' ');
+}
+
+function missingLettersWord(word){
+  const chars=word.split('');
+  const blankable=[];
+  for(let i=1;i<chars.length-1;i++)blankable.push(i);
+  const numBlank=Math.max(1,Math.round(blankable.length*0.45));
+  const shuffled=[...blankable].sort(()=>Math.random()-0.5).slice(0,numBlank);
+  return chars.map((c,i)=>shuffled.includes(i)?'_':c.toUpperCase()).join(' ');
+}
+
+function letterCardsHtml(word){
+  const letters=word.toUpperCase().split('');
+  const shuffled=[...letters].sort(()=>Math.random()-0.5);
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:4px;">${shuffled.map(l=>`<div style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);border-radius:8px;background:#fff;font-weight:900;font-family:'Fredoka One',cursive;font-size:1.05rem;">${l}</div>`).join('')}</div>`;
+}
+function countLetters(word){
+  const counts={};
+  word.toLowerCase().split('').forEach(c=>{if(/[a-z]/.test(c))counts[c]=(counts[c]||0)+1;});
+  return counts;
+}
+
+function buildWordSearch(words){
+  const clean=words.map(w=>w.replace(/[^a-zA-Z]/g,'').toUpperCase()).filter(w=>w.length>0);
+  const maxLen=Math.max(...clean.map(w=>w.length),8);
+  const size=Math.min(16,Math.max(12,maxLen+2));
+  const grid=Array.from({length:size},()=>Array(size).fill(''));
+  const dirs=[[1,0],[0,1],[1,1],[-1,1]];
+  const placed=[];
+  const sorted=[...clean].sort((a,b)=>b.length-a.length);
+  sorted.forEach(word=>{
+    if(word.length>size)return;
+    let ok=false;
+    for(let attempt=0;attempt<80&&!ok;attempt++){
+      const [dr,dc]=dirs[Math.floor(Math.random()*dirs.length)];
+      const maxRow=dr>=0?size-1-(dr*(word.length-1)):size-1;
+      const minRow=dr<0?(word.length-1):0;
+      const row=Math.floor(Math.random()*(maxRow-minRow+1))+minRow;
+      const col=Math.floor(Math.random()*(size-dc*(word.length-1)));
+      let fits=true;
+      for(let i=0;i<word.length;i++){
+        const r=row+dr*i,c=col+dc*i;
+        if(r<0||r>=size||c<0||c>=size){fits=false;break;}
+        const existing=grid[r][c];
+        if(existing&&existing!==word[i]){fits=false;break;}
+      }
+      if(fits){
+        for(let i=0;i<word.length;i++){const r=row+dr*i,c=col+dc*i;grid[r][c]=word[i];}
+        placed.push(word);ok=true;
+      }
+    }
+  });
+  const alpha='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(!grid[r][c])grid[r][c]=alpha[Math.floor(Math.random()*26)];
+  return {grid,size,placed};
+}
+
+// ════════════════════════════════════════════════════════
+//   ACTIVITY LIBRARY — Mon/Tue/Wed rotate through these
+// ════════════════════════════════════════════════════════
+const GROUP_COLOR={Individual:'#2fa8d5',Pairs:'#7c5cbf',Team:'#f07844'};
+const ACTIVITIES=[
+  {id:'wordsearch',emoji:'🔎',title:'Word Search Hunt',group:'Individual',puzzle:'wordsearch',
+    blurb:"Hunt for this week's spelling words hidden in a letter grid — words can run across, down, or diagonally.",
+    materials:['Printed or on-screen word search','Pencil or highlighter'],
+    steps:[{t:'2 min',x:'Look at the word list and read each word aloud before you start hunting.'},{t:'15 min',x:'Circle or highlight every word as you find it in the grid.'},{t:'3 min',x:'Tell a partner which word was trickiest to spot and why.'}]},
+  {id:'scramble',emoji:'🌀',title:'Speedy Scramble Swap',group:'Pairs',puzzle:'scramble',
+    blurb:'Partners take turns unscrambling each other\'s mixed-up spelling words as fast as they can.',
+    materials:['Whiteboard or paper','Timer'],
+    steps:[{t:'3 min',x:'Partner A reads out the scrambled letters for word 1 — Partner B unscrambles and spells it aloud.'},{t:'12 min',x:'Take turns through the whole list, swapping roles each word.'},{t:'5 min',x:'Whoever unscrambled the most words correctly picks the next warm-up game!'}]},
+  {id:'rainbow',emoji:'🌈',title:'Rainbow Write',group:'Individual',puzzle:null,
+    blurb:'Write each spelling word three times, using a different colour pencil each time, tracing over the same letters.',
+    materials:['3+ coloured pencils or markers','Plain paper'],
+    steps:[{t:'2 min',x:'Choose your 3 colours for today.'},{t:'15 min',x:'Write each word once in each colour, saying each letter as you write it.'},{t:'3 min',x:'Pick your favourite rainbow word and show a partner.'}]},
+  {id:'pyramid',emoji:'🔺',title:'Pyramid Words',group:'Individual',puzzle:null,
+    blurb:'Build each spelling word one letter at a time, like a growing staircase, until the whole word is spelled out.',
+    materials:['Paper','Pencil'],
+    steps:[{t:'2 min',x:'Teacher shows an example pyramid on the board (e.g. b / be / bec / beca...).'},{t:'15 min',x:'Build a pyramid for every word on your list.'},{t:'3 min',x:'Trade books with a neighbour and check each other\'s pyramids.'}]},
+  {id:'tennis',emoji:'🎾',title:'Word Tennis',group:'Pairs',puzzle:null,
+    blurb:'Partners "volley" a word back and forth, each saying the next letter — miss a letter and you lose the point!',
+    materials:['Just your voices!'],
+    steps:[{t:'2 min',x:'Decide who serves first for word 1.'},{t:'15 min',x:'Rally through the whole list — one letter each, back and forth, then say the whole word together at the end.'},{t:'3 min',x:'Total up the points and celebrate the winner.'}]},
+  {id:'bee',emoji:'🎤',title:'Spelling Bee Countdown',group:'Team',puzzle:null,
+    blurb:'Teams take turns spelling words aloud — get it right and stay in, get it wrong and sit down. Last team standing wins!',
+    materials:['Word list (teacher calls words)','Nothing else needed'],
+    steps:[{t:'3 min',x:'Split into teams of 3–4 and line up.'},{t:'14 min',x:'Teacher calls a word, first player in line spells it aloud. Correct = go to the back of the line. Wrong = sit down.'},{t:'3 min',x:'Last team with players standing wins the round!'}]},
+  {id:'aroundworld',emoji:'🌍',title:'Around the World Relay',group:'Team',puzzle:null,
+    blurb:'A running relay — race to the board, write the next word correctly, then tag your teammate.',
+    materials:['Whiteboard/chalkboard or paper on a wall','Markers'],
+    steps:[{t:'3 min',x:'Split into even teams and line up single-file.'},{t:'14 min',x:'On "go", the first runner races up, writes word 1 correctly, runs back and tags the next player who writes word 2, and so on.'},{t:'3 min',x:'Check every team\'s words together — first fully-correct list wins.'}]},
+  {id:'missing',emoji:'🕳️',title:'Mystery Missing Letters',group:'Individual',puzzle:'missing',
+    blurb:'Some letters have vanished from each spelling word — figure out which ones and fill in the gaps.',
+    materials:['Worksheet or notebook','Pencil'],
+    steps:[{t:'2 min',x:'Look at the first mystery word and predict the missing letters.'},{t:'15 min',x:'Fill in every missing letter for all the words on your list.'},{t:'3 min',x:'Swap with a partner and check each other\'s answers.'}]},
+  {id:'dictation',emoji:'✍️',title:'Partner Dictation Challenge',group:'Pairs',puzzle:null,
+    blurb:'One partner reads a word inside a sentence, the other writes it down — then swap and check together.',
+    materials:['Paper','Pencil'],
+    steps:[{t:'2 min',x:'Decide who dictates first.'},{t:'14 min',x:'Dictator says a sentence containing the spelling word; writer writes just the word. Swap roles halfway through the list.'},{t:'4 min',x:'Compare your writing to the real spelling and fix any mistakes together.'}]},
+  {id:'syllable',emoji:'👏',title:'Syllable Clap Count',group:'Pairs',puzzle:null,
+    blurb:'Clap out the syllables in each spelling word, then work out how many "chunks" it breaks into.',
+    materials:['Just your hands!'],
+    steps:[{t:'3 min',x:'Warm up by clapping your own name.'},{t:'14 min',x:'Take turns saying and clapping each spelling word, then agree on the syllable count and write it down.'},{t:'3 min',x:'Find the word on your list with the most syllables — can you beat it next week?'}]},
+  {id:'sort',emoji:'🗂️',title:'Word Sort Categories',group:'Pairs',puzzle:null,
+    blurb:'Sort this week\'s words into your own categories — by syllables, tricky letter patterns, or silent letters.',
+    materials:['Small cards or sticky notes with words written on them','Table or floor space'],
+    steps:[{t:'3 min',x:'Write each word onto its own card.'},{t:'14 min',x:'Choose a sorting rule together (e.g. number of syllables) and sort every word into groups.'},{t:'3 min',x:'Explain your sorting rule to another pair.'}]},
+  {id:'bubble',emoji:'🎨',title:'Bubble Letter Word Art',group:'Individual',puzzle:null,
+    blurb:'Draw each spelling word in big bubble or graffiti letters and decorate it.',
+    materials:['Plain paper','Pencil, then colouring pencils/markers'],
+    steps:[{t:'2 min',x:'Look at an example bubble-letter word on the board.'},{t:'15 min',x:'Draw and colour bubble letters for as many words as you can.'},{t:'3 min',x:'Show off your favourite word-art creation to the class.'}]},
+  {id:'snakes',emoji:'🐍',title:'Spelling Snakes & Ladders',group:'Team',puzzle:null,
+    blurb:'Play snakes and ladders — but you can only move if you spell a word correctly first!',
+    materials:['Snakes & ladders board (drawn or printed)','Dice','Counters'],
+    steps:[{t:'2 min',x:'Set up the board and counters in groups of 3–4.'},{t:'15 min',x:'Roll the dice — before moving, spell the next word on your list aloud. Get it right to move, wrong to stay put.'},{t:'3 min',x:'First to reach the end (or whoever\'s furthest when time is up) wins.'}]},
+  {id:'story',emoji:'📖',title:'Silly Sentence Story Chain',group:'Team',puzzle:null,
+    blurb:'Build one giant silly class story together, where each sentence must use the next spelling word.',
+    materials:['Paper or shared doc to record the story'],
+    steps:[{t:'3 min',x:'Sit in a circle with your team and decide on a story character.'},{t:'14 min',x:'Take turns adding one sentence to the story, each one using a spelling word correctly.'},{t:'3 min',x:'Read your finished silly story aloud to another team.'}]},
+  {id:'beanbag',emoji:'🎯',title:'Beanbag Toss Spelling',group:'Team',puzzle:null,
+    blurb:'Toss a beanbag or soft ball — whoever catches it has to spell the next word out loud.',
+    materials:['Beanbag or soft ball','Open space'],
+    steps:[{t:'2 min',x:'Stand in a circle with your team.'},{t:'15 min',x:'Toss the beanbag — catcher spells the next word aloud. Correct = toss again for the next word; incorrect = get a hint and try once more.'},{t:'3 min',x:'Celebrate every word your team got through together.'}]},
+  {id:'definition',emoji:'🕵️',title:'Definition Detective',group:'Individual',puzzle:null,
+    blurb:'Before checking a dictionary, guess what each spelling word means — then check how close you were.',
+    materials:['Notebook','Dictionary or teacher\'s help'],
+    steps:[{t:'2 min',x:'Pick the first word and think about where you\'ve seen or heard it before.'},{t:'15 min',x:'Write your own guessed definition for each word, then check the real meaning.'},{t:'3 min',x:'Share the definition that surprised you most.'}]},
+  {id:'bingo',emoji:'🎱',title:'Word Bingo Blast',group:'Team',puzzle:null,
+    blurb:'Fill a bingo card with this week\'s words — teacher reads a definition or sentence, you mark the matching word.',
+    materials:['Bingo card with words written in a grid','Counters or pencil to mark squares'],
+    steps:[{t:'3 min',x:'Write your spelling words into a 3x3 or 4x4 grid in any order.'},{t:'14 min',x:'Teacher reads a clue for a word — if it\'s on your card, mark it. First to a full line calls "Bingo!"'},{t:'3 min',x:'Play again with a fresh grid if there\'s time.'}]},
+  {id:'airwrite',emoji:'💫',title:'Air Writing Wiggle',group:'Pairs',puzzle:null,
+    blurb:'"Write" a spelling word in the air with your finger, elbow, or nose — your partner has to guess it!',
+    materials:['Just your body — no equipment needed'],
+    steps:[{t:'2 min',x:'Practise writing one letter big and slow in the air.'},{t:'15 min',x:'Take turns air-writing each word while your partner guesses, then check the spelling together.'},{t:'3 min',x:'Try writing your favourite word with your elbow for a giggle.'}]},
+  {id:'chalktalk',emoji:'🖍️',title:'Chalk & Talk Relay',group:'Team',puzzle:null,
+    blurb:'An outdoor (or hallway) relay where teams race to chalk out each spelling word correctly.',
+    materials:['Chalk (or paper strips indoors)','Open path or hallway'],
+    steps:[{t:'3 min',x:'Split into teams and line up at the start line.'},{t:'14 min',x:'One at a time, race up and chalk the next word correctly before running back to tag the next teammate.'},{t:'3 min',x:'Walk along and check every team\'s words together.'}]},
+  {id:'flipspell',emoji:'🔄',title:'Flip & Spell Showdown',group:'Pairs',puzzle:'lettercards',
+    blurb:'Each player writes a spelling word\'s letters onto flip cards, shuffles them face-down, then races to flip them over in the correct order — whoever spells it correctly first wins the point!',
+    materials:['Blank cards or small paper squares — one per letter','A pen each'],
+    steps:[{t:'3 min',x:'Both players write the letters of word 1 onto their own set of cards, then shuffle and lay them face-down.'},{t:'14 min',x:'On "go", both players flip and rearrange their cards into the correct spelling order. First to spell it correctly wins the point — then reshuffle for the next word.'},{t:'3 min',x:'Total up the points and celebrate the round\'s champion speller.'}]},
+  {id:'letterloot',emoji:'💰',title:'Letter Loot Challenge',group:'Team',puzzle:'lootscore',
+    blurb:'Race a 30-second clock to spell as many smaller words as you can using only the letters from one spelling word. Score points for every letter you use — and grab a +2 bonus if you use every single letter!',
+    materials:['Paper & pencil (or call out words aloud)','30-second timer — built in below!'],
+    steps:[{t:'3 min',x:'Explain the scoring: each word you find scores points equal to how many letters it uses. Use up every letter from the original word across your words to earn a +2 bonus.'},{t:'14 min',x:'Run a 30-second round for each spelling word — hunt for smaller words hiding inside it, then use the score checker below to total your points.'},{t:'3 min',x:'Add up every round\'s score to crown the class Letter Loot Champion.'}]}
+];
+
+function pickActivitiesForWeek(weekIndex){
+  const n=ACTIVITIES.length;
+  const start=((weekIndex-1)*3)%n;
+  return [0,1,2].map(o=>ACTIVITIES[(start+o)%n]);
+}
+
+let lessonOverrides={}; // key `${weekIndex}-${day}` -> activity id, for manual "shuffle" swaps (session only)
+
+function startLootTimer(idx){
+  const disp=document.getElementById('loot-timer-'+idx);
+  const btn=document.getElementById('loot-startbtn-'+idx);
+  if(!disp||!btn)return;
+  let t=30;
+  btn.disabled=true;
+  disp.textContent=t+'s';
+  const iv=setInterval(()=>{
+    t--;
+    if(t<=0){clearInterval(iv);disp.textContent="⏰ Time's up!";btn.disabled=false;}
+    else{disp.textContent=t+'s';}
+  },1000);
+}
+
+function calculateLootScore(idx){
+  const word=window.lootWordBank?.[idx];if(!word)return;
+  const inputEl=document.getElementById('loot-input-'+idx);
+  const outEl=document.getElementById('loot-result-'+idx);
+  const found=inputEl.value.split(/[,\s]+/).map(w=>w.trim().toLowerCase()).filter(Boolean);
+  if(!found.length){outEl.innerHTML=`<div style="margin-top:8px;font-weight:700;color:var(--muted);font-size:.82rem;">Type in the words you found first.</div>`;return;}
+  const remaining=countLetters(word);
+  let total=0;
+  const chips=found.map(w=>{
+    const need=countLetters(w);
+    let ok=true;
+    for(const c in need){if(!remaining[c]||remaining[c]<need[c]){ok=false;break;}}
+    if(ok){for(const c in need)remaining[c]-=need[c];total+=w.length;}
+    return `<span style="display:inline-block;margin:3px 4px 3px 0;padding:4px 11px;border-radius:50px;font-weight:800;font-size:.8rem;${ok?'background:#e8f8ef;border:1.5px solid #8fd6ac;color:#1e7a48;':'background:#fde8ea;border:1.5px solid #f3b6bd;color:#b02030;text-decoration:line-through;'}">${esc(w)}${ok?' +'+w.length:' ✗'}</span>`;
+  }).join('');
+  const usedAll=Object.values(remaining).every(n=>n===0);
+  const bonus=usedAll?2:0;
+  const grand=total+bonus;
+  outEl.innerHTML=`<div style="margin-top:8px;">${chips}</div>
+    <div style="margin-top:8px;font-weight:900;font-family:'Fredoka One',cursive;color:var(--primary-dark);">
+      ${total} letter points ${bonus?'+ 2 bonus (used every letter!) ':''}= <span style="color:${bonus?'#3aaa6b':'inherit'};">${grand} points</span>
+    </div>`;
+}
+
+function shuffleActivity(weekIndex,day){
+  const key=`${weekIndex}-${day}`;
+  const current=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
+  let next;
+  do{next=ACTIVITIES[Math.floor(Math.random()*ACTIVITIES.length)].id;}while(next===current&&ACTIVITIES.length>1);
+  lessonOverrides[key]=next;
+  renderLessonContent();
+}
+
+// ════════════════════════════════════════════════════════
+//   LESSON PLANNER — render
+// ════════════════════════════════════════════════════════
+function renderLessonPlannerPage(){
+  const sel=document.getElementById('lp-student');
+  const students=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
+  const prev=sel.value;
+  sel.innerHTML=students.length?students.map(s=>`<option value="${s.id}">${esc(s.name)} (Year ${s.year})</option>`).join(''):`<option value="">No students yet</option>`;
+  if(prev&&students.find(s=>String(s.id)===prev))sel.value=prev;
+  renderLessonContent();
+}
+
+function wordChipsHtml(sid,wl){
+  const prog=LS.progress()[sid]||{};
+  return `<div class="word-chip-row">${wl.words.map(w=>{
+    const mastered=prog[w]?.mastered;
+    return `<span class="wchip ${mastered?'mastered':''}">${esc(w)}${mastered?' ✓':''}</span>`;
+  }).join('')}</div>`;
+}
+
+function renderLessonContent(){
+  const el=document.getElementById('lesson-content');
+  const sidRaw=document.getElementById('lp-student').value;
+  if(!sidRaw){el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>Add a student first to build their lesson plan!</p></div>`;return;}
+  const sid=parseInt(sidRaw);
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const term=parseInt(document.getElementById('lp-term').value);
+  const week=parseInt(document.getElementById('lp-week').value);
+  const day=parseInt(document.getElementById('lp-day').value);
+  const weekIndex=(term-1)*10+week;
+  const wl=getWeekList(sid,weekIndex);
+  const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+  if(day!==4||isTeacher()||isHelperActive()||isRelieverActive())stopShhhMeter();
+
+  if(!wl.words.length){
+    el.innerHTML=`<div class="empty-state"><div class="emoji">🏆</div><p>${esc(s.name)} has worked through every Year ${s.year} word! Time to level them up on the Students page.</p></div>`;
+    return;
+  }
+
+  let body='';
+  if(day===3){
+    body=renderStopSpellSmell(s,wl,weekIndex);
+  }else if(day===4){
+    body=(isTeacher()||isHelperActive()||isRelieverActive())?renderFridayTest(s,wl,weekIndex):renderQuietZone(wl,weekIndex);
+  }else{
+    const key=`${weekIndex}-${day}`;
+    const actId=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
+    const act=ACTIVITIES.find(a=>a.id===actId);
+    body=renderActivityCard(act,wl.words,weekIndex,day);
+  }
+
+  el.innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${s.color}">${ini(s.name)}</div>
+        <div>
+          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
+          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This week's word list (${wl.words.length} words)</div>
+        </div>
+      </div>
+      ${wordChipsHtml(sid,wl)}
+    </div>
+    ${body}`;
+}
+
+function renderActivityCard(act,words,weekIndex,day){
+  const color=GROUP_COLOR[act.group];
+  let puzzleHtml='';
+  if(act.puzzle==='wordsearch'){
+    const {grid,size,placed}=buildWordSearch(words);
+    puzzleHtml=`<div class="puzzle-wrap">
+      <div class="ws-grid" style="grid-template-columns:repeat(${size},26px);">
+        ${grid.map(row=>row.map(ch=>`<div class="ws-cell">${ch}</div>`).join('')).join('')}
+      </div>
+      <div class="puzzle-word-list">${placed.map(w=>`<span class="wchip">${w}</span>`).join('')}</div>
+    </div>`;
+  }else if(act.puzzle==='scramble'){
+    puzzleHtml=`<div class="puzzle-wrap"><div class="scramble-grid">
+      ${words.map(w=>`<div class="scramble-item"><div class="sword">${scrambleWord(w)}</div><button class="reveal-btn" onclick="this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='block';this.style.display='none';">Reveal answer</button><div style="display:none;font-weight:800;color:var(--green);">${esc(w)}</div></div>`).join('')}
+    </div></div>`;
+  }else if(act.puzzle==='missing'){
+    puzzleHtml=`<div class="puzzle-wrap"><div class="missing-grid">
+      ${words.map(w=>`<div class="missing-item"><div class="mword">${missingLettersWord(w)}</div><button class="reveal-btn" onclick="this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='block';this.style.display='none';">Reveal answer</button><div style="display:none;font-weight:800;color:var(--green);">${esc(w)}</div></div>`).join('')}
+    </div></div>`;
+  }else if(act.puzzle==='lettercards'){
+    puzzleHtml=`<div class="puzzle-wrap"><div class="scramble-grid">
+      ${words.map(w=>`<div class="scramble-item">${letterCardsHtml(w)}<button class="reveal-btn" onclick="this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='block';this.style.display='none';">Reveal correct order</button><div style="display:none;font-weight:800;color:var(--green);letter-spacing:2px;">${esc(w.toUpperCase())}</div></div>`).join('')}
+    </div></div>`;
+  }else if(act.puzzle==='lootscore'){
+    window.lootWordBank={};
+    words.forEach((w,i)=>{window.lootWordBank[i]=w;});
+    puzzleHtml=`<div class="puzzle-wrap"><div class="scramble-grid">
+      ${words.map((w,i)=>`<div class="scramble-item" style="text-align:left;">
+        <div style="font-family:'Fredoka One',cursive;font-size:1.05rem;letter-spacing:2px;text-align:center;">${esc(w.toUpperCase())}</div>
+        <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin:10px 0;">
+          <button class="btn btn-ghost" style="padding:5px 12px;font-size:.75rem;" id="loot-startbtn-${i}" onclick="startLootTimer(${i})">▶ Start 30s</button>
+          <span id="loot-timer-${i}" style="font-family:'Fredoka One',cursive;font-weight:900;color:var(--primary-dark);">30s</span>
+        </div>
+        <input type="text" id="loot-input-${i}" placeholder="words you found..." style="width:100%;margin-bottom:6px;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-weight:700;box-sizing:border-box;">
+        <button class="btn btn-primary" style="padding:5px 12px;font-size:.75rem;width:100%;" onclick="calculateLootScore(${i})">Calculate Score</button>
+        <div id="loot-result-${i}"></div>
+      </div>`).join('')}
+    </div></div>`;
+  }
+  return `<div class="activity-card">
+    <div class="activity-head" style="background:${color};">
+      <div class="atitle">${act.emoji} ${act.title}</div>
+      <span class="agroup">${act.group} activity · ~20 min</span>
+    </div>
+    <div class="activity-body">
+      <p class="activity-blurb">${act.blurb}</p>
+      <div class="materials-box"><span>You'll need</span>${act.materials.join(' · ')}</div>
+      ${act.steps.map(st=>`<div class="step-row"><div class="step-time">${st.t}</div><div class="step-text">${st.x}</div></div>`).join('')}
+      ${puzzleHtml}
+      <div class="activity-actions">
+        <button class="btn btn-ghost" onclick="shuffleActivity(${weekIndex},${day})">🔄 Try a different activity</button>
+        ${act.puzzle?`<button class="btn btn-primary" onclick="printLessonWorksheet('${act.id}')">🖨️ Print Worksheet</button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ────────────── THURSDAY: STOP, SPELL, SMELL ──────────────
+let sssPicked=[];
+function toggleSssWord(word){
+  const idx=sssPicked.indexOf(word);
+  if(idx>-1){sssPicked.splice(idx,1);}
+  else{
+    if(sssPicked.length>=5){alert('Choose just 5 words for today.');return;}
+    sssPicked.push(word);
+  }
+  renderLessonContent();
+}
+
+function renderStopSpellSmell(s,wl,weekIndex){
+  sssPicked=sssPicked.filter(w=>wl.words.includes(w));
+  const pickerHtml=wl.words.map(w=>`<span class="sss-pick-chip ${sssPicked.includes(w)?'picked':''}" onclick="toggleSssWord('${esc(w).replace(/'/g,"\\'")}')">${esc(w)}</span>`).join('');
+  const cardsHtml=sssPicked.map(w=>`
+    <div class="sss-word-card">
+      <h4>🛑 ${esc(w)} 🔤 👃</h4>
+      <div class="sss-label">Write it correctly, 3 times</div>
+      <input class="sss-line" placeholder="1.">
+      <input class="sss-line" placeholder="2.">
+      <input class="sss-line" placeholder="3.">
+      <div class="sss-label">Draw a picture that shows what it means</div>
+      <div class="sss-draw-box">🎨 draw here</div>
+      <div class="sss-label">Write a sentence using the word (matching your picture)</div>
+      <input class="sss-line" placeholder="My sentence...">
+    </div>`).join('');
+  return `<div class="activity-card">
+    <div class="activity-head" style="background:var(--primary-dark);">
+      <div class="atitle">🛑🔤👃 Stop, Spell, Smell</div>
+      <span class="agroup">Individual activity · ~20 min</span>
+    </div>
+    <div class="activity-body">
+      <p class="activity-blurb">Choose 5 of this week's words below. For each one you'll write it correctly 3 times, draw a picture showing what it means, then write a sentence that matches your picture.</p>
+      <div class="sss-label">Pick 5 words (${sssPicked.length}/5)</div>
+      <div class="sss-picker">${pickerHtml}</div>
+      ${cardsHtml||'<p style="color:var(--muted);font-weight:700;font-size:.85rem;">Pick 5 words above to start your worksheet.</p>'}
+      <div class="activity-actions">
+        <button class="btn btn-primary" onclick="printLessonWorksheet('sss',${weekIndex})" ${sssPicked.length<5?'disabled':''}>🖨️ Print Worksheet</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ────────────── FRIDAY: SPELLING TEST ──────────────
+// ────────────── TRUSTED TESTER SETUP (teacher side) ──────────────
+function submitHelperLogin(sid){
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const pass=document.getElementById('helper-login-pass').value;
+  const errEl=document.getElementById('helper-login-error');
+  if(!pass){errEl.innerHTML='<p style="color:#ffd6d6;font-weight:700;font-size:.82rem;margin-top:6px;">Enter the password first.</p>';return;}
+  if(simpleHash(pass)!==s.helperPass){errEl.innerHTML='<p style="color:#ffd6d6;font-weight:700;font-size:.82rem;margin-top:6px;">Incorrect password.</p>';return;}
+  helperSession={studentId:s.id,name:s.name};
+  applyGating();
+  renderDetail();
+}
+
+function toggleTrustedTester(sid,checked){
+  if(checked){
+    renderSetHelperPasswordModal(sid);
+    document.getElementById('auth-modal-overlay').classList.add('active');
+  }else{
+    const students=LS.students();
+    const s=students.find(x=>x.id===sid);
+    if(s){s.isTrusted=false;s.helperPass='';}
+    LS.saveStudents(students);
+    renderLessonContent();
+  }
+}
+function renderSetHelperPasswordModal(sid){
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  box(`
+    <h2>🌟 Set Trusted Tester Password</h2>
+    <p class="sub">Choose a simple password for ${esc(s.name)} to use when logging in to help test other students. Share it with them directly — it isn't shown anywhere else in the app.</p>
+    <div class="modal-field"><input type="text" id="helper-pass-input" placeholder="e.g. a simple word"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" style="flex:1;" onclick="cancelTrustedToggle()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="confirmSetHelperPassword(${sid})">Save</button>
+    </div>
+  `);
+}
+function cancelTrustedToggle(){
+  closeAuthModal();
+  renderLessonContent(); // resets the checkbox visual state since nothing was saved
+}
+function confirmSetHelperPassword(sid){
+  const pass=document.getElementById('helper-pass-input').value.trim();
+  if(!pass||pass.length<3){alert('Please enter a password with at least 3 characters.');return;}
+  const students=LS.students();
+  const s=students.find(x=>x.id===sid);
+  if(s){s.isTrusted=true;s.helperPass=simpleHash(pass);}
+  LS.saveStudents(students);
+  closeAuthModal();
+  renderLessonContent();
+}
+
+function renderFridayTest(s,wl,weekIndex){
+  const rows=wl.words.map(w=>{
+    const r=wl.results[w];
+    return `<div class="ftest-row">
+      <div class="ftest-word">${esc(w)}</div>
+      <div class="ftest-actions">
+        <button class="ftest-btn ${r==='correct'?'correct-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','correct');renderLessonContent();" title="Correct">✓</button>
+        <button class="ftest-btn ${r==='incorrect'?'incorrect-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','incorrect');renderLessonContent();" title="Incorrect">✗</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const doneBanner=wl.testDone?`<div class="test-done-banner">✅ Test saved on ${wl.testDate}. Next week's list is ready to go! <button class="btn btn-ghost" style="margin-left:auto;" onclick="redoWeeklyTest(${s.id},${weekIndex})">✏️ Reopen to edit</button></div>`:'';
+
+  const helperBanner=isHelperActive()?`<div class="test-done-banner" style="background:#fff3d6;border-color:#f0c96a;color:#7a5800;">🌟 You're testing as a trusted tester (${esc(helperSession.name)}). <button class="btn btn-ghost" style="margin-left:auto;" onclick="helperLogOut()">🔒 Log Out</button></div>`:'';
+
+  const trustedToggle=isTeacher()?`
+    <div style="margin-top:18px;padding-top:14px;border-top:1.5px dashed var(--border);">
+      <label style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:.88rem;cursor:pointer;">
+        <input type="checkbox" ${s.isTrusted?'checked':''} onchange="toggleTrustedTester(${s.id},this.checked)" style="width:20px;height:20px;flex-shrink:0;">
+        🌟 Make ${esc(s.name)} a Trusted Tester — can log in (with a password) to help test other students
+      </label>
+      ${s.isTrusted?'<p style="font-size:.78rem;color:var(--muted);font-weight:700;margin-top:6px;margin-left:30px;">Trusted — password is set. Uncheck to remove access.</p>':''}
+    </div>`:'';
+
+  return `<div class="activity-card">
+    <div class="activity-head" style="background:#e8547a;">
+      <div class="atitle">📝 Friday Spelling Test</div>
+      <span class="agroup">Individual · record results below</span>
+    </div>
+    <div class="activity-body">
+      ${helperBanner}
+      ${doneBanner}
+      <p class="activity-blurb">Read each word aloud, have ${esc(s.name)} write it, then mark it ✓ correct or ✗ incorrect. Any word marked incorrect will automatically appear again on next week's list.</p>
+      ${rows}
+      <div class="activity-actions">
+        <button class="btn btn-primary" onclick="finalizeWeeklyTest(${s.id},${weekIndex})">✅ Save Test &amp; Prepare Next Week</button>
+      </div>
+      ${trustedToggle}
+    </div>
+  </div>`;
+}
+
+// ────────────── FRIDAY (STUDENT VIEW): QUIET ZONE CHALLENGE ──────────────
+// Shown to students instead of the real test screen while the teacher
+// tests one-on-one. A silent, turn-based memory-match game for pairs
+// sharing one device, plus a mic-based "Shhh-o-Meter" that awards the
+// quiet partner a point if their pair gets too loud.
+function stopShhhMeter(){
+  if(window.shhhStop){window.shhhStop();window.shhhStop=null;}
+  document.getElementById('shhh-chooser-overlay')?.remove();
+}
+
+function buildQZTiles(words){
+  const pairs=[];
+  words.forEach((w,idx)=>{
+    pairs.push({wordIndex:idx,kind:'word',label:w.toUpperCase()});
+    pairs.push({wordIndex:idx,kind:'scramble',label:scrambleWord(w)});
+  });
+  for(let i=pairs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pairs[i],pairs[j]]=[pairs[j],pairs[i]];}
+  return pairs.map((p,i)=>({...p,matched:false,id:i}));
+}
+
+function qzScoreHtml(){
+  const qz=window.qz;
+  return qz.names.map((n,i)=>`<div class="qz-score-card ${qz.turn===i?'turn':''}"><div class="qname">${esc(n)}</div><div class="qpts">${qz.scores[i]}</div></div>`).join('');
+}
+function qzTileHtml(){
+  const qz=window.qz;
+  return qz.tiles.map((t,i)=>{
+    const revealed=t.matched||qz.flipped.includes(i);
+    return `<button class="qz-tile ${t.matched?'matched':(qz.flipped.includes(i)?'flipped':'')}" onclick="flipQZTile(${i})" ${t.matched?'disabled':''}>${revealed?esc(t.label):'❓'}</button>`;
+  }).join('');
+}
+function renderQZBoardOnly(){
+  const sb=document.getElementById('qz-scoreboard'),gw=document.getElementById('qz-grid-wrap');
+  if(sb)sb.innerHTML=qzScoreHtml();
+  if(gw)gw.innerHTML=`<div class="qz-grid">${qzTileHtml()}</div>`;
+}
+
+function startQuietZoneGame(){
+  const n1=document.getElementById('qz-name1').value.trim()||'Player 1';
+  const n2=document.getElementById('qz-name2').value.trim()||'Player 2';
+  const sid=parseInt(document.getElementById('lp-student').value);
+  const term=parseInt(document.getElementById('lp-term').value),week=parseInt(document.getElementById('lp-week').value);
+  const weekIndex=(term-1)*10+week;
+  const wl=getWeekList(sid,weekIndex);
+  const words=wl.words.slice(0,6);
+  window.qz={weekIndex,sid,words,names:[n1,n2],scores:[0,0],turn:0,tiles:buildQZTiles(words),flipped:[],lock:false};
+  renderLessonContent();
+}
+
+function flipQZTile(i){
+  const qz=window.qz;if(!qz)return;
+  if(qz.lock||qz.tiles[i].matched||qz.flipped.includes(i))return;
+  qz.flipped.push(i);
+  if(qz.flipped.length===1){renderQZBoardOnly();return;}
+  qz.lock=true;
+  renderQZBoardOnly();
+  setTimeout(()=>{
+    const [a,b]=qz.flipped;
+    const ta=qz.tiles[a],tb=qz.tiles[b];
+    const isMatch=ta.wordIndex===tb.wordIndex&&ta.kind!==tb.kind;
+    if(isMatch){ta.matched=true;tb.matched=true;qz.scores[qz.turn]++;}
+    else{qz.turn=qz.turn===0?1:0;}
+    qz.flipped=[];qz.lock=false;
+    renderQZBoardOnly();
+    if(qz.tiles.every(t=>t.matched)){
+      setTimeout(()=>{alert(`🎉 Round complete!\n${qz.names[0]}: ${qz.scores[0]} pts\n${qz.names[1]}: ${qz.scores[1]} pts`);newQZRound();},300);
+    }
+  },900);
+}
+
+function newQZRound(){
+  const qz=window.qz;if(!qz)return;
+  qz.tiles=buildQZTiles(qz.words);qz.flipped=[];qz.lock=false;
+  renderQZBoardOnly();
+}
+
+function shhhControlsHtml(){
+  return `<button class="btn btn-ghost" style="font-size:.78rem;padding:6px 14px;" onclick="initShhhMeter()">🎤 Turn on Shhh-Meter (mic)</button>
+    <button class="btn btn-primary" style="font-size:.78rem;padding:6px 14px;margin-left:8px;" onclick="openShhhChooser()">🔇 I heard a noise!</button>`;
+}
+
+async function initShhhMeter(){
+  const controls=document.getElementById('shhh-controls');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    stopShhhMeter();
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const src=ctx.createMediaStreamSource(stream);
+    const analyser=ctx.createAnalyser();analyser.fftSize=512;
+    src.connect(analyser);
+    const data=new Uint8Array(analyser.frequencyBinCount);
+    let lastTrigger=0,raf;
+    function loop(){
+      analyser.getByteTimeDomainData(data);
+      let sum=0;for(let i=0;i<data.length;i++){const v=(data[i]-128)/128;sum+=v*v;}
+      const rms=Math.sqrt(sum/data.length);
+      const pct=Math.min(100,Math.round(rms*300));
+      const fill=document.getElementById('shhh-fill');if(fill)fill.style.width=pct+'%';
+      const now=Date.now();
+      if(pct>55&&now-lastTrigger>4000){lastTrigger=now;openShhhChooser();}
+      raf=requestAnimationFrame(loop);
+    }
+    loop();
+    window.shhhStop=()=>{cancelAnimationFrame(raf);stream.getTracks().forEach(t=>t.stop());ctx.close();};
+    if(controls)controls.innerHTML=`<span style="font-weight:800;color:var(--green);font-size:.8rem;">🎤 Mic listening for noise…</span><br><button class="btn btn-primary" style="font-size:.78rem;padding:6px 14px;margin-top:6px;" onclick="openShhhChooser()">🔇 I heard a noise!</button>`;
+  }catch(e){
+    if(controls)controls.innerHTML=`<span style="font-size:.78rem;color:var(--muted);font-weight:700;">Mic unavailable — use this instead:</span><br><button class="btn btn-primary" style="font-size:.78rem;padding:6px 14px;margin-top:6px;" onclick="openShhhChooser()">🔇 I heard a noise!</button>`;
+  }
+}
+
+function openShhhChooser(){
+  const qz=window.qz;if(!qz)return;
+  if(document.getElementById('shhh-chooser-overlay'))return;
+  const overlay=document.createElement('div');
+  overlay.className='shhh-chooser';overlay.id='shhh-chooser-overlay';
+  overlay.innerHTML=`<div class="shhh-chooser-box">
+    <div style="font-size:2rem;">🤫</div>
+    <h3 style="font-family:'Fredoka One',cursive;margin:8px 0;">Who made that noise?</h3>
+    <p style="color:var(--muted);font-weight:700;font-size:.85rem;margin-bottom:6px;">Tap the noisy one — their partner gets a point!</p>
+    <button class="shhh-name-btn" onclick="shhhAward(0)">${esc(qz.names[0])}</button>
+    <button class="shhh-name-btn" onclick="shhhAward(1)">${esc(qz.names[1])}</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="document.getElementById('shhh-chooser-overlay').remove()">False alarm</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function shhhAward(noisyIdx){
+  const qz=window.qz;if(!qz)return;
+  qz.scores[noisyIdx===0?1:0]++;
+  document.getElementById('shhh-chooser-overlay')?.remove();
+  renderQZBoardOnly();
+}
+
+function renderQuietZone(wl,weekIndex){
+  const sid=parseInt(document.getElementById('lp-student').value);
+  const needsSetup=!window.qz||window.qz.weekIndex!==weekIndex||window.qz.sid!==sid;
+  if(needsSetup){
+    return `<div class="activity-card">
+      <div class="activity-head" style="background:var(--primary-dark);">
+        <div class="atitle">🤫 Quiet Zone Challenge</div>
+        <span class="agroup">Pairs · share one iPad · silent memory match</span>
+      </div>
+      <div class="activity-body">
+        <p class="activity-blurb">While your teacher tests students one at a time, play this silent memory-matching game with your partner. Take turns flipping two tiles — match a word to its scrambled twin to score a point and go again. Stay quiet so the teacher can hear the testing!</p>
+        <div class="qz-setup">
+          <div class="modal-field" style="max-width:220px;margin:0 auto 10px;text-align:left;"><label>Player 1 name</label><input type="text" id="qz-name1" placeholder="Player 1"></div>
+          <div class="modal-field" style="max-width:220px;margin:0 auto 14px;text-align:left;"><label>Player 2 name</label><input type="text" id="qz-name2" placeholder="Player 2"></div>
+          <button class="btn btn-primary" onclick="startQuietZoneGame()">▶ Start Game</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div class="activity-card">
+    <div class="activity-head" style="background:var(--primary-dark);">
+      <div class="atitle">🤫 Quiet Zone Challenge</div>
+      <span class="agroup">Pairs · stay silent · take turns</span>
+    </div>
+    <div class="activity-body">
+      <p class="activity-blurb">Take turns flipping two tiles. Match a word with its scrambled twin to score a point and go again — no talking needed!</p>
+      <div id="qz-scoreboard" class="qz-score-row">${qzScoreHtml()}</div>
+      <div id="qz-grid-wrap"><div class="qz-grid">${qzTileHtml()}</div></div>
+      <div class="activity-actions">
+        <button class="btn btn-ghost" onclick="newQZRound()">🔄 New Round (keep scores)</button>
+        <button class="btn btn-ghost" onclick="window.qz=null;renderLessonContent();">🔁 Restart with new players</button>
+      </div>
+      <div class="shhh-panel" id="shhh-panel">
+        <div style="font-weight:900;color:var(--primary-dark);">🤫 Shhh-o-Meter</div>
+        <div class="shhh-meter-track"><div class="shhh-meter-fill" id="shhh-fill"></div></div>
+        <div id="shhh-controls">${shhhControlsHtml()}</div>
+      </div>
+    </div>
+  </div>`;
+}
+function printLessonWorksheet(kind,weekIndex){
+  const sid=parseInt(document.getElementById('lp-student').value);
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const term=document.getElementById('lp-term').value,week=document.getElementById('lp-week').value;
+  const wi=weekIndex||((parseInt(term)-1)*10+parseInt(week));
+  const wl=getWeekList(sid,wi);
+  let html='';
+  if(kind==='sss'){
+    html=`<div class="lsnp-page">
+      <div class="lsnp-header"><h1>🛑🔤👃 Stop, Spell, Smell</h1><p>${esc(s.name)} · Term ${term}, Week ${week}</p></div>
+      ${sssPicked.map(w=>`
+        <div class="lsnp-word-block">
+          <h3>${esc(w)}</h3>
+          <div class="lsnp-label">Write it correctly, 3 times</div>
+          <div class="lsnp-write-lines"><div></div><div></div><div></div></div>
+          <div class="lsnp-label">Draw a picture that shows what it means</div>
+          <div class="lsnp-draw"></div>
+          <div class="lsnp-label">Write a sentence using the word</div>
+          <div class="lsnp-sentence-line"></div>
+        </div>`).join('')}
+    </div>`;
+  }else{
+    const act=ACTIVITIES.find(a=>a.id===kind);
+    let content='';
+    if(act.puzzle==='wordsearch'){
+      const {grid,size,placed}=buildWordSearch(wl.words);
+      content=`<div class="ws-grid" style="grid-template-columns:repeat(${size},22pt);">${grid.map(row=>row.map(ch=>`<div class="ws-cell" style="width:22pt;height:22pt;">${ch}</div>`).join('')).join('')}</div>
+      <div class="puzzle-word-list">${placed.map(w=>`<span class="wchip">${w}</span>`).join('')}</div>`;
+    }else if(act.puzzle==='scramble'){
+      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item"><div class="sword">${scrambleWord(w)}</div></div>`).join('')}</div>`;
+    }else if(act.puzzle==='missing'){
+      content=`<div class="missing-grid">${wl.words.map(w=>`<div class="missing-item"><div class="mword">${missingLettersWord(w)}</div></div>`).join('')}</div>`;
+    }else if(act.puzzle==='lettercards'){
+      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item">${letterCardsHtml(w)}</div>`).join('')}</div>`;
+    }else if(act.puzzle==='lootscore'){
+      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item"><div style="font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:2px;">${esc(w.toUpperCase())}</div><div style="margin-top:32pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div></div>`).join('')}</div>`;
+    }
+    html=`<div class="lsnp-page"><div class="lsnp-header"><h1>${act.emoji} ${act.title}</h1><p>${esc(s.name)} · Term ${term}, Week ${week}</p></div>${content}</div>`;
+  }
+  const elp=document.getElementById('print-lesson');
+  elp.innerHTML=html;elp.style.display='block';
+  document.getElementById('print-report').style.display='none';
+  document.getElementById('print-wordlist').style.display='none';
+  const orig=setPrintTitle(s.name+'_lesson');
+  setTimeout(()=>{window.print();elp.style.display='none';document.title=orig;},250);
+}
+
+// Build a safe PDF filename slug from a string
+function pdfSlug(str){return str.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'');}
+// Date as ddmmyy e.g. 130526
+function pdfDate(){const d=new Date();const dd=String(d.getDate()).padStart(2,'0');const mm=String(d.getMonth()+1).padStart(2,'0');const yy=String(d.getFullYear()).slice(-2);return dd+mm+yy;}
+// Set document.title for print filename, returns original title for restore
+function setPrintTitle(name){
+  const orig=document.title;
+  document.title=`${pdfSlug(name)}_wordlabreport_${pdfDate()}`;
+  return orig;
+}
+
+// ════════════════════════════════════════════════════════
+//   DATA PAGE
+// ════════════════════════════════════════════════════════
+function exportData(){
+  const d={students:LS.students(),progress:LS.progress(),history:LS.history(),archives:LS.archives(),weeklyLists:LS.weeklyLists(),exported:new Date().toISOString()};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+  a.download=`wordlab-${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      showConfirmModal(`Load data for ${(d.students||[]).length} student(s)? This replaces current data.`,()=>{
+        if(d.students)LS.saveStudents(d.students);
+        if(d.progress)LS.saveProgress(d.progress);
+        if(d.history)LS.saveHistory(d.history);
+        if(d.archives)LS.saveArchives(d.archives);
+        if(d.weeklyLists)LS.saveWeeklyLists(d.weeklyLists);
+        renderStudents();alert('✅ Data loaded successfully!');
+      },'Load Data');
+    }catch{alert('Invalid JSON file.');}
+  };
+  r.readAsText(file);e.target.value='';
+}
+function clearAll(){
+  showConfirmModal('Remove ALL data? This cannot be undone.',()=>{
+    ['wl_s','wl_p','wl_h','wl_a','wl_wk'].forEach(k=>localStorage.removeItem(k));
+    renderStudents();
+  },'Remove Everything');
+}
+
+// ════════════════════════════════════════════════════════
+//   NAVIGATION
+// ════════════════════════════════════════════════════════
+function showPage(id){
+  if(id==='data'&&!isTeacher()){openLoginModal();return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('header nav button').forEach((b,i)=>b.classList.toggle('active',['students','lessons','wordlists','data'][i]===id));
+  if(id==='wordlists')renderWordListPage();
+  if(id==='students')renderStudents();
+  if(id==='lessons')renderLessonPlannerPage();
+}
+
+// ════════════════════════════════════════════════════════
+//   UTILS
+// ════════════════════════════════════════════════════════
+function ini(n){return n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function tod(){return new Date().toLocaleDateString('en-NZ',{day:'2-digit',month:'short',year:'numeric'});}
+
+document.getElementById('new-student-name').addEventListener('keydown',e=>{if(e.key==='Enter')addStudent();});
+
+// ════════════════════════════════════════════════════════
+//   SEED TEST STUDENT
+//   Runs once — skips if "Mia Thompson" already exists
+// ════════════════════════════════════════════════════════
+function seedTestStudent(){
+  const students=LS.students();
+  if(students.find(s=>s.name==='Mia Thompson'))return; // already seeded
+
+  const sid=1000000001;
+  const year=5;
+  const allWords=Object.values(WL[year]).flat(); // full alphabetical word bank for this year
+  const total=allWords.length;
+
+  // We'll work through the first ~48 words (roughly half)
+  // Weekly test sessions: Feb 3, Feb 10, Feb 17, Feb 24, Mar 3, Mar 10, Mar 17, Mar 24,
+  // Mar 31, Apr 7, Apr 14, Apr 28, May 5, May 12 (today-ish)
+  const sessions=[
+    '03 Feb 2025','10 Feb 2025','17 Feb 2025','24 Feb 2025',
+    '03 Mar 2025','10 Mar 2025','17 Mar 2025','24 Mar 2025',
+    '31 Mar 2025','07 Apr 2025','14 Apr 2025','28 Apr 2025',
+    '05 May 2025','12 May 2025'
+  ];
+
+  // Each session tests ~4 words. Some words take multiple sessions to master.
+  // Plan: 14 sessions × ~3-4 new words mastered = ~46 mastered total
+  // Pattern: each word gets 1–3 incorrect attempts before being mastered
+  // (some words sail through, some are repeated the next week)
+
+  const wordSchedule=[
+    // session index, word index, [incorrect attempts before], then correct
+    // Session 0 — Feb 3: words 0-3
+    {si:0, wi:0, inc:0}, // afraid — got it first go
+    {si:0, wi:1, inc:1}, // August — 1 wrong first, correct same session
+    {si:0, wi:2, inc:2}, // bicycle — 2 wrong, still session 0
+    {si:1, wi:2, inc:0, extraCorrect:true}, // bicycle mastered next week (already had inc, now correct)
+    {si:0, wi:3, inc:1}, // breath — 1 wrong, correct same session
+
+    // Session 1 — Feb 10: words 4-6
+    {si:1, wi:4, inc:0}, // breathe
+    {si:1, wi:5, inc:2}, // bought — tricky
+    {si:2, wi:5, inc:1, extraCorrect:true}, // bought mastered next week
+    {si:1, wi:6, inc:1}, // business
+
+    // Session 2 — Feb 17: words 7-9
+    {si:2, wi:7, inc:0}, // colour
+    {si:2, wi:8, inc:0}, // complete
+    {si:2, wi:9, inc:3}, // describe — hard word, 3 wrongs
+    {si:3, wi:9, inc:1, extraCorrect:true}, // describe mastered next week
+
+    // Session 3 — Feb 24: words 10-12
+    {si:3, wi:10, inc:1}, // difficult
+    {si:3, wi:11, inc:0}, // divide
+    {si:3, wi:12, inc:2}, // easy — 2 wrongs
+    {si:4, wi:12, inc:0, extraCorrect:true}, // easy next session
+
+    // Session 4 — Mar 3: words 13-15
+    {si:4, wi:13, inc:0}, // equal
+    {si:4, wi:14, inc:1}, // everybody
+    {si:4, wi:15, inc:2}, // everywhere
+
+    // Session 5 — Mar 10: words 16-18
+    {si:5, wi:15, inc:0, extraCorrect:true}, // everywhere mastered
+    {si:5, wi:16, inc:0}, // February
+    {si:5, wi:17, inc:1}, // follow
+    {si:5, wi:18, inc:3}, // guard — difficult
+
+    // Session 6 — Mar 17: words 19-21
+    {si:6, wi:18, inc:1, extraCorrect:true}, // guard mastered
+    {si:6, wi:19, inc:0}, // happened
+    {si:6, wi:20, inc:2}, // height
+    {si:7, wi:20, inc:0, extraCorrect:true}, // height mastered next session
+
+    // Session 7 — Mar 24: words 21-23
+    {si:7, wi:21, inc:1}, // history
+    {si:7, wi:22, inc:0}, // holidays
+    {si:7, wi:23, inc:2}, // imagine
+
+    // Session 8 — Mar 31: words 24-26
+    {si:8, wi:23, inc:1, extraCorrect:true}, // imagine mastered
+    {si:8, wi:24, inc:0}, // increase
+    {si:8, wi:25, inc:1}, // instead
+    {si:8, wi:26, inc:3}, // interest — tricky
+
+    // Session 9 — Apr 7: words 27-29
+    {si:9, wi:26, inc:2, extraCorrect:true}, // interest mastered
+    {si:9, wi:27, inc:0}, // island
+    {si:9, wi:28, inc:1}, // January
+    {si:9, wi:29, inc:2}, // library
+
+    // Session 10 — Apr 14: words 30-32
+    {si:10, wi:29, inc:0, extraCorrect:true}, // library mastered
+    {si:10, wi:30, inc:1}, // measure
+    {si:10, wi:31, inc:0}, // natural
+    {si:10, wi:32, inc:2}, // nearly
+
+    // Session 11 — Apr 28: words 33-35
+    {si:11, wi:32, inc:1, extraCorrect:true}, // nearly mastered
+    {si:11, wi:33, inc:0}, // popular
+    {si:11, wi:34, inc:2}, // possible
+    {si:11, wi:35, inc:3}, // problem — 3 wrongs
+
+    // Session 12 — May 5: words 36-38
+    {si:12, wi:35, inc:1, extraCorrect:true}, // problem mastered
+    {si:12, wi:36, inc:0}, // promise
+    {si:12, wi:37, inc:1}, // purpose
+    {si:12, wi:38, inc:2}, // quarter
+
+    // Session 13 — May 12: words 39-41
+    {si:13, wi:38, inc:0, extraCorrect:true}, // quarter mastered
+    {si:13, wi:39, inc:1}, // regular
+    {si:13, wi:40, inc:2}, // remember
+    {si:13, wi:41, inc:3}, // since — still struggling
+  ];
+
+  // Build progress object
+  const prog={};
+  // Track running totals per session for history
+  const sessionTotals=sessions.map(()=>({mastered:0,correct:0,incorrect:0}));
+
+  // Process schedule — handle extraCorrect flag (means the mastery happens at this session index)
+  // We need to track per-word state
+  const wordState={}; // wi -> {correct:0, incorrect:0, mastered:false, masteredDate:'', masteredSi:-1}
+
+  wordSchedule.forEach(entry=>{
+    const {si,wi,inc,extraCorrect}=entry;
+    const w=allWords[wi];
+    if(!wordState[wi])wordState[wi]={correct:0,incorrect:0,mastered:false,masteredDate:'',masteredSi:-1};
+    const ws=wordState[wi];
+
+    if(extraCorrect && !ws.mastered){
+      // just add the correct that masters it
+      ws.correct+=1;
+      ws.mastered=true;
+      ws.masteredDate=sessions[si];
+      ws.masteredSi=si;
+      sessionTotals[si].correct+=1;
+      sessionTotals[si].mastered+=1; // will be computed cumulatively later
+    } else if(!ws.mastered){
+      // Add incorrect attempts
+      ws.incorrect+=inc;
+      sessionTotals[si].incorrect+=inc;
+      // Then correct (mastered)
+      ws.correct+=1;
+      ws.mastered=true;
+      ws.masteredDate=sessions[si];
+      ws.masteredSi=si;
+      sessionTotals[si].correct+=1;
+      sessionTotals[si].mastered+=1;
+    }
+  });
+
+  // Add a few words that just have incorrect attempts (still practicing, not mastered)
+  [{wi:42,si:13,inc:2},{wi:43,si:13,inc:1},{wi:44,si:13,inc:3}].forEach(({wi,si,inc})=>{
+    const w=allWords[wi];
+    if(!wordState[wi])wordState[wi]={correct:0,incorrect:0,mastered:false,masteredDate:'',masteredSi:-1};
+    wordState[wi].incorrect+=inc;
+    sessionTotals[si].incorrect+=inc;
+  });
+
+  // Build progress entries
+  Object.entries(wordState).forEach(([wi,ws])=>{
+    const w=allWords[parseInt(wi)];
+    prog[w]={
+      mastered:ws.mastered,
+      masteredDate:ws.masteredDate,
+      correct:ws.correct,
+      incorrect:ws.incorrect
+    };
+  });
+
+  // Build cumulative history snapshots (one per session)
+  let cumMastered=0,cumCorrect=0,cumIncorrect=0;
+  const hist=sessions.map((date,si)=>{
+    // Count mastered up to and including this session
+    const masteredThisSession=Object.values(wordState).filter(ws=>ws.masteredSi===si).length;
+    const correctThisSession=sessionTotals[si].correct;
+    const incorrectThisSession=sessionTotals[si].incorrect;
+    cumMastered+=masteredThisSession;
+    cumCorrect+=correctThisSession;
+    cumIncorrect+=incorrectThisSession;
+    return {date,mastered:cumMastered,total,correct:cumCorrect,incorrect:cumIncorrect,year};
+  }).filter(h=>h.mastered>0||h.incorrect>0||h.correct>0);
+
+  // Save everything
+  const students2=LS.students();
+  students2.push({id:sid,name:'Mia Thompson',year,color:'#7c5cbf',startDate:'03 Feb 2025'});
+  LS.saveStudents(students2);
+
+  const allProg=LS.progress();
+  allProg[sid]=prog;
+  LS.saveProgress(allProg);
+
+  const allHist=LS.history();
+  allHist[sid]=hist;
+  LS.saveHistory(allHist);
+}
+
+async function restoreSession(){
+  if(!sbReady())return;
+  try{
+    const {data:{session}}=await SB.auth.getSession();
+    if(!session)return;
+    const {data:profile,error}=await SB.from('profiles').select('*').eq('id',session.user.id).single();
+    if(error||!profile||profile.status!=='approved'){await SB.auth.signOut();return;}
+    currentProfile=profile;
+    if(profile.role==='teacher'){
+      localStorage.setItem('sh_active_teacher',profile.id);
+      localStorage.setItem('sh_active_teacher_name',profile.name||'');
+    }
+  }catch(err){console.error('Session restore failed',err);}
+}
+
+// Explicitly parse the URL for a password-recovery link, rather than relying
+// only on the automatic onAuthStateChange event — different Supabase project
+// configurations send different link formats (hash tokens vs. a PKCE "code"
+// vs. a "token_hash"), and leaving this to chance was the cause of the
+// "link just goes back to the site with no option" issue.
+async function handlePasswordRecoveryLink(){
+  if(!sbReady())return false;
+  const hash=window.location.hash||'';
+  const params=new URLSearchParams(window.location.search);
+  const code=params.get('code');
+  const tokenHash=params.get('token_hash')||params.get('token');
+  const typeParam=params.get('type')||(hash.includes('type=recovery')?'recovery':null);
+  try{
+    if(hash.includes('type=recovery')){
+      // supabase-js's own detectSessionInUrl should already be handling this
+      // and firing PASSWORD_RECOVERY — showing the modal here too is just a
+      // safety net in case that event is missed.
+      showPasswordResetModal();
+      history.replaceState(null,'',window.location.pathname+window.location.search);
+      return true;
+    }
+    if(code){
+      const {error}=await SB.auth.exchangeCodeForSession(window.location.href);
+      history.replaceState(null,'',window.location.pathname);
+      if(error){console.error('Password reset link exchange failed',error);return false;}
+      showPasswordResetModal();
+      return true;
+    }
+    if(tokenHash&&typeParam==='recovery'){
+      const {error}=await SB.auth.verifyOtp({token_hash:tokenHash,type:'recovery'});
+      history.replaceState(null,'',window.location.pathname);
+      if(error){console.error('Password reset link verification failed',error);return false;}
+      showPasswordResetModal();
+      return true;
+    }
+  }catch(err){console.error('Password recovery link handling failed',err);}
+  return false;
+}
+
+async function boot(){
+  showBootOverlay('Loading your class…');
+  const isRecovery=await handlePasswordRecoveryLink();
+  await restoreSession();
+  const activeTeacher=getActiveTeacherId();
+  if(activeTeacher&&sbReady()){
+    await loadClassroomData(activeTeacher);
+  }else{
+    if(activeTeacher&&!sbReady()){
+      console.warn('Server unreachable — showing last locally saved data for this device.');
+    }
+    hideBootOverlay();
+    renderStudents();
+  }
+  applyGating();
+  if(isRecovery)showPasswordResetModal(); // re-assert in case applyGating raced ahead of it
+}
+boot();
+</script>
+</body>
+</html>
