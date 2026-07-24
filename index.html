@@ -1268,6 +1268,27 @@ function attemptTotals(sid,yr){
   return {correct,incorrect};
 }
 
+// Word-level breakdowns for hover tooltips on the correct/incorrect counts.
+// Mirrors attemptTotals' exclusion of catch-up words so the lists always
+// match the numbers shown alongside them.
+function correctWordsList(sid,yr){
+  const p=LS.progress()[sid]||{};
+  return Object.values(WL[yr]).flat().filter(w=>{
+    const wd=p[w];
+    return wd&&!wd.catchup&&(wd.mastered||wd.correct>0);
+  });
+}
+function incorrectWordsList(sid,yr){
+  const p=LS.progress()[sid]||{};
+  return Object.values(WL[yr]).flat().filter(w=>{
+    const wd=p[w];
+    return wd&&!wd.catchup&&wd.incorrect>0;
+  });
+}
+function wordsTooltip(words){
+  return words.length?words.join(', '):'No words yet';
+}
+
 // ════════════════════════════════════════════════════════
 //   STUDENT CRUD
 // ════════════════════════════════════════════════════════
@@ -1324,9 +1345,9 @@ function renderStudents(){
       </div>
       <div class="prog-text" id="pt-${s.id}">${dn}/${tot} mastered</div>
       <div class="prog-text" style="margin-top:2px;font-size:.7rem;">
-        <span style="color:#3aaa6b;">✓${at.correct}</span>
+        <span style="color:#3aaa6b;cursor:help;" title="${esc(wordsTooltip(correctWordsList(s.id,s.year)))}">✓${at.correct}</span>
         &nbsp;
-        <span style="color:#e8547a;">✗${at.incorrect}</span>
+        <span style="color:#e8547a;cursor:help;" title="${esc(wordsTooltip(incorrectWordsList(s.id,s.year)))}">✗${at.incorrect}</span>
       </div>
     </div>`;
   }
@@ -1745,11 +1766,13 @@ function renderProgressTabContent(s,el){
     <div class="progress-stats">
       <div class="stat-box"><div class="sv" style="color:${YC[s.year]}">${dn}</div><div class="sl">Mastered</div></div>
       <div class="stat-box"><div class="sv">${tot-dn}</div><div class="sl">Remaining</div></div>
-      <div class="stat-box"><div class="sv" style="color:#3aaa6b">${at.correct}</div><div class="sl">Correct ✓</div></div>
-      <div class="stat-box"><div class="sv" style="color:#e8547a">${at.incorrect}</div><div class="sl">Incorrect ✗</div></div>
+      <div class="stat-box"><div class="sv" style="color:#3aaa6b;cursor:help;" title="${esc(wordsTooltip(correctWordsList(s.id,s.year)))}">${at.correct}</div><div class="sl">Correct ✓</div></div>
+      <div class="stat-box"><div class="sv" style="color:#e8547a;cursor:help;" title="${esc(wordsTooltip(incorrectWordsList(s.id,s.year)))}">${at.incorrect}</div><div class="sl">Incorrect ✗</div></div>
       <div class="stat-box"><div class="sv" style="color:${YC[s.year]}">${accuracy}%</div><div class="sl">Accuracy</div></div>
       <div class="stat-box"><div class="sv">${pct}%</div><div class="sl">Complete</div></div>
     </div>
+
+    ${testHistoryHtml}
 
     <div class="chart-card">
       <h3>📊 Set Breakdown — Mastered vs Remaining</h3>
@@ -1767,7 +1790,6 @@ function renderProgressTabContent(s,el){
       <canvas id="line-c" height="155"></canvas>
     </div>
 
-    ${testHistoryHtml}
     ${archHtml}`;
 
   requestAnimationFrame(()=>{
