@@ -1705,6 +1705,36 @@ function renderProgressTabContent(s,el){
   const totalAtt=at.correct+at.incorrect;
   const accuracy=totalAtt?Math.round(at.correct/totalAtt*100):0;
 
+  // Test history — every finalized Friday test, most recent first
+  const wkAll=LS.weeklyLists()[s.id]||{};
+  const testedWeeks=Object.keys(wkAll)
+    .map(k=>parseInt(k))
+    .filter(w=>wkAll[w]&&wkAll[w].testDone)
+    .sort((a,b)=>b-a);
+  let testHistoryHtml='';
+  if(testedWeeks.length){
+    const rows=testedWeeks.map(w=>{
+      const wl=wkAll[w];
+      const testWords=wl.results.__testWords||wl.words;
+      const testedBy=wl.results.__testedBy||'👩‍🏫 Teacher'; // fallback for tests saved before this was tracked
+      const correctCount=testWords.filter(word=>wl.results[word]==='correct').length;
+      const chips=testWords.map(word=>{
+        const ok=wl.results[word]==='correct';
+        return `<span class="attempt-badge ${ok?'correct':'incorrect'}">${ok?'✓':'✗'} ${esc(word)}</span>`;
+      }).join('');
+      return `<div class="archive-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="year-badge" style="background:${YC[s.year]};margin-top:0;">Week ${w}</span>
+          <span style="font-weight:800;font-size:.9rem;">${esc(wl.testDate||'—')}</span>
+          <span style="font-size:.78rem;color:var(--muted);font-weight:700;">Tested by ${esc(testedBy)}</span>
+          <span style="font-size:.78rem;font-weight:800;color:${YC[s.year]};margin-left:auto;">${correctCount}/${testWords.length} correct</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">${chips}</div>
+      </div>`;
+    }).join('');
+    testHistoryHtml=`<div class="chart-card"><h3>🗓️ Test History</h3>${rows}</div>`;
+  }
+
   // Archive section
   let archHtml='';
   if(archives.length){
@@ -1737,6 +1767,7 @@ function renderProgressTabContent(s,el){
       <canvas id="line-c" height="155"></canvas>
     </div>
 
+    ${testHistoryHtml}
     ${archHtml}`;
 
   requestAnimationFrame(()=>{
@@ -2165,6 +2196,13 @@ function setWeeklyResult(sid,weekIndex,word,type){
   refreshDashboardCard(sid);
 }
 
+function currentTesterLabel(){
+  if(isHelperActive())return `🌟 ${helperSession.name} (Trusted Tester)`;
+  if(isRelieverActive())return '🧑‍🏫 Reliever';
+  if(isTeacher())return '👩‍🏫 Teacher';
+  return '👩‍🏫 Teacher';
+}
+
 function finalizeWeeklyTest(sid,weekIndex){
   const all=LS.weeklyLists();
   const wl=all[sid]?.[weekIndex];if(!wl)return;
@@ -2172,6 +2210,7 @@ function finalizeWeeklyTest(sid,weekIndex){
   const missing=testWords.filter(w=>!wl.results[w]);
   if(missing.length){alert(`Please mark all ${testWords.length} words correct or incorrect first.`);return;}
   wl.testDone=true;wl.testDate=tod();
+  wl.results.__testedBy=currentTesterLabel();
   LS.saveWeeklyLists(all);
   getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
   renderLessonContent();
