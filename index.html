@@ -673,7 +673,7 @@ async function syncStudents(students){
 }
 
 async function syncProgress(progObj){
-  if(!isTeacher()||!sbReady())return;
+  if((!isTeacher()&&!isHelperActive()&&!isRelieverActive())||!sbReady())return;
   try{
     for(const [sid,words] of Object.entries(progObj)){
       const sidNum=parseInt(sid);
@@ -690,7 +690,7 @@ async function syncProgress(progObj){
 }
 
 async function syncHistory(histObj){
-  if(!isTeacher()||!sbReady())return;
+  if((!isTeacher()&&!isHelperActive()&&!isRelieverActive())||!sbReady())return;
   try{
     const rows=[];
     Object.entries(histObj).forEach(([sid,entries])=>{
@@ -717,7 +717,7 @@ async function syncArchives(archObj){
 }
 
 async function syncWeeklyLists(wkObj){
-  if(!isTeacher()||!sbReady())return;
+  if((!isTeacher()&&!isHelperActive()&&!isRelieverActive())||!sbReady())return;
   try{
     const rows=[];
     Object.entries(wkObj).forEach(([sid,weeks])=>{
