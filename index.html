@@ -2255,6 +2255,13 @@ function finalizeWeeklyTest(sid,weekIndex){
   if(missing.length){alert(`Please mark all ${testWords.length} words correct or incorrect first.`);return;}
   wl.testDone=true;wl.testDate=tod();
   wl.results.__testedBy=currentTesterLabel();
+  // If next week's list was already built (e.g. from previewing it via the
+  // Week dropdown before this test was finalized), it was generated from
+  // stale progress and needs to be thrown away so it gets rebuilt below
+  // using the results that were just locked in. Never touch it if that
+  // week's own test has already been done — that would erase real work.
+  const nextWk=all[sid][weekIndex+1];
+  if(nextWk&&!nextWk.testDone){delete all[sid][weekIndex+1];}
   LS.saveWeeklyLists(all);
   getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
   flushPendingSyncs(); // this is the moment that matters most — don't wait on the debounce timer
