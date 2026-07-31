@@ -194,7 +194,7 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
 @page{size:A4 portrait;margin:15mm 15mm 15mm 15mm;}
 @media print{
   header,.back-btn,.header-actions,.detail-tabs,.delete-btn,
-  #page-students,#page-wordlists,#page-data,#page-student-detail,#page-lessons{display:none!important;}
+  #page-students,#page-wordlists,#page-data,#page-student-detail,#page-lessons,#page-test{display:none!important;}
   body{background:#fff;}
   #print-report{display:block!important;}
   #print-wordlist{display:block!important;}
@@ -373,6 +373,7 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
   <nav>
     <button class="active" onclick="showPage('students')">Students</button>
     <button onclick="showPage('lessons')">📅 Lesson Planner</button>
+    <button onclick="showPage('test')">📝 Spelling Test</button>
     <button onclick="showPage('wordlists')">Word Lists</button>
     <button id="nav-data-btn" onclick="showPage('data')" style="display:none;">Data</button>
   </nav>
@@ -476,12 +477,42 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
         <select id="lp-day" onchange="renderLessonContent()">
           <option value="0">Monday</option><option value="1">Tuesday</option>
           <option value="2">Wednesday</option><option value="3">Thursday — Stop, Spell, Smell</option>
-          <option value="4">Friday — Spelling Test</option>
+          <option value="4">Friday</option>
         </select>
       </div>
     </div>
   </div>
   <div id="lesson-content"></div>
+</div>
+
+<!-- ════ SPELLING TEST ════ -->
+<div class="page" id="page-test">
+  <div class="section-title">📝 Spelling Test <span class="pill">Individual · tracks each student's own words</span></div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="form-row" style="margin-bottom:0;">
+      <div class="form-group">
+        <label>Student</label>
+        <select id="tp-student" onchange="renderTestContent()" style="min-width:190px;"></select>
+      </div>
+      <div class="form-group">
+        <label>Term</label>
+        <select id="tp-term" onchange="renderTestContent()">
+          <option value="1">Term 1</option><option value="2">Term 2</option>
+          <option value="3">Term 3</option><option value="4">Term 4</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Week</label>
+        <select id="tp-week" onchange="renderTestContent()">
+          <option value="1">Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option>
+          <option value="4">Week 4</option><option value="5">Week 5</option><option value="6">Week 6</option>
+          <option value="7">Week 7</option><option value="8">Week 8</option><option value="9">Week 9</option>
+          <option value="10">Week 10</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="test-content"></div>
 </div>
 
 <!-- ════ DATA ════ -->
@@ -861,6 +892,7 @@ function applyGating(){
   }
   if(!isTeacher()&&document.getElementById('page-data')?.classList.contains('active')){showPage('students');}
   if(document.getElementById('page-lessons')?.classList.contains('active')&&document.getElementById('lp-student'))renderLessonContent();
+  if(document.getElementById('page-test')?.classList.contains('active')&&document.getElementById('tp-student'))renderTestContent();
 
   if(isLocked()&&!passwordRecoveryPending){
     const overlay=document.getElementById('auth-modal-overlay');
@@ -2180,6 +2212,28 @@ function wlSw(y){wlY=y;renderWordListPage();}
 // ════════════════════════════════════════════════════════
 function masterBank(year){return Object.values(WL[year]).flat();}
 
+// ════════════════════════════════════════════════════════
+//   BAKED LESSON WORDS — level-wide, not per-student
+//   Every student in the same year level sees the exact same
+//   words for the same term/week/day, generated deterministically
+//   from (year, weekIndex, day) so nothing needs to be stored.
+//   This is intentionally independent of any individual
+//   student's test history/progress — only the Test page (below)
+//   tracks per-student mastery, correct/incorrect, and rolling lists.
+// ════════════════════════════════════════════════════════
+function seededRand(seed){
+  let s=seed>>>0;
+  return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};
+}
+function getBakedWords(year,weekIndex,day){
+  const bank=masterBank(year);
+  if(!bank.length)return [];
+  const rand=seededRand(year*100000+weekIndex*10+day+7);
+  const arr=[...bank];
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr.slice(0,10);
+}
+
 function getWeekList(sid,weekIndex){
   const s=LS.students().find(x=>x.id===sid);if(!s)return null;
   const all=LS.weeklyLists();
@@ -2265,7 +2319,7 @@ function finalizeWeeklyTest(sid,weekIndex){
   LS.saveWeeklyLists(all);
   getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
   flushPendingSyncs(); // this is the moment that matters most — don't wait on the debounce timer
-  renderLessonContent();
+  renderTestContent();
 }
 
 function redoWeeklyTest(sid,weekIndex){
@@ -2274,7 +2328,7 @@ function redoWeeklyTest(sid,weekIndex){
     const wl=all[sid]?.[weekIndex];if(!wl)return;
     wl.testDone=false;
     LS.saveWeeklyLists(all);
-    renderLessonContent();
+    renderTestContent();
   },'Reopen');
 }
 
@@ -2440,8 +2494,11 @@ const ACTIVITIES=[
 
 function pickActivitiesForWeek(weekIndex){
   const n=ACTIVITIES.length;
-  const start=((weekIndex-1)*3)%n;
-  return [0,1,2].map(o=>ACTIVITIES[(start+o)%n]);
+  const days=[0,1,2,4]; // Mon, Tue, Wed, Fri — Thursday (3) is the special Stop/Spell/Smell activity
+  const start=((weekIndex-1)*days.length)%n;
+  const map={};
+  days.forEach((d,i)=>{map[d]=ACTIVITIES[(start+i)%n];});
+  return map;
 }
 
 let lessonOverrides={}; // key `${weekIndex}-${day}` -> activity id, for manual "shuffle" swaps (session only)
@@ -2513,6 +2570,12 @@ function wordChipsHtml(sid,wl){
   }).join('')}</div>`;
 }
 
+// Lesson-plan words are baked per level/week/day, not tied to any one
+// student's progress, so there's no individual mastery state to show here.
+function bakedWordChipsHtml(words){
+  return `<div class="word-chip-row">${words.map(w=>`<span class="wchip">${esc(w)}</span>`).join('')}</div>`;
+}
+
 function renderLessonContent(){
   const el=document.getElementById('lesson-content');
   const sidRaw=document.getElementById('lp-student').value;
@@ -2523,9 +2586,70 @@ function renderLessonContent(){
   const week=parseInt(document.getElementById('lp-week').value);
   const day=parseInt(document.getElementById('lp-day').value);
   const weekIndex=(term-1)*10+week;
-  let wl=getWeekList(sid,weekIndex);
+  // Lesson activities only need the student's level — the words are baked
+  // per (year, week, day), so every student in the same year level gets
+  // the exact same activity and words for a given week/day. Individual
+  // progress and test history live entirely in the Test page instead.
+  const words=getBakedWords(s.year,weekIndex,day);
   const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  if(day!==4||isTeacher()||isHelperActive()||isRelieverActive())stopShhhMeter();
+  stopShhhMeter(); // the Shhh-o-Meter only belongs to the Test page's Quiet Zone now
+
+  if(!words.length){
+    el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>No word list found for Year ${s.year} yet — check the Word Lists page.</p></div>`;
+    return;
+  }
+
+  let body='';
+  if(day===3){
+    body=renderStopSpellSmell(s,words,weekIndex);
+  }else{
+    const key=`${weekIndex}-${day}`;
+    const actId=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
+    const act=ACTIVITIES.find(a=>a.id===actId);
+    body=renderActivityCard(act,words,weekIndex,day);
+  }
+
+  el.innerHTML=`
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${s.color}">${ini(s.name)}</div>
+        <div>
+          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
+          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This week's practice words (${words.length} words)</div>
+        </div>
+      </div>
+      ${bakedWordChipsHtml(words)}
+    </div>
+    ${body}`;
+}
+
+// ════════════════════════════════════════════════════════
+//   SPELLING TEST — standalone page
+//   This is the ONLY place a student's individual rolling word
+//   list, mastery, correct/incorrect history, and stats live.
+//   Lesson plan activities above never touch this data.
+// ════════════════════════════════════════════════════════
+function renderTestPage(){
+  const sel=document.getElementById('tp-student');
+  const students=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
+  const prev=sel.value;
+  sel.innerHTML=students.length?students.map(s=>`<option value="${s.id}">${esc(s.name)} (Year ${s.year})</option>`).join(''):`<option value="">No students yet</option>`;
+  if(prev&&students.find(s=>String(s.id)===prev))sel.value=prev;
+  renderTestContent();
+}
+
+function renderTestContent(){
+  const el=document.getElementById('test-content');
+  const sidRaw=document.getElementById('tp-student').value;
+  if(!sidRaw){el.innerHTML=`<div class="empty-state"><div class="emoji">📝</div><p>Add a student first to run their spelling test!</p></div>`;return;}
+  const sid=parseInt(sidRaw);
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const term=parseInt(document.getElementById('tp-term').value);
+  const week=parseInt(document.getElementById('tp-week').value);
+  const weekIndex=(term-1)*10+week;
+  let wl=getWeekList(sid,weekIndex);
+  // Keep the mic running only for the student-facing Quiet Zone view.
+  if(isTeacher()||isHelperActive()||isRelieverActive())stopShhhMeter();
 
   if(!wl.words.length){
     // Self-heal: an empty week should only ever mean every word in the level
@@ -2549,24 +2673,14 @@ function renderLessonContent(){
     return;
   }
 
-  let body='';
-  if(day===3){
-    body=renderStopSpellSmell(s,wl,weekIndex);
-  }else if(day===4){
-    body=(isTeacher()||isHelperActive()||isRelieverActive())?renderFridayTest(s,wl,weekIndex):renderQuietZone(wl,weekIndex);
-  }else{
-    const key=`${weekIndex}-${day}`;
-    const actId=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
-    const act=ACTIVITIES.find(a=>a.id===actId);
-    body=renderActivityCard(act,wl.words,weekIndex,day);
-  }
+  const body=(isTeacher()||isHelperActive()||isRelieverActive())?renderFridayTest(s,wl,weekIndex):renderQuietZone(wl,weekIndex);
 
   el.innerHTML=`
     <div class="card">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${s.color}">${ini(s.name)}</div>
         <div>
-          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
+          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · Spelling Test</div>
           <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This week's word list (${wl.words.length} words)</div>
         </div>
       </div>
@@ -2644,9 +2758,9 @@ function toggleSssWord(word){
   renderLessonContent();
 }
 
-function renderStopSpellSmell(s,wl,weekIndex){
-  sssPicked=sssPicked.filter(w=>wl.words.includes(w));
-  const pickerHtml=wl.words.map(w=>`<span class="sss-pick-chip ${sssPicked.includes(w)?'picked':''}" onclick="toggleSssWord('${esc(w).replace(/'/g,"\\'")}')">${esc(w)}</span>`).join('');
+function renderStopSpellSmell(s,words,weekIndex){
+  sssPicked=sssPicked.filter(w=>words.includes(w));
+  const pickerHtml=words.map(w=>`<span class="sss-pick-chip ${sssPicked.includes(w)?'picked':''}" onclick="toggleSssWord('${esc(w).replace(/'/g,"\\'")}')">${esc(w)}</span>`).join('');
   const cardsHtml=sssPicked.map(w=>`
     <div class="sss-word-card">
       <h4>🛑 ${esc(w)} 🔤 👃</h4>
@@ -2698,7 +2812,7 @@ function toggleTrustedTester(sid,checked){
     const s=students.find(x=>x.id===sid);
     if(s){s.isTrusted=false;s.helperPass='';}
     LS.saveStudents(students);
-    renderLessonContent();
+    renderTestContent();
   }
 }
 function renderSetHelperPasswordModal(sid){
@@ -2715,7 +2829,7 @@ function renderSetHelperPasswordModal(sid){
 }
 function cancelTrustedToggle(){
   closeAuthModal();
-  renderLessonContent(); // resets the checkbox visual state since nothing was saved
+  renderTestContent(); // resets the checkbox visual state since nothing was saved
 }
 function confirmSetHelperPassword(sid){
   const pass=document.getElementById('helper-pass-input').value.trim();
@@ -2725,7 +2839,7 @@ function confirmSetHelperPassword(sid){
   if(s){s.isTrusted=true;s.helperPass=simpleHash(pass);}
   LS.saveStudents(students);
   closeAuthModal();
-  renderLessonContent();
+  renderTestContent();
 }
 
 function renderFridayTest(s,wl,weekIndex){
@@ -2736,8 +2850,8 @@ function renderFridayTest(s,wl,weekIndex){
     return `<div class="ftest-row">
       <div class="ftest-word">${esc(w)}</div>
       <div class="ftest-actions">
-        <button class="ftest-btn ${r==='correct'?'correct-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','correct');renderLessonContent();" title="Correct">✓</button>
-        <button class="ftest-btn ${r==='incorrect'?'incorrect-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','incorrect');renderLessonContent();" title="Incorrect">✗</button>
+        <button class="ftest-btn ${r==='correct'?'correct-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','correct');renderTestContent();" title="Correct">✓</button>
+        <button class="ftest-btn ${r==='incorrect'?'incorrect-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','incorrect');renderTestContent();" title="Incorrect">✗</button>
       </div>
     </div>`;
   }).join('');
@@ -2816,13 +2930,13 @@ function renderQZBoardOnly(){
 function startQuietZoneGame(){
   const n1=document.getElementById('qz-name1').value.trim()||'Player 1';
   const n2=document.getElementById('qz-name2').value.trim()||'Player 2';
-  const sid=parseInt(document.getElementById('lp-student').value);
-  const term=parseInt(document.getElementById('lp-term').value),week=parseInt(document.getElementById('lp-week').value);
+  const sid=parseInt(document.getElementById('tp-student').value);
+  const term=parseInt(document.getElementById('tp-term').value),week=parseInt(document.getElementById('tp-week').value);
   const weekIndex=(term-1)*10+week;
   const wl=getWeekList(sid,weekIndex);
   const words=wl.words.slice(0,6);
   window.qz={weekIndex,sid,words,names:[n1,n2],scores:[0,0],turn:0,tiles:buildQZTiles(words),flipped:[],lock:false};
-  renderLessonContent();
+  renderTestContent();
 }
 
 function flipQZTile(i){
@@ -2909,7 +3023,7 @@ function shhhAward(noisyIdx){
 }
 
 function renderQuietZone(wl,weekIndex){
-  const sid=parseInt(document.getElementById('lp-student').value);
+  const sid=parseInt(document.getElementById('tp-student').value);
   const needsSetup=!window.qz||window.qz.weekIndex!==weekIndex||window.qz.sid!==sid;
   if(needsSetup){
     return `<div class="activity-card">
@@ -2938,7 +3052,7 @@ function renderQuietZone(wl,weekIndex){
       <div id="qz-grid-wrap"><div class="qz-grid">${qzTileHtml()}</div></div>
       <div class="activity-actions">
         <button class="btn btn-ghost" onclick="newQZRound()">🔄 New Round (keep scores)</button>
-        <button class="btn btn-ghost" onclick="window.qz=null;renderLessonContent();">🔁 Restart with new players</button>
+        <button class="btn btn-ghost" onclick="window.qz=null;renderTestContent();">🔁 Restart with new players</button>
       </div>
       <div class="shhh-panel" id="shhh-panel">
         <div style="font-weight:900;color:var(--primary-dark);">🤫 Shhh-o-Meter</div>
@@ -2952,8 +3066,9 @@ function printLessonWorksheet(kind,weekIndex){
   const sid=parseInt(document.getElementById('lp-student').value);
   const s=LS.students().find(x=>x.id===sid);if(!s)return;
   const term=document.getElementById('lp-term').value,week=document.getElementById('lp-week').value;
+  const day=parseInt(document.getElementById('lp-day').value);
   const wi=weekIndex||((parseInt(term)-1)*10+parseInt(week));
-  const wl=getWeekList(sid,wi);
+  const words=getBakedWords(s.year,wi,day);
   let html='';
   if(kind==='sss'){
     html=`<div class="lsnp-page">
@@ -2973,17 +3088,17 @@ function printLessonWorksheet(kind,weekIndex){
     const act=ACTIVITIES.find(a=>a.id===kind);
     let content='';
     if(act.puzzle==='wordsearch'){
-      const {grid,size,placed}=buildWordSearch(wl.words);
+      const {grid,size,placed}=buildWordSearch(words);
       content=`<div class="ws-grid" style="grid-template-columns:repeat(${size},22pt);">${grid.map(row=>row.map(ch=>`<div class="ws-cell" style="width:22pt;height:22pt;">${ch}</div>`).join('')).join('')}</div>
       <div class="puzzle-word-list">${placed.map(w=>`<span class="wchip">${w}</span>`).join('')}</div>`;
     }else if(act.puzzle==='scramble'){
-      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item"><div class="sword">${scrambleWord(w)}</div></div>`).join('')}</div>`;
+      content=`<div class="scramble-grid">${words.map(w=>`<div class="scramble-item"><div class="sword">${scrambleWord(w)}</div></div>`).join('')}</div>`;
     }else if(act.puzzle==='missing'){
-      content=`<div class="missing-grid">${wl.words.map(w=>`<div class="missing-item"><div class="mword">${missingLettersWord(w)}</div></div>`).join('')}</div>`;
+      content=`<div class="missing-grid">${words.map(w=>`<div class="missing-item"><div class="mword">${missingLettersWord(w)}</div></div>`).join('')}</div>`;
     }else if(act.puzzle==='lettercards'){
-      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item">${letterCardsHtml(w)}</div>`).join('')}</div>`;
+      content=`<div class="scramble-grid">${words.map(w=>`<div class="scramble-item">${letterCardsHtml(w)}</div>`).join('')}</div>`;
     }else if(act.puzzle==='lootscore'){
-      content=`<div class="scramble-grid">${wl.words.map(w=>`<div class="scramble-item"><div style="font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:2px;">${esc(w.toUpperCase())}</div><div style="margin-top:32pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div></div>`).join('')}</div>`;
+      content=`<div class="scramble-grid">${words.map(w=>`<div class="scramble-item"><div style="font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:2px;">${esc(w.toUpperCase())}</div><div style="margin-top:32pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div></div>`).join('')}</div>`;
     }
     html=`<div class="lsnp-page"><div class="lsnp-header"><h1>${act.emoji} ${act.title}</h1><p>${esc(s.name)} · Term ${term}, Week ${week}</p></div>${content}</div>`;
   }
@@ -3047,10 +3162,11 @@ function showPage(id){
   if(id==='data'&&!isTeacher()){openLoginModal();return;}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('header nav button').forEach((b,i)=>b.classList.toggle('active',['students','lessons','wordlists','data'][i]===id));
+  document.querySelectorAll('header nav button').forEach((b,i)=>b.classList.toggle('active',['students','lessons','test','wordlists','data'][i]===id));
   if(id==='wordlists')renderWordListPage();
   if(id==='students')renderStudents();
   if(id==='lessons')renderLessonPlannerPage();
+  if(id==='test')renderTestPage();
 }
 
 // ════════════════════════════════════════════════════════
