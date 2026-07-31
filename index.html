@@ -171,6 +171,14 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
 .year-tab.active{color:#fff;border-color:transparent;}
 .wl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px;padding:16px;}
 .wl-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-size:.88rem;font-weight:700;text-align:center;}
+.wl-chip-edit{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 9px;}
+.wl-chip-edit input{border:none;background:transparent;font-family:inherit;font-size:.88rem;font-weight:700;width:100%;min-width:0;color:var(--text);}
+.wl-chip-edit input:focus{outline:2px solid var(--primary);border-radius:4px;}
+.wl-chip-del{border:none;background:#f3d4da;color:#a12f45;font-weight:900;width:20px;height:20px;border-radius:50%;cursor:pointer;flex-shrink:0;line-height:1;font-size:.85rem;}
+.wl-chip-del:hover{background:#e8a9b6;}
+.wl-chip-add{border-style:dashed;}
+.wl-chip-add input{border:none;background:transparent;font-family:inherit;font-size:.88rem;font-weight:700;width:100%;text-align:center;color:var(--muted);}
+.wl-chip-add input:focus{outline:none;color:var(--text);}
 
 /* CATCH-UP MODE */
 .catchup-checkbox{
@@ -453,8 +461,11 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
   <div class="card" style="margin-bottom:18px;">
     <div class="form-row" style="margin-bottom:0;">
       <div class="form-group">
-        <label>Student</label>
-        <select id="lp-student" onchange="renderLessonContent()" style="min-width:190px;"></select>
+        <label>Spelling Level</label>
+        <select id="lp-level" onchange="renderLessonContent()" style="min-width:150px;">
+          <option value="4">Year 4</option><option value="5">Year 5</option><option value="6">Year 6</option>
+          <option value="7">Year 7</option><option value="8">Year 8</option><option value="9">Year 9</option>
+        </select>
       </div>
       <div class="form-group">
         <label>Term</label>
@@ -495,20 +506,8 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
         <select id="tp-student" onchange="renderTestContent()" style="min-width:190px;"></select>
       </div>
       <div class="form-group">
-        <label>Term</label>
-        <select id="tp-term" onchange="renderTestContent()">
-          <option value="1">Term 1</option><option value="2">Term 2</option>
-          <option value="3">Term 3</option><option value="4">Term 4</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Week</label>
-        <select id="tp-week" onchange="renderTestContent()">
-          <option value="1">Week 1</option><option value="2">Week 2</option><option value="3">Week 3</option>
-          <option value="4">Week 4</option><option value="5">Week 5</option><option value="6">Week 6</option>
-          <option value="7">Week 7</option><option value="8">Week 8</option><option value="9">Week 9</option>
-          <option value="10">Week 10</option>
-        </select>
+        <label>Test Date</label>
+        <input type="date" id="tp-date">
       </div>
     </div>
   </div>
@@ -585,7 +584,7 @@ if(SB){
 // ════════════════════════════════════════════════════════
 //   WORD DATABASE
 // ════════════════════════════════════════════════════════
-const WL = {
+const WL_DEFAULT = {
   4:{
     "Words":["address","allowed","answer","appear","April","arrive","believe","below","bought","breakfast","build","busy","caught","centre","certain","circle","dead","December","decide","died","different","disappear","doesn't","dollars","done","early","earth","eighth","enough","everything","family","famous","father","favourite","field","finished","forward","Friday","front","fruit","group","guide","happy","heart","high","hopped","important","July","June","learn","length","light","luckily","March","might","minute","Monday","myself","naughty","notice","November","October","often","own","paper","parents","perhaps","picture","plant","police","potatoes","presents","pulled","question","quiet","quite","recent","Saturday","scared","second","sentence","September","straight","strange","Sunday","surprise","threw","Thursday","Tuesday","watch","we're","Wednesday","while","whole","without","woman","won't","words","year","you're"]
   },
@@ -611,6 +610,20 @@ const WL = {
     "Commonly Confused":["accept","except","advice","advise","affect","effect","allowed","aloud","alter","altar","complement","compliment","continuous","continual","councillor","counsellor","course","coarse","current","currant","defuse","diffuse","desert","dessert","die","dye","draft","draught","dual","duel","emigrant","immigrant","envelop","envelope","fawn","faun","flounder","founder","forego","forgo","formerly","formally","grisly","grizzly","hoard","horde","imply","infer","its","it's","leant","lent","lightning","lightening","loath","loathe","loose","lose","luxuriant","luxurious","palate","palette","pedal","peddle","piece","peace","practice","practise","principal","principle","regretful","regrettable","shear","sheer","stationary","stationery","story","storey","your","you're","tortuous","torturous","waist","waste"]
   }
 };
+
+// The word bank a teacher edits (fix a typo, etc.) is saved locally in this
+// browser so it survives reloads, on top of the built-in defaults above.
+// NOTE: this currently persists to this device only — it is not yet synced
+// through Supabase like students/progress/tests are, since that would need
+// a new database table.
+let WL;
+try{
+  const saved=JSON.parse(localStorage.getItem('wl_wordbank')||'null');
+  WL=saved||JSON.parse(JSON.stringify(WL_DEFAULT));
+}catch{
+  WL=JSON.parse(JSON.stringify(WL_DEFAULT));
+}
+function saveWordBank(){localStorage.setItem('wl_wordbank',JSON.stringify(WL));}
 
 const YC={4:'#e8547a',5:'#7c5cbf',6:'#f07844',7:'#3aaa6b',8:'#2fa8d5',9:'#9b59b6'};
 const AVC=['#e8547a','#7c5cbf','#2fa8d5','#3aaa6b','#f07844','#e84393','#40c9a2','#f56042','#a259ff','#3b82f6'];
@@ -891,7 +904,7 @@ function applyGating(){
     badge.style.display='none';
   }
   if(!isTeacher()&&document.getElementById('page-data')?.classList.contains('active')){showPage('students');}
-  if(document.getElementById('page-lessons')?.classList.contains('active')&&document.getElementById('lp-student'))renderLessonContent();
+  if(document.getElementById('page-lessons')?.classList.contains('active')&&document.getElementById('lp-level'))renderLessonContent();
   if(document.getElementById('page-test')?.classList.contains('active')&&document.getElementById('tp-student'))renderTestContent();
 
   if(isLocked()&&!passwordRecoveryPending){
@@ -2198,11 +2211,107 @@ function printClassWordLists(){
 }
 // ════════════════════════════════════════════════════════
 let wlY=4;
+let wlEditMode=false;
+function jsEsc(str){return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+
 function renderWordListPage(){
-  document.getElementById('year-tabs-wl').innerHTML=[4,5,6,7,8].map(y=>`<button class="year-tab ${y===wlY?'active':''}" style="${y===wlY?`background:${YC[y]};`:''}" onclick="wlSw(${y})">Year ${y}</button>`).join('');
-  document.getElementById('wordlist-content').innerHTML=Object.entries(WL[wlY]).map(([sn,ws])=>`<div class="set-card" style="margin-bottom:16px;"><div class="set-header" style="background:${YC[wlY]}">📚 ${sn}<span class="hcount">${ws.length} words</span></div><div class="wl-grid">${ws.map(w=>`<div class="wl-chip">${esc(w)}</div>`).join('')}</div></div>`).join('');
+  document.getElementById('year-tabs-wl').innerHTML=[4,5,6,7,8,9].map(y=>`<button class="year-tab ${y===wlY?'active':''}" style="${y===wlY?`background:${YC[y]};`:''}" onclick="wlSw(${y})">Year ${y}</button>`).join('')
+    +`<button class="btn ${wlEditMode?'btn-primary':'btn-ghost'}" style="margin-left:10px;" onclick="toggleWlEdit()">${wlEditMode?'✅ Done Editing':'✏️ Edit Words'}</button>`;
+  document.getElementById('wordlist-content').innerHTML=
+    (wlEditMode?`<p class="activity-blurb" style="margin:0 0 14px;">Click a word to fix a spelling mistake, tap × to remove one, or use the dashed box to add a new word. Changes apply everywhere — lesson activities, tests already in progress, and saved student results.</p>`:'')
+    +Object.entries(WL[wlY]).map(([sn,ws])=>{
+      const chips=ws.map(w=>wlEditMode?
+        `<div class="wl-chip wl-chip-edit">
+          <input type="text" value="${esc(w)}" onchange="commitWordEdit(${wlY},'${jsEsc(sn)}','${jsEsc(w)}',this.value)">
+          <button class="wl-chip-del" title="Remove word" onclick="deleteWordUI(${wlY},'${jsEsc(sn)}','${jsEsc(w)}')">×</button>
+        </div>`
+        :`<div class="wl-chip">${esc(w)}</div>`
+      ).join('');
+      const addRow=wlEditMode?`<div class="wl-chip wl-chip-add"><input type="text" placeholder="+ add word" onkeydown="if(event.key==='Enter'){addWordUI(${wlY},'${jsEsc(sn)}',this.value);this.value='';}"></div>`:'';
+      return `<div class="set-card" style="margin-bottom:16px;"><div class="set-header" style="background:${YC[wlY]}">📚 ${sn}<span class="hcount">${ws.length} words</span></div><div class="wl-grid">${chips}${addRow}</div></div>`;
+    }).join('');
 }
 function wlSw(y){wlY=y;renderWordListPage();}
+function toggleWlEdit(){wlEditMode=!wlEditMode;renderWordListPage();}
+
+// Renames a word everywhere it's used: the word bank itself, every
+// student's individual progress record, and every saved/pending test
+// (word list + correct/incorrect result) that still references it — so a
+// spelling-mistake fix in the word bank doesn't leave stale copies behind.
+function editWordGlobally(year,category,oldWord,newWord){
+  const cat=WL[year]?.[category];if(!cat)return false;
+  const idx=cat.indexOf(oldWord);if(idx===-1)return false;
+  if(cat.some((w,i)=>i!==idx&&w.toLowerCase()===newWord.toLowerCase())){
+    alert(`"${newWord}" is already in this list.`);return false;
+  }
+  cat[idx]=newWord;
+  saveWordBank();
+
+  const prog=LS.progress();
+  let progChanged=false;
+  Object.keys(prog).forEach(sid=>{
+    const p=prog[sid];
+    if(p&&Object.prototype.hasOwnProperty.call(p,oldWord)){
+      if(!p[newWord])p[newWord]=p[oldWord];
+      delete p[oldWord];
+      progChanged=true;
+    }
+  });
+  if(progChanged)LS.saveProgress(prog);
+
+  const all=LS.weeklyLists();
+  let wkChanged=false;
+  Object.keys(all).forEach(sid=>{
+    Object.keys(all[sid]).forEach(w=>{
+      const wl=all[sid][w];
+      let touched=false;
+      if(wl.words&&wl.words.includes(oldWord)){
+        wl.words=wl.words.map(x=>x===oldWord?newWord:x);
+        touched=true;
+      }
+      if(wl.results&&Object.prototype.hasOwnProperty.call(wl.results,oldWord)){
+        wl.results[newWord]=wl.results[oldWord];
+        delete wl.results[oldWord];
+        touched=true;
+      }
+      if(wl.results&&Array.isArray(wl.results.__testWords)&&wl.results.__testWords.includes(oldWord)){
+        wl.results.__testWords=wl.results.__testWords.map(x=>x===oldWord?newWord:x);
+        touched=true;
+      }
+      if(touched)wkChanged=true;
+    });
+  });
+  if(wkChanged)LS.saveWeeklyLists(all);
+
+  flushPendingSyncs();
+  return true;
+}
+
+function commitWordEdit(year,category,oldWord,rawNew){
+  const newWord=rawNew.trim();
+  if(!newWord||newWord===oldWord){renderWordListPage();return;}
+  editWordGlobally(year,category,oldWord,newWord);
+  renderWordListPage();
+}
+
+function deleteWordUI(year,category,word){
+  showConfirmModal(`Remove "${word}" from the Year ${year} list? This won't erase it from any student's saved history — only from future lessons and tests.`,()=>{
+    const cat=WL[year]?.[category];if(!cat)return;
+    const idx=cat.indexOf(word);if(idx===-1)return;
+    cat.splice(idx,1);
+    saveWordBank();
+    renderWordListPage();
+  },'Remove');
+}
+
+function addWordUI(year,category,rawWord){
+  const word=rawWord.trim();if(!word)return;
+  const cat=WL[year]?.[category];if(!cat)return;
+  if(cat.some(w=>w.toLowerCase()===word.toLowerCase())){alert(`"${word}" is already in this list.`);return;}
+  cat.push(word);
+  saveWordBank();
+  renderWordListPage();
+}
 
 // ════════════════════════════════════════════════════════
 //   LESSON PLANNER — weekly word-list engine
@@ -2276,6 +2385,18 @@ function getWeekList(sid,weekIndex){
   return all[sid][weekIndex];
 }
 
+// The Test page no longer lets anyone pick a term/week — it just finds the
+// student's own next outstanding test automatically: the first round that
+// hasn't been tested yet (or the next new one if every round so far is done).
+function getCurrentTestRound(sid){
+  const all=LS.weeklyLists();
+  const rounds=Object.keys(all[sid]||{}).map(Number).sort((a,b)=>a-b);
+  for(const r of rounds){if(!all[sid][r].testDone)return r;}
+  return rounds.length?Math.max(...rounds)+1:1;
+}
+
+let justSavedTest=null; // {name,date} — shown once as a confirmation banner right after saving, then cleared
+
 function setWeeklyResult(sid,weekIndex,word,type){
   const all=LS.weeklyLists();
   const wl=all[sid]?.[weekIndex];if(!wl)return;
@@ -2301,13 +2422,13 @@ function currentTesterLabel(){
   return '👩‍🏫 Teacher';
 }
 
-function finalizeWeeklyTest(sid,weekIndex){
+function finalizeWeeklyTest(sid,weekIndex,testDateStr){
   const all=LS.weeklyLists();
   const wl=all[sid]?.[weekIndex];if(!wl)return;
   const testWords=wl.results.__testWords||wl.words;
   const missing=testWords.filter(w=>!wl.results[w]);
   if(missing.length){alert(`Please mark all ${testWords.length} words correct or incorrect first.`);return;}
-  wl.testDone=true;wl.testDate=tod();
+  wl.testDone=true;wl.testDate=formatDateNZ(testDateStr);
   wl.results.__testedBy=currentTesterLabel();
   // If next week's list was already built (e.g. from previewing it via the
   // Week dropdown before this test was finalized), it was generated from
@@ -2319,15 +2440,22 @@ function finalizeWeeklyTest(sid,weekIndex){
   LS.saveWeeklyLists(all);
   getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
   flushPendingSyncs(); // this is the moment that matters most — don't wait on the debounce timer
+  const s=LS.students().find(x=>x.id===sid);
+  justSavedTest=s?{sid,name:s.name,date:wl.testDate}:null;
   renderTestContent();
 }
 
-function redoWeeklyTest(sid,weekIndex){
-  showConfirmModal('Reopen this test for editing?',()=>{
-    const all=LS.weeklyLists();
-    const wl=all[sid]?.[weekIndex];if(!wl)return;
-    wl.testDone=false;
+// Since the Test page always jumps straight to the next outstanding round
+// after saving, this gives a one-click way back into the test that was
+// *just* completed, in case a word was marked wrong by mistake.
+function undoLastTest(sid){
+  const all=LS.weeklyLists();
+  const rounds=Object.keys(all[sid]||{}).map(Number).filter(r=>all[sid][r].testDone).sort((a,b)=>b-a);
+  if(!rounds.length){alert('No completed test to reopen yet.');return;}
+  showConfirmModal('Reopen the most recently saved test for editing?',()=>{
+    all[sid][rounds[0]].testDone=false;
     LS.saveWeeklyLists(all);
+    justSavedTest=null;
     renderTestContent();
   },'Reopen');
 }
@@ -2554,11 +2682,6 @@ function shuffleActivity(weekIndex,day){
 //   LESSON PLANNER — render
 // ════════════════════════════════════════════════════════
 function renderLessonPlannerPage(){
-  const sel=document.getElementById('lp-student');
-  const students=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
-  const prev=sel.value;
-  sel.innerHTML=students.length?students.map(s=>`<option value="${s.id}">${esc(s.name)} (Year ${s.year})</option>`).join(''):`<option value="">No students yet</option>`;
-  if(prev&&students.find(s=>String(s.id)===prev))sel.value=prev;
   renderLessonContent();
 }
 
@@ -2578,30 +2701,28 @@ function bakedWordChipsHtml(words){
 
 function renderLessonContent(){
   const el=document.getElementById('lesson-content');
-  const sidRaw=document.getElementById('lp-student').value;
-  if(!sidRaw){el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>Add a student first to build their lesson plan!</p></div>`;return;}
-  const sid=parseInt(sidRaw);
-  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const year=parseInt(document.getElementById('lp-level').value);
   const term=parseInt(document.getElementById('lp-term').value);
   const week=parseInt(document.getElementById('lp-week').value);
   const day=parseInt(document.getElementById('lp-day').value);
   const weekIndex=(term-1)*10+week;
-  // Lesson activities only need the student's level — the words are baked
+  // Lesson activities only need the spelling level — the words are baked
   // per (year, week, day), so every student in the same year level gets
-  // the exact same activity and words for a given week/day. Individual
-  // progress and test history live entirely in the Test page instead.
-  const words=getBakedWords(s.year,weekIndex,day);
+  // the exact same activity and words for a given week/day. There's no
+  // connection to any individual student here at all; that data lives
+  // entirely in the Test page instead.
+  const words=getBakedWords(year,weekIndex,day);
   const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
   stopShhhMeter(); // the Shhh-o-Meter only belongs to the Test page's Quiet Zone now
 
   if(!words.length){
-    el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>No word list found for Year ${s.year} yet — check the Word Lists page.</p></div>`;
+    el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>No word list found for Year ${year} yet — check the Word Lists page.</p></div>`;
     return;
   }
 
   let body='';
   if(day===3){
-    body=renderStopSpellSmell(s,words,weekIndex);
+    body=renderStopSpellSmell(words,weekIndex);
   }else{
     const key=`${weekIndex}-${day}`;
     const actId=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
@@ -2612,10 +2733,10 @@ function renderLessonContent(){
   el.innerHTML=`
     <div class="card">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${s.color}">${ini(s.name)}</div>
+        <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${YC[year]}">Y${year}</div>
         <div>
-          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
-          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This week's practice words (${words.length} words)</div>
+          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">Year ${year} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
+          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Same activity for every Year ${year} student (${words.length} words)</div>
         </div>
       </div>
       ${bakedWordChipsHtml(words)}
@@ -2628,6 +2749,9 @@ function renderLessonContent(){
 //   This is the ONLY place a student's individual rolling word
 //   list, mastery, correct/incorrect history, and stats live.
 //   Lesson plan activities above never touch this data.
+//   There's no term/week picker here — the app always finds the
+//   student's own next outstanding test automatically; the teacher
+//   just enters the date the test happened on.
 // ════════════════════════════════════════════════════════
 function renderTestPage(){
   const sel=document.getElementById('tp-student');
@@ -2635,6 +2759,8 @@ function renderTestPage(){
   const prev=sel.value;
   sel.innerHTML=students.length?students.map(s=>`<option value="${s.id}">${esc(s.name)} (Year ${s.year})</option>`).join(''):`<option value="">No students yet</option>`;
   if(prev&&students.find(s=>String(s.id)===prev))sel.value=prev;
+  const dateEl=document.getElementById('tp-date');
+  if(dateEl&&!dateEl.value)dateEl.value=new Date().toISOString().slice(0,10);
   renderTestContent();
 }
 
@@ -2644,9 +2770,7 @@ function renderTestContent(){
   if(!sidRaw){el.innerHTML=`<div class="empty-state"><div class="emoji">📝</div><p>Add a student first to run their spelling test!</p></div>`;return;}
   const sid=parseInt(sidRaw);
   const s=LS.students().find(x=>x.id===sid);if(!s)return;
-  const term=parseInt(document.getElementById('tp-term').value);
-  const week=parseInt(document.getElementById('tp-week').value);
-  const weekIndex=(term-1)*10+week;
+  const weekIndex=getCurrentTestRound(sid);
   let wl=getWeekList(sid,weekIndex);
   // Keep the mic running only for the student-facing Quiet Zone view.
   if(isTeacher()||isHelperActive()||isRelieverActive())stopShhhMeter();
@@ -2673,6 +2797,9 @@ function renderTestContent(){
     return;
   }
 
+  const savedBanner=(justSavedTest&&justSavedTest.sid===sid)?`<div class="test-done-banner">✅ Test saved for ${esc(justSavedTest.name)} on ${justSavedTest.date}. Their next test is ready below. <button class="btn btn-ghost" style="margin-left:auto;" onclick="undoLastTest(${sid})">✏️ Fix that test</button></div>`:'';
+  justSavedTest=null; // only ever show this once, right after saving
+
   const body=(isTeacher()||isHelperActive()||isRelieverActive())?renderFridayTest(s,wl,weekIndex):renderQuietZone(wl,weekIndex);
 
   el.innerHTML=`
@@ -2680,12 +2807,13 @@ function renderTestContent(){
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${s.color}">${ini(s.name)}</div>
         <div>
-          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Term ${term}, Week ${week} · Spelling Test</div>
-          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This week's word list (${wl.words.length} words)</div>
+          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">${esc(s.name)} · Spelling Test</div>
+          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Year ${s.year} · This test's word list (${wl.words.length} words)</div>
         </div>
       </div>
       ${wordChipsHtml(sid,wl)}
     </div>
+    ${savedBanner}
     ${body}`;
 }
 
@@ -2758,7 +2886,7 @@ function toggleSssWord(word){
   renderLessonContent();
 }
 
-function renderStopSpellSmell(s,words,weekIndex){
+function renderStopSpellSmell(words,weekIndex){
   sssPicked=sssPicked.filter(w=>words.includes(w));
   const pickerHtml=words.map(w=>`<span class="sss-pick-chip ${sssPicked.includes(w)?'picked':''}" onclick="toggleSssWord('${esc(w).replace(/'/g,"\\'")}')">${esc(w)}</span>`).join('');
   const cardsHtml=sssPicked.map(w=>`
@@ -2856,8 +2984,6 @@ function renderFridayTest(s,wl,weekIndex){
     </div>`;
   }).join('');
 
-  const doneBanner=wl.testDone?`<div class="test-done-banner">✅ Test saved on ${wl.testDate}. Next week's list is ready to go! <button class="btn btn-ghost" style="margin-left:auto;" onclick="redoWeeklyTest(${s.id},${weekIndex})">✏️ Reopen to edit</button></div>`:'';
-
   const helperBanner=isHelperActive()?`<div class="test-done-banner" style="background:#fff3d6;border-color:#f0c96a;color:#7a5800;">🌟 You're testing as a trusted tester (${esc(helperSession.name)}). <button class="btn btn-ghost" style="margin-left:auto;" onclick="helperLogOut()">🔒 Log Out</button></div>`:'';
 
   const paddedNote=paddedCount>0?`<p class="activity-blurb" style="margin-top:-4px;">${esc(s.name)} only has ${testWords.length} word${testWords.length===1?'':'s'} left to master, so ${paddedCount} already-mastered word${paddedCount===1?'':'s'} were added to this week's activities to make a full set of 10 — but only the words below get tested.</p>`:'';
@@ -2873,17 +2999,16 @@ function renderFridayTest(s,wl,weekIndex){
 
   return `<div class="activity-card">
     <div class="activity-head" style="background:#e8547a;">
-      <div class="atitle">📝 Friday Spelling Test</div>
+      <div class="atitle">📝 Spelling Test</div>
       <span class="agroup">Individual · record results below</span>
     </div>
     <div class="activity-body">
       ${helperBanner}
-      ${doneBanner}
-      <p class="activity-blurb">Read each word aloud, have ${esc(s.name)} write it, then mark it ✓ correct or ✗ incorrect. Any word marked incorrect will automatically appear again on next week's list.</p>
+      <p class="activity-blurb">Read each word aloud, have ${esc(s.name)} write it, then mark it ✓ correct or ✗ incorrect. Any word marked incorrect will automatically appear again on the next test.</p>
       ${paddedNote}
       ${rows}
       <div class="activity-actions">
-        <button class="btn btn-primary" onclick="finalizeWeeklyTest(${s.id},${weekIndex})">✅ Save Test &amp; Prepare Next Week</button>
+        <button class="btn btn-primary" onclick="finalizeWeeklyTest(${s.id},${weekIndex},document.getElementById('tp-date').value)">✅ Save Test &amp; Prepare Next Test</button>
       </div>
       ${trustedToggle}
     </div>
@@ -2931,8 +3056,7 @@ function startQuietZoneGame(){
   const n1=document.getElementById('qz-name1').value.trim()||'Player 1';
   const n2=document.getElementById('qz-name2').value.trim()||'Player 2';
   const sid=parseInt(document.getElementById('tp-student').value);
-  const term=parseInt(document.getElementById('tp-term').value),week=parseInt(document.getElementById('tp-week').value);
-  const weekIndex=(term-1)*10+week;
+  const weekIndex=getCurrentTestRound(sid);
   const wl=getWeekList(sid,weekIndex);
   const words=wl.words.slice(0,6);
   window.qz={weekIndex,sid,words,names:[n1,n2],scores:[0,0],turn:0,tiles:buildQZTiles(words),flipped:[],lock:false};
@@ -3063,16 +3187,15 @@ function renderQuietZone(wl,weekIndex){
   </div>`;
 }
 function printLessonWorksheet(kind,weekIndex){
-  const sid=parseInt(document.getElementById('lp-student').value);
-  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const year=parseInt(document.getElementById('lp-level').value);
   const term=document.getElementById('lp-term').value,week=document.getElementById('lp-week').value;
   const day=parseInt(document.getElementById('lp-day').value);
   const wi=weekIndex||((parseInt(term)-1)*10+parseInt(week));
-  const words=getBakedWords(s.year,wi,day);
+  const words=getBakedWords(year,wi,day);
   let html='';
   if(kind==='sss'){
     html=`<div class="lsnp-page">
-      <div class="lsnp-header"><h1>🛑🔤👃 Stop, Spell, Smell</h1><p>${esc(s.name)} · Term ${term}, Week ${week}</p></div>
+      <div class="lsnp-header"><h1>🛑🔤👃 Stop, Spell, Smell</h1><p>Year ${year} · Term ${term}, Week ${week}</p></div>
       ${sssPicked.map(w=>`
         <div class="lsnp-word-block">
           <h3>${esc(w)}</h3>
@@ -3100,13 +3223,13 @@ function printLessonWorksheet(kind,weekIndex){
     }else if(act.puzzle==='lootscore'){
       content=`<div class="scramble-grid">${words.map(w=>`<div class="scramble-item"><div style="font-family:'Fredoka One',cursive;font-size:1.1rem;letter-spacing:2px;">${esc(w.toUpperCase())}</div><div style="margin-top:32pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div><div style="margin-top:10pt;border-bottom:1pt solid #999;"></div></div>`).join('')}</div>`;
     }
-    html=`<div class="lsnp-page"><div class="lsnp-header"><h1>${act.emoji} ${act.title}</h1><p>${esc(s.name)} · Term ${term}, Week ${week}</p></div>${content}</div>`;
+    html=`<div class="lsnp-page"><div class="lsnp-header"><h1>${act.emoji} ${act.title}</h1><p>Year ${year} · Term ${term}, Week ${week}</p></div>${content}</div>`;
   }
   const elp=document.getElementById('print-lesson');
   elp.innerHTML=html;elp.style.display='block';
   document.getElementById('print-report').style.display='none';
   document.getElementById('print-wordlist').style.display='none';
-  const orig=setPrintTitle(s.name+'_lesson');
+  const orig=setPrintTitle(`year${year}_lesson`);
   setTimeout(()=>{window.print();elp.style.display='none';document.title=orig;},250);
 }
 
@@ -3175,6 +3298,12 @@ function showPage(id){
 function ini(n){return n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function tod(){return new Date().toLocaleDateString('en-NZ',{day:'2-digit',month:'short',year:'numeric'});}
+function formatDateNZ(isoStr){
+  if(!isoStr)return tod();
+  const d=new Date(isoStr+'T00:00:00');
+  if(isNaN(d))return tod();
+  return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short',year:'numeric'});
+}
 
 document.getElementById('new-student-name').addEventListener('keydown',e=>{if(e.key==='Enter')addStudent();});
 
