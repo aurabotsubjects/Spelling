@@ -2571,21 +2571,20 @@ function getWeekList(sid,weekIndex){
   // another device (testDone back to false, results wiped). That is the main
   // reason completed tests appeared not to register.
   let built=false;
-  for(let w=1;w<=weekIndex;w++){
-    if(all[sid][w])continue;
-    built=true;
-    const prog=LS.progress()[sid]||{};
-    // Every word that has EVER appeared on this student's list but isn't yet
-    // mastered still needs review — not just words explicitly marked wrong
-    // last week. This stops words silently vanishing if a test was left
-    // unmarked or a week was skipped past.
-    const seen=new Set();
-    for(let k=1;k<w;k++){(all[sid][k]?.words||[]).forEach(x=>seen.add(x));}
-    const needsReview=[...seen].filter(word=>!(prog[word]&&prog[word].mastered));
+
+  // The next ten words to test are simply the first ten words this student
+  // hasn't mastered yet, read straight down the word list in the order it is
+  // displayed — masterBank() preserves that order. The previous version
+  // ordered them by which past week they happened to appear in instead, and
+  // only ever considered words that had already been on a list once the
+  // review backlog reached ten. That is why a word sitting at the top of a
+  // student's incomplete list could be missing from their test entirely.
+  // Reading in list order needs no special review handling: an unmastered
+  // word keeps its position in the bank, so it naturally comes up again
+  // ahead of anything below it until it is ticked off.
+  function buildWeek(prog){
     const bank=masterBank(s.year);
-    const fresh=bank.filter(word=>!seen.has(word)&&!(prog[word]&&prog[word].mastered));
-    const need=Math.max(0,10-needsReview.length);
-    const testWords=needsReview.concat(fresh.slice(0,need)).slice(0,10);
+    const testWords=bank.filter(word=>!(prog[word]&&prog[word].mastered)).slice(0,10);
 
     // If fewer than 10 words are still left to complete, top the week's
     // activity list up to 10 with random already-mastered words so there's
@@ -2603,9 +2602,40 @@ function getWeekList(sid,weekIndex){
       words=testWords.concat(padding);
       results.__testWords=testWords;
     }
-
-    all[sid][w]={words,results,testDone:false,testDate:''};
+    return {words,results,testDone:false,testDate:''};
   }
+
+  for(let w=1;w<=weekIndex;w++){
+    if(all[sid][w])continue;
+    built=true;
+    all[sid][w]=buildWeek(LS.progress()[sid]||{});
+  }
+
+  // A week's list used to be frozen the instant it was first generated, so if
+  // a word was un-ticked afterwards (a teacher correcting a mistake, or a
+  // result being changed on the Test page) the student's list showed it as
+  // incomplete while that week's test carried on without it. Rebuild the
+  // current week whenever it is still untested AND nothing has been marked on
+  // it yet — once marking has started, leave it alone so nobody's work moves
+  // under them mid-test.
+  const cur=all[sid][weekIndex];
+  if(cur&&!cur.testDone){
+    const marked=Object.keys(cur.results||{}).some(k=>k!=='__testWords'&&k!=='__testedBy');
+    if(!marked){
+      const prog=LS.progress()[sid]||{};
+      // Compare the words actually being TESTED, not the displayed list. The
+      // displayed list can include random mastered padding, which differs on
+      // every call — comparing that would rebuild and re-sync the week on
+      // every single render.
+      const curTest=(cur.results&&cur.results.__testWords)||cur.words||[];
+      const newTest=masterBank(s.year).filter(word=>!(prog[word]&&prog[word].mastered)).slice(0,10);
+      if(JSON.stringify(newTest)!==JSON.stringify(curTest)){
+        all[sid][weekIndex]=buildWeek(prog);
+        built=true;
+      }
+    }
+  }
+
   if(built)LS.saveWeeklyLists(all,sid);
   return all[sid][weekIndex];
 }
