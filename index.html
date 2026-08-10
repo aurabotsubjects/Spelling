@@ -689,12 +689,58 @@ const LS={
 // ════════════════════════════════════════════════════════
 const syncTimers={};
 const pendingSyncFns={};
+
+// ── WRITE FAILURE REPORTING ──
+// supabase-js does NOT throw when the database rejects a write (an RLS
+// policy refusing an anonymous Trusted Tester, a constraint violation, a
+// dropped connection). It RESOLVES with {error} instead. Every sync
+// function below used to ignore that value, so a rejected write looked
+// identical to a successful one: the screen showed the test as saved, and
+// nothing ever reached the server. Every write now goes through sbWrite(),
+// which checks the error and makes the failure impossible to miss.
+let syncFailed=false;
+function reportSyncFailure(what,error){
+  syncFailed=true;
+  console.error('Supabase write failed ['+what+']',error);
+  let el=document.getElementById('sync-error-banner');
+  if(!el){
+    el=document.createElement('div');
+    el.id='sync-error-banner';
+    el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#b3261e;color:#fff;padding:12px 16px;font-weight:800;font-size:.85rem;text-align:center;box-shadow:0 -2px 12px rgba(0,0,0,.3);';
+    document.body.appendChild(el);
+  }
+  const msg=(error&&(error.message||error.hint||error.details))||'Unknown error';
+  el.innerHTML='⚠️ Results are NOT being saved to the server ('+esc(String(msg))+
+    '). Tell your teacher before closing this page. '+
+    '<button onclick="this.parentNode.remove()" style="margin-left:10px;background:#fff;color:#b3261e;border:none;border-radius:20px;padding:3px 12px;font-weight:900;cursor:pointer;">Hide</button>';
+}
+// Wraps a supabase query builder so a rejected write is actually noticed.
+async function sbWrite(what,query){
+  const res=await query;
+  if(res&&res.error){reportSyncFailure(what,res.error);return false;}
+  return true;
+}
+
+// Counts writes that have left the debounce timer but haven't come back from
+// the network yet. loadClassroomData must not overwrite local data while any
+// of these are outstanding, or a just-marked word gets reverted on screen.
+let inFlightWrites=0;
+// "student_id:week_index" entries that were intentionally reopened for editing,
+// and so are permitted to push test_done back to false. See syncWeeklyLists.
+const reopenedTests=new Set();
+async function trackInFlight(fn){
+  inFlightWrites++;
+  try{return await fn();}
+  catch(err){reportSyncFailure('save',err);}
+  finally{inFlightWrites--;}
+}
+
 function debounceSync(key,fn,delay=1200){
   clearTimeout(syncTimers[key]);
   pendingSyncFns[key]=fn;
   syncTimers[key]=setTimeout(()=>{
     delete pendingSyncFns[key];
-    fn();
+    trackInFlight(fn);
   },delay);
 }
 // Runs any sync that's still waiting on its debounce timer, right now,
@@ -703,19 +749,37 @@ function debounceSync(key,fn,delay=1200){
 // so a test result isn't lost just because someone closed the tab
 // a second after finishing.
 function flushPendingSyncs(){
+  const jobs=[];
   Object.keys(pendingSyncFns).forEach(key=>{
     clearTimeout(syncTimers[key]);
     const fn=pendingSyncFns[key];
     delete pendingSyncFns[key];
-    fn();
+    jobs.push(trackInFlight(fn));
   });
+  return Promise.all(jobs);
 }
+// True while anything still needs to reach the server.
+function hasUnsavedWork(){return Object.keys(pendingSyncFns).length>0||inFlightWrites>0;}
+
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushPendingSyncs();});
 window.addEventListener('pagehide',flushPendingSyncs);
-window.addEventListener('beforeunload',flushPendingSyncs);
+// Closing the tab cancels any fetch still in flight, so flushing here was not
+// enough on its own — a test finished seconds before the tab closed was lost.
+// Flush, then hold the tab open until the writes actually land.
+window.addEventListener('beforeunload',(e)=>{
+  flushPendingSyncs();
+  if(hasUnsavedWork()){
+    e.preventDefault();
+    e.returnValue='Results are still saving. Leave now and the last test may be lost.';
+    return e.returnValue;
+  }
+});
 
 async function loadClassroomData(teacherId,{silent=false}={}){
   if(!sbReady()){if(!silent){hideBootOverlay();renderStudents();}return;}
+  // Never let a background refresh stomp on work this device hasn't managed
+  // to push yet — that turns a saved result back into an unsaved one on screen.
+  if(silent&&hasUnsavedWork())return;
   if(!silent)showBootOverlay('Loading your class…');
   try{
     const {data:students,error:e1}=await SB.from('students').select('*').eq('teacher_id',teacherId).order('created_at');
@@ -782,7 +846,13 @@ function refreshVisiblePage(){
 function canAutoRefresh(){
   if(isHelperActive()||isRelieverActive())return false;
   if(!getActiveTeacherId())return false;
-  if(Object.keys(pendingSyncFns).length)return false; // this device has an unsynced edit in flight — don't overwrite it
+  // Checking only pendingSyncFns left a race: debounceSync deletes the key
+  // BEFORE running the write, but the round-trip to Supabase takes a few
+  // hundred ms longer. In that window the queue looked empty, the 20s poll
+  // fired, and loadClassroomData overwrote localStorage with pre-write server
+  // data — so a word ticked a moment earlier visibly un-ticked itself.
+  // inFlightWrites keeps the door shut until the write has actually landed.
+  if(hasUnsavedWork())return false;
   return true;
 }
 
@@ -820,12 +890,12 @@ async function syncStudents(students){
     const {data:existing}=await SB.from('students').select('id').eq('teacher_id',teacherId);
     const currentIds=students.map(s=>s.id);
     const toDelete=(existing||[]).map(r=>r.id).filter(id=>!currentIds.includes(id));
-    if(toDelete.length)await SB.from('students').delete().in('id',toDelete);
+    if(toDelete.length)await sbWrite('delete students',SB.from('students').delete().in('id',toDelete));
     if(students.length){
       const rows=students.map(s=>({id:s.id,teacher_id:teacherId,name:s.name,year:s.year,color:s.color,start_date:s.startDate,is_trusted:!!s.isTrusted,helper_pass:s.helperPass||null}));
-      await SB.from('students').upsert(rows);
+      await sbWrite('save students',SB.from('students').upsert(rows));
     }
-  }catch(err){console.error('Student sync failed',err);}
+  }catch(err){reportSyncFailure('save students',err);}
 }
 
 async function syncProgress(progObj){
@@ -834,15 +904,23 @@ async function syncProgress(progObj){
     for(const [sid,words] of Object.entries(progObj)){
       const sidNum=parseInt(sid);
       const wordList=Object.keys(words);
-      const {data:existing}=await SB.from('word_progress').select('word').eq('student_id',sidNum);
-      const toDelete=(existing||[]).map(r=>r.word).filter(w=>!wordList.includes(w));
-      if(toDelete.length)await SB.from('word_progress').delete().eq('student_id',sidNum).in('word',toDelete);
+      // Only a signed-in teacher may prune words that no longer exist locally.
+      // A Trusted Tester's device holds a snapshot taken when they entered the
+      // class code and never auto-refreshes during a test, so its copy of a
+      // student is stale by definition — letting it delete "missing" words
+      // silently destroyed real progress recorded on the teacher's device.
+      if(isTeacher()){
+        const {data:existing,error:selErr}=await SB.from('word_progress').select('word').eq('student_id',sidNum);
+        if(selErr)reportSyncFailure('read progress',selErr);
+        const toDelete=(existing||[]).map(r=>r.word).filter(w=>!wordList.includes(w));
+        if(toDelete.length)await sbWrite('delete progress',SB.from('word_progress').delete().eq('student_id',sidNum).in('word',toDelete));
+      }
       if(wordList.length){
         const rows=wordList.map(w=>({student_id:sidNum,word:w,mastered:!!words[w].mastered,correct_count:words[w].correct||0,incorrect_count:words[w].incorrect||0,mastered_date:words[w].masteredDate||null}));
-        await SB.from('word_progress').upsert(rows,{onConflict:'student_id,word'});
+        await sbWrite('save progress',SB.from('word_progress').upsert(rows,{onConflict:'student_id,word'}));
       }
     }
-  }catch(err){console.error('Progress sync failed',err);}
+  }catch(err){reportSyncFailure('save progress',err);}
 }
 
 async function syncHistory(histObj){
@@ -854,8 +932,8 @@ async function syncHistory(histObj){
       entries.forEach(e=>{byDate[e.date]=e;}); // last write per date wins, matches chart logic
       Object.values(byDate).forEach(e=>{rows.push({student_id:parseInt(sid),date:e.date,mastered:e.mastered,total:e.total,correct:e.correct,incorrect:e.incorrect,year:e.year});});
     });
-    if(rows.length)await SB.from('history_snapshots').upsert(rows,{onConflict:'student_id,date'});
-  }catch(err){console.error('History sync failed',err);}
+    if(rows.length)await sbWrite('save history',SB.from('history_snapshots').upsert(rows,{onConflict:'student_id,date'}));
+  }catch(err){reportSyncFailure('save history',err);}
 }
 
 async function syncArchives(archObj){
@@ -863,13 +941,13 @@ async function syncArchives(archObj){
   try{
     for(const [sid,entries] of Object.entries(archObj)){
       const sidNum=parseInt(sid);
-      await SB.from('archives').delete().eq('student_id',sidNum);
+      await sbWrite('clear archives',SB.from('archives').delete().eq('student_id',sidNum));
       if(entries.length){
         const rows=entries.map(e=>({student_id:sidNum,year:e.year,completed_date:e.completedDate,total_words:e.totalWords,total_correct:e.totalCorrect,total_incorrect:e.totalIncorrect}));
-        await SB.from('archives').insert(rows);
+        await sbWrite('save archives',SB.from('archives').insert(rows));
       }
     }
-  }catch(err){console.error('Archive sync failed',err);}
+  }catch(err){reportSyncFailure('save archives',err);}
 }
 
 async function syncWeeklyLists(wkObj){
@@ -881,8 +959,50 @@ async function syncWeeklyLists(wkObj){
         rows.push({student_id:parseInt(sid),week_index:parseInt(wIdx),words:wl.words,results:wl.results,test_done:!!wl.testDone,test_date:wl.testDate||null});
       });
     });
-    if(rows.length)await SB.from('weekly_lists').upsert(rows,{onConflict:'student_id,week_index'});
-  }catch(err){console.error('Weekly list sync failed',err);}
+
+    // Several devices run tests at once, and each one only ever loaded a
+    // snapshot of the class. A blind upsert therefore let the device with the
+    // OLDEST copy win: a teacher's laptop holding week 5 as un-tested would
+    // overwrite the completed week 5 a Trusted Tester had just saved on the
+    // iPad. A finished test is never something a stale device should be able
+    // to undo, so drop any row that would flip test_done true → false.
+    if(rows.length){
+      const sids=[...new Set(rows.map(r=>r.student_id))];
+      const {data:serverRows,error:selErr}=await SB.from('weekly_lists')
+        .select('student_id,week_index,test_done').in('student_id',sids);
+      if(selErr)reportSyncFailure('read weekly lists',selErr);
+      const doneOnServer=new Set((serverRows||[])
+        .filter(r=>r.test_done).map(r=>r.student_id+':'+r.week_index));
+      // ...unless someone deliberately reopened that test via "Fix that test",
+      // which is the one case where un-completing it is the intent.
+      const safeRows=rows.filter(r=>r.test_done
+        ||!doneOnServer.has(r.student_id+':'+r.week_index)
+        ||reopenedTests.has(r.student_id+':'+r.week_index));
+      const skipped=rows.length-safeRows.length;
+      if(skipped)console.warn('Skipped '+skipped+' weekly-list row(s) that would have un-completed a saved test.');
+      rows.length=0;rows.push(...safeRows);
+    }
+
+    if(rows.length)await sbWrite('save weekly list',SB.from('weekly_lists').upsert(rows,{onConflict:'student_id,week_index'}));
+    // Weeks removed locally (e.g. next week's list thrown away and rebuilt by
+    // finalizeWeeklyTest) were only ever upserted, never deleted — so the old
+    // row survived on the server and reappeared on the next load, undoing the
+    // rebuild. Prune anything the teacher no longer has locally.
+    // Only a signed-in teacher prunes, and never a week whose test is already
+    // finished — otherwise this becomes the same stale-device problem in
+    // reverse, with the teacher's copy deleting a week a Trusted Tester had
+    // just created and completed elsewhere.
+    if(isTeacher()){
+      for(const [sid,weeks] of Object.entries(wkObj)){
+        const sidNum=parseInt(sid);
+        const keep=Object.keys(weeks).map(Number);
+        const {data:existing,error:selErr}=await SB.from('weekly_lists').select('week_index,test_done').eq('student_id',sidNum);
+        if(selErr){reportSyncFailure('read weekly lists',selErr);continue;}
+        const toDelete=(existing||[]).filter(r=>!r.test_done&&!keep.includes(r.week_index)).map(r=>r.week_index);
+        if(toDelete.length)await sbWrite('delete weekly list',SB.from('weekly_lists').delete().eq('student_id',sidNum).in('week_index',toDelete));
+      }
+    }
+  }catch(err){reportSyncFailure('save weekly list',err);}
 }
 
 function showBootOverlay(msg){
@@ -2339,20 +2459,24 @@ function editWordGlobally(year,category,oldWord,newWord){
   cat[idx]=newWord;
   saveWordBank();
 
+  // Sync only the students this rename actually touched. Passing no student
+  // ids made scopedSync fall back to "every student", which pushed this
+  // device's whole local copy of the class — including its stale idea of
+  // students another device had just recorded results for.
   const prog=LS.progress();
-  let progChanged=false;
+  const progSids=[];
   Object.keys(prog).forEach(sid=>{
     const p=prog[sid];
     if(p&&Object.prototype.hasOwnProperty.call(p,oldWord)){
       if(!p[newWord])p[newWord]=p[oldWord];
       delete p[oldWord];
-      progChanged=true;
+      progSids.push(sid);
     }
   });
-  if(progChanged)LS.saveProgress(prog);
+  if(progSids.length)LS.saveProgress(prog,progSids);
 
   const all=LS.weeklyLists();
-  let wkChanged=false;
+  const wkSids=new Set();
   Object.keys(all).forEach(sid=>{
     Object.keys(all[sid]).forEach(w=>{
       const wl=all[sid][w];
@@ -2370,10 +2494,10 @@ function editWordGlobally(year,category,oldWord,newWord){
         wl.results.__testWords=wl.results.__testWords.map(x=>x===oldWord?newWord:x);
         touched=true;
       }
-      if(touched)wkChanged=true;
+      if(touched)wkSids.add(sid);
     });
   });
-  if(wkChanged)LS.saveWeeklyLists(all);
+  if(wkSids.size)LS.saveWeeklyLists(all,[...wkSids]);
 
   flushPendingSyncs();
   return true;
@@ -2439,8 +2563,17 @@ function getWeekList(sid,weekIndex){
   const s=LS.students().find(x=>x.id===sid);if(!s)return null;
   const all=LS.weeklyLists();
   if(!all[sid])all[sid]={};
+  // Only push to the server if this call actually BUILT a week. This used to
+  // save unconditionally, which quietly turned every read into a write of
+  // whatever this device happened to be holding — so a teacher merely opening
+  // the Test page for a student re-uploaded their own stale copy of that
+  // student's weeks, overwriting a test a Trusted Tester had just finished on
+  // another device (testDone back to false, results wiped). That is the main
+  // reason completed tests appeared not to register.
+  let built=false;
   for(let w=1;w<=weekIndex;w++){
     if(all[sid][w])continue;
+    built=true;
     const prog=LS.progress()[sid]||{};
     // Every word that has EVER appeared on this student's list but isn't yet
     // mastered still needs review — not just words explicitly marked wrong
@@ -2473,7 +2606,7 @@ function getWeekList(sid,weekIndex){
 
     all[sid][w]={words,results,testDone:false,testDate:''};
   }
-  LS.saveWeeklyLists(all,sid);
+  if(built)LS.saveWeeklyLists(all,sid);
   return all[sid][weekIndex];
 }
 
@@ -2514,7 +2647,7 @@ function currentTesterLabel(){
   return '👩‍🏫 Teacher';
 }
 
-function finalizeWeeklyTest(sid,weekIndex,testDateStr){
+async function finalizeWeeklyTest(sid,weekIndex,testDateStr){
   const all=LS.weeklyLists();
   const wl=all[sid]?.[weekIndex];if(!wl)return;
   const testWords=wl.results.__testWords||wl.words;
@@ -2531,9 +2664,22 @@ function finalizeWeeklyTest(sid,weekIndex,testDateStr){
   if(nextWk&&!nextWk.testDone){delete all[sid][weekIndex+1];}
   LS.saveWeeklyLists(all,sid);
   getWeekList(sid,weekIndex+1); // pre-build next week now results are locked in
-  flushPendingSyncs(); // this is the moment that matters most — don't wait on the debounce timer
+
+  // This is the moment that matters most, so don't wait on the debounce timer
+  // — and don't tell anyone the test is saved until the server has confirmed
+  // it. Previously this fired the writes and immediately showed a success
+  // banner, which is why a test rejected by the database still looked saved.
+  syncFailed=false;
+  showBootOverlay('Saving test…');
+  await flushPendingSyncs();
+  hideBootOverlay();
   const s=LS.students().find(x=>x.id===sid);
-  justSavedTest=s?{sid,name:s.name,date:wl.testDate}:null;
+  if(syncFailed){
+    justSavedTest=null;
+    alert('This test could NOT be saved to the server — it is only stored on this device. Please tell your teacher, and do not close this page until they have seen it.');
+  }else{
+    justSavedTest=s?{sid,name:s.name,date:wl.testDate}:null;
+  }
   renderTestContent();
 }
 
@@ -2546,6 +2692,7 @@ function undoLastTest(sid){
   if(!rounds.length){alert('No completed test to reopen yet.');return;}
   showConfirmModal('Reopen the most recently saved test for editing?',()=>{
     all[sid][rounds[0]].testDone=false;
+    reopenedTests.add(sid+':'+rounds[0]);
     LS.saveWeeklyLists(all,sid);
     justSavedTest=null;
     renderTestContent();
