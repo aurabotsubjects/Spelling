@@ -795,8 +795,22 @@ async function loadClassroomData(teacherId,{silent=false}={}){
         SB.from('archives').select('*').in('student_id',ids),
         SB.from('weekly_lists').select('*').in('student_id',ids),
       ]);
+      // The catch-up flag (word ticked off as already known, so it shouldn't
+      // count towards charts or correct/incorrect totals) has no column in
+      // word_progress, so it is not round-tripped through the server and was
+      // being dropped on every load — quietly turning catch-up entries into
+      // real results. Carry it across from this device's existing copy.
+      // NOTE: still device-local. See the ALTER TABLE in the handover notes
+      // for the proper fix.
+      let prevProg={};
+      try{prevProg=JSON.parse(localStorage.getItem('wl_p')||'{}');}catch{prevProg={};}
       const prog={};
-      (wp||[]).forEach(r=>{if(!prog[r.student_id])prog[r.student_id]={};prog[r.student_id][r.word]={mastered:r.mastered,correct:r.correct_count,incorrect:r.incorrect_count,masteredDate:r.mastered_date||''};});
+      (wp||[]).forEach(r=>{
+        if(!prog[r.student_id])prog[r.student_id]={};
+        const entry={mastered:r.mastered,correct:r.correct_count,incorrect:r.incorrect_count,masteredDate:r.mastered_date||''};
+        if(prevProg[r.student_id]&&prevProg[r.student_id][r.word]&&prevProg[r.student_id][r.word].catchup)entry.catchup=true;
+        prog[r.student_id][r.word]=entry;
+      });
       localStorage.setItem('wl_p',JSON.stringify(prog));
 
       const hist={};
@@ -853,6 +867,9 @@ function canAutoRefresh(){
   // data — so a word ticked a moment earlier visibly un-ticked itself.
   // inFlightWrites keeps the door shut until the write has actually landed.
   if(hasUnsavedWork())return false;
+  // Catch-up ticks are unsaved work too — a refresh re-renders the tab and
+  // would wipe them off the screen mid-entry.
+  if(typeof hasUnsavedCatchup==='function'&&hasUnsavedCatchup())return false;
   return true;
 }
 
@@ -1754,9 +1771,27 @@ function renderTab(){
 // ════════════════════════════════════════════════════════
 let catchupMode=false;
 
+// Which words are currently ticked but NOT yet saved.
+//
+// These ticks used to live only as DOM checkbox state, which meant anything
+// that re-rendered the tab silently threw them all away — including the
+// 20-second background refresh and the refresh that fires whenever the tab
+// regains focus. Ticking a long list takes well over 20 seconds, so a teacher
+// working down a year level would reliably lose the lot before ever reaching
+// "Save mastered words". Holding them here lets them survive a re-render, and
+// lets canAutoRefresh() leave the page alone while any are outstanding.
+let catchupTicks=new Set();
+function setCatchupTick(encW,on){
+  const w=decodeURIComponent(encW);
+  if(on)catchupTicks.add(w);else catchupTicks.delete(w);
+}
+function hasUnsavedCatchup(){return catchupMode&&catchupTicks.size>0;}
+
 function toggleCatchup(sid,setName){
   if(!canMarkWords())return;
+  if(hasUnsavedCatchup()&&!confirm('You have '+catchupTicks.size+' ticked word(s) that haven\'t been saved yet. Leave catch-up mode and discard them?'))return;
   catchupMode=!catchupMode;
+  catchupTicks=new Set();
   const s=LS.students().find(s=>s.id===sid);
   if(s)renderWordTab(s,setName,document.getElementById('detail-tab-content'));
 }
@@ -1768,6 +1803,7 @@ function tickAllCatchup(sid,setName){
   const p=LS.progress()[s.id]||{};
   words.forEach(w=>{
     if(p[w]?.mastered)return; // skip already mastered
+    catchupTicks.add(w);
     const encW=encodeURIComponent(w).replace(/'/g,'%27');
     const cb=document.getElementById(`cu-cb-${encW}`);
     if(cb)cb.checked=true;
@@ -1785,9 +1821,9 @@ function saveAllCatchup(sid,setName){
 
   words.forEach(w=>{
     if(p[w]?.mastered)return;
-    const encW=encodeURIComponent(w).replace(/'/g,'%27');
-    const cb=document.getElementById(`cu-cb-${encW}`);
-    if(!cb||!cb.checked)return;
+    // Read the tick from catchupTicks, not the checkbox, so a re-render
+    // between ticking and saving can't quietly drop a word.
+    if(!catchupTicks.has(w))return;
     if(!prog[sid][w])prog[sid][w]={mastered:false,correct:0,incorrect:0,masteredDate:''};
     const wd=prog[sid][w];
     if(wd.mastered)return;
@@ -1799,6 +1835,7 @@ function saveAllCatchup(sid,setName){
   });
 
   if(!anyChange)return;
+  catchupTicks=new Set(); // saved — safe to let background refreshes resume
   LS.saveProgress(prog,sid);
   // Re-render the whole tab so rows lock and counts update
   renderWordTab(s,setName,document.getElementById('detail-tab-content'));
@@ -1831,7 +1868,9 @@ function renderWordTab(s,setName,el){
          </div>`
       : catchupMode
         ? `<div class="word-actions" style="padding:0 16px;display:flex;align-items:center;justify-content:center;">
-             <input type="checkbox" id="cu-cb-${encW}" class="catchup-checkbox" title="Mark as mastered">
+             <input type="checkbox" id="cu-cb-${encW}" class="catchup-checkbox" title="Mark as mastered"
+               ${catchupTicks.has(w)?'checked':''}
+               onchange="setCatchupTick('${encW}',this.checked)">
            </div>`
         : `<div class="word-actions">
              <button class="cb-btn cb-correct"
