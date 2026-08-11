@@ -775,6 +775,31 @@ window.addEventListener('beforeunload',(e)=>{
   }
 });
 
+// PostgREST returns at most 1000 rows per request. word_progress holds one row
+// per student per word, so a class crosses that ceiling quickly — and the
+// original code fetched it in a single unpaginated query and threw the error
+// away, so the surplus rows just silently never arrived. Every background
+// refresh then rewrote localStorage without them and words that had genuinely
+// been saved came back unmastered.
+//
+// Worse, Postgres rewrites an updated row at the end of the table, so the most
+// recently ticked words were the likeliest to fall past the cutoff. That is why
+// it was always the newest work that disappeared.
+//
+// Pass a function that BUILDS the query — a supabase query builder can only be
+// awaited once, so each page needs a fresh one.
+const SB_PAGE=1000;
+async function fetchAllRows(build){
+  const out=[];
+  for(let from=0;;from+=SB_PAGE){
+    const {data,error}=await build().range(from,from+SB_PAGE-1);
+    if(error)return {data:null,error};
+    out.push(...(data||[]));
+    if(!data||data.length<SB_PAGE)break;
+  }
+  return {data:out,error:null};
+}
+
 async function loadClassroomData(teacherId,{silent=false}={}){
   if(!sbReady()){if(!silent){hideBootOverlay();renderStudents();}return;}
   // Never let a background refresh stomp on work this device hasn't managed
@@ -782,19 +807,26 @@ async function loadClassroomData(teacherId,{silent=false}={}){
   if(silent&&hasUnsavedWork())return;
   if(!silent)showBootOverlay('Loading your class…');
   try{
-    const {data:students,error:e1}=await SB.from('students').select('*').eq('teacher_id',teacherId).order('created_at');
+    const {data:students,error:e1}=await fetchAllRows(()=>SB.from('students').select('*').eq('teacher_id',teacherId).order('created_at').order('id'));
     if(e1)throw e1;
     const mapped=(students||[]).map(s=>({id:s.id,name:s.name,year:s.year,color:s.color,startDate:s.start_date,isTrusted:!!s.is_trusted,helperPass:s.helper_pass||''}));
     localStorage.setItem('wl_s',JSON.stringify(mapped));
     const ids=mapped.map(s=>s.id);
 
     if(ids.length){
-      const [{data:wp},{data:hs},{data:ar},{data:wl}]=await Promise.all([
-        SB.from('word_progress').select('*').in('student_id',ids),
-        SB.from('history_snapshots').select('*').in('student_id',ids).order('date'),
-        SB.from('archives').select('*').in('student_id',ids),
-        SB.from('weekly_lists').select('*').in('student_id',ids),
+      const [rWp,rHs,rAr,rWl]=await Promise.all([
+        fetchAllRows(()=>SB.from('word_progress').select('*').in('student_id',ids).order('id')),
+        fetchAllRows(()=>SB.from('history_snapshots').select('*').in('student_id',ids).order('date').order('id')),
+        fetchAllRows(()=>SB.from('archives').select('*').in('student_id',ids).order('id')),
+        fetchAllRows(()=>SB.from('weekly_lists').select('*').in('student_id',ids).order('id')),
       ]);
+      // These four errors used to be destructured away and ignored. A failed
+      // read produced null, which mapped to an empty object, which was then
+      // written straight over a perfectly good local copy — one dropped
+      // request could blank a whole class. Never overwrite on a failed read.
+      const readErr=rWp.error||rHs.error||rAr.error||rWl.error;
+      if(readErr)throw readErr;
+      const wp=rWp.data,hs=rHs.data,ar=rAr.data,wl=rWl.data;
       // The catch-up flag (word ticked off as already known, so it shouldn't
       // count towards charts or correct/incorrect totals) has no column in
       // word_progress, so it is not round-tripped through the server and was
@@ -904,7 +936,8 @@ async function syncStudents(students){
   if(!isTeacher()||!sbReady())return;
   const teacherId=getActiveTeacherId();if(!teacherId)return;
   try{
-    const {data:existing}=await SB.from('students').select('id').eq('teacher_id',teacherId);
+    const {data:existing,error:selErr}=await fetchAllRows(()=>SB.from('students').select('id').eq('teacher_id',teacherId).order('id'));
+    if(selErr){reportSyncFailure('read students',selErr);return;}
     const currentIds=students.map(s=>s.id);
     const toDelete=(existing||[]).map(r=>r.id).filter(id=>!currentIds.includes(id));
     if(toDelete.length)await sbWrite('delete students',SB.from('students').delete().in('id',toDelete));
@@ -927,8 +960,8 @@ async function syncProgress(progObj){
       // student is stale by definition — letting it delete "missing" words
       // silently destroyed real progress recorded on the teacher's device.
       if(isTeacher()){
-        const {data:existing,error:selErr}=await SB.from('word_progress').select('word').eq('student_id',sidNum);
-        if(selErr)reportSyncFailure('read progress',selErr);
+        const {data:existing,error:selErr}=await fetchAllRows(()=>SB.from('word_progress').select('word').eq('student_id',sidNum).order('id'));
+        if(selErr){reportSyncFailure('read progress',selErr);continue;}
         const toDelete=(existing||[]).map(r=>r.word).filter(w=>!wordList.includes(w));
         if(toDelete.length)await sbWrite('delete progress',SB.from('word_progress').delete().eq('student_id',sidNum).in('word',toDelete));
       }
@@ -985,8 +1018,8 @@ async function syncWeeklyLists(wkObj){
     // to undo, so drop any row that would flip test_done true → false.
     if(rows.length){
       const sids=[...new Set(rows.map(r=>r.student_id))];
-      const {data:serverRows,error:selErr}=await SB.from('weekly_lists')
-        .select('student_id,week_index,test_done').in('student_id',sids);
+      const {data:serverRows,error:selErr}=await fetchAllRows(()=>SB.from('weekly_lists')
+        .select('student_id,week_index,test_done').in('student_id',sids).order('id'));
       if(selErr)reportSyncFailure('read weekly lists',selErr);
       const doneOnServer=new Set((serverRows||[])
         .filter(r=>r.test_done).map(r=>r.student_id+':'+r.week_index));
@@ -1013,7 +1046,7 @@ async function syncWeeklyLists(wkObj){
       for(const [sid,weeks] of Object.entries(wkObj)){
         const sidNum=parseInt(sid);
         const keep=Object.keys(weeks).map(Number);
-        const {data:existing,error:selErr}=await SB.from('weekly_lists').select('week_index,test_done').eq('student_id',sidNum);
+        const {data:existing,error:selErr}=await fetchAllRows(()=>SB.from('weekly_lists').select('week_index,test_done').eq('student_id',sidNum).order('id'));
         if(selErr){reportSyncFailure('read weekly lists',selErr);continue;}
         const toDelete=(existing||[]).filter(r=>!r.test_done&&!keep.includes(r.week_index)).map(r=>r.week_index);
         if(toDelete.length)await sbWrite('delete weekly list',SB.from('weekly_lists').delete().eq('student_id',sidNum).in('week_index',toDelete));
