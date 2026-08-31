@@ -363,6 +363,301 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
   .cb-btn{width:38px;}
   .qz-grid{grid-template-columns:repeat(3,1fr);}
 }
+/* ════ WORDLAB LESSON PLANNER + PRE-TEST ════ */
+.wl-daybar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+.wl-daytitle{font-family:'Fredoka One',cursive;font-size:1.2rem;}
+.wl-daysub{font-size:.78rem;color:var(--muted);font-weight:700;margin-top:2px;}
+.wl-daybadges{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+.wl-badge{font-size:.72rem;font-weight:900;padding:4px 12px;border-radius:50px;background:#faf8f4;border:1.5px solid var(--border);color:var(--muted);white-space:nowrap;}
+.wl-badge-plen{background:#efe9fb;border-color:#cdbcf0;color:#5b3fa0;}
+.wl-badge-prac{background:#e8f8ef;border-color:#8fd6ac;color:#1e7a48;}
+
+.wl-sec-head{display:flex;align-items:center;gap:10px;font-weight:900;font-size:.83rem;color:var(--muted);margin:26px 0 12px;text-transform:uppercase;letter-spacing:.4px;}
+.wl-sec-tag{font-family:'Fredoka One',cursive;font-size:.85rem;letter-spacing:0;text-transform:none;padding:4px 14px;border-radius:50px;}
+.wl-tag-plen{background:#efe9fb;color:#5b3fa0;}
+.wl-tag-prac{background:#e8f8ef;color:#1e7a48;}
+
+.wl-block{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;border:1px solid var(--border);margin-bottom:14px;}
+.wl-block-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px;}
+.wl-block-title{font-family:'Fredoka One',cursive;font-size:1.05rem;line-height:1.3;}
+.wl-block-sub{font-size:.78rem;color:var(--muted);font-weight:700;margin-top:3px;}
+.wl-step-n{flex:0 0 auto;width:34px;height:34px;border-radius:11px;background:#faf8f4;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:.95rem;}
+.wl-chart-n{background:#efe9fb;border-color:#cdbcf0;color:#5b3fa0;}
+.wl-ow-n{background:#fff3e2;border-color:#f3cf9c;color:#a05a12;}
+.wl-assess-n{background:#e6f4fb;border-color:#9ed3ea;color:#15607f;}
+.wl-chart{border-left:5px solid #7c5cbf;}
+.wl-ow{border-left:5px solid #f07844;}
+.wl-assess{border-left:5px solid #2fa8d5;}
+.wl-saved{border-left:5px solid var(--green);}
+.wl-pattern{color:#5b3fa0;}
+.wl-intro{font-size:.88rem;font-weight:700;color:var(--text);background:#faf8f4;border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:12px;line-height:1.5;}
+.wl-meta-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
+.wl-meta{font-size:.8rem;font-weight:700;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:6px 12px;}
+.wl-meta b{color:var(--muted);text-transform:uppercase;font-size:.7rem;letter-spacing:.4px;}
+.wl-meta-code code{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;}
+.wl-steps{margin:12px 0 0 20px;padding:0;}
+.wl-steps li{font-size:.88rem;font-weight:700;line-height:1.55;margin-bottom:9px;}
+.wl-steps-tight li{font-size:.83rem;margin-bottom:6px;}
+.wl-substeps,.wl-prompt{font-size:.82rem;font-weight:700;color:var(--muted);background:#faf8f4;border-radius:10px;padding:8px 12px;margin-top:6px;line-height:1.5;}
+.wl-focusword{display:inline-block;font-weight:900;background:#efe9fb;border:1.5px solid #cdbcf0;color:#5b3fa0;padding:3px 12px;border-radius:50px;margin:0 3px;}
+.wl-chip-focus{background:#efe9fb!important;border-color:#cdbcf0!important;color:#5b3fa0;font-weight:900;}
+.wl-hint{font-size:.76rem;font-weight:700;color:var(--muted);margin-top:9px;line-height:1.5;}
+.wl-hint-inline{font-size:.76rem;font-weight:700;color:var(--muted);}
+.wl-cta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;}
+
+.wl-chartrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:6px;}
+.wl-minichart{background:#faf8f4;border:1.5px solid var(--border);border-radius:12px;padding:12px;}
+.wl-mini-n{font-family:'Fredoka One',cursive;color:#5b3fa0;font-size:.8rem;}
+.wl-mini-p{font-family:'Fredoka One',cursive;font-size:1.05rem;margin:2px 0;}
+.wl-mini-t{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;}
+.wl-mini-m{font-size:.78rem;font-weight:700;color:var(--text);margin-top:5px;line-height:1.45;}
+.wl-jumble{font-size:.85rem;font-weight:700;margin-top:12px;line-height:2.1;}
+
+.wl-ow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;}
+.wl-ow-col{background:#faf8f4;border:1.5px solid var(--border);border-radius:14px;padding:14px;}
+.wl-ow-head{display:inline-block;color:#fff;font-weight:900;font-size:.72rem;padding:3px 12px;border-radius:50px;text-transform:uppercase;letter-spacing:.4px;}
+.wl-ow-word{font-family:'Fredoka One',cursive;font-size:1.55rem;margin:8px 0 2px;letter-spacing:.5px;}
+.wl-syl{font-family:ui-monospace,Menlo,monospace;font-weight:800;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:2px 8px;}
+.wl-ow-review{margin-top:14px;font-size:.85rem;font-weight:700;background:#fff3e2;border:1.5px solid #f3cf9c;border-radius:12px;padding:12px 14px;}
+.wl-ow-lists{display:flex;flex-direction:column;gap:9px;margin-top:10px;line-height:2.1;font-size:.85rem;}
+.wl-ow-tag{display:inline-block;color:#fff;font-weight:900;font-size:.7rem;padding:3px 11px;border-radius:50px;margin-right:5px;}
+
+.wl-grid-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px;}
+.wl-grid-table th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--border);}
+.wl-grid-table td{padding:4px 6px;border-bottom:1px solid var(--border);}
+.wl-gcell{width:100%;font-family:'Nunito',sans-serif;font-size:.86rem;font-weight:700;padding:7px 10px;border:2px solid var(--border);border-radius:9px;outline:none;background:#fff;}
+.wl-gcell:focus{border-color:var(--accent);}
+.wl-gcell::placeholder{color:#c9c3ba;font-weight:600;}
+
+.wl-cyclerow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.wl-cyclestep{font-size:.78rem;font-weight:800;padding:6px 14px;border-radius:50px;background:#faf8f4;border:1.5px solid var(--border);color:var(--muted);}
+.wl-cyclestep.on{background:#e6f4fb;border-color:#9ed3ea;color:#15607f;}
+.wl-cyclepill{font-size:.68rem;font-weight:900;background:#e6f4fb;color:#15607f;padding:2px 10px;border-radius:50px;vertical-align:middle;font-family:'Nunito',sans-serif;}
+
+.wl-extra{margin-top:22px;background:var(--card);border:1.5px dashed var(--border);border-radius:var(--radius);padding:14px 20px;}
+.wl-extra summary{font-weight:900;font-size:.88rem;cursor:pointer;color:var(--muted);}
+.wl-extra[open] summary{color:var(--text);margin-bottom:4px;}
+
+.wl-pt-table{width:100%;border-collapse:collapse;}
+.wl-pt-table td{padding:7px 8px;border-bottom:1px solid var(--border);}
+.wl-pt-done{background:#faf8f4;}
+.wl-pt-lvl{width:44px;font-weight:900;font-size:.75rem;}
+.wl-pt-word{font-family:'Fredoka One',cursive;font-size:1.05rem;}
+.wl-pt-btns{width:110px;text-align:right;white-space:nowrap;}
+.wl-scorerow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:11px;}
+.wl-scorecard{background:#fff;border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;}
+.wl-score-y{font-family:'Fredoka One',cursive;font-size:.95rem;}
+.wl-score-n{font-family:'Fredoka One',cursive;font-size:1.9rem;line-height:1.1;}
+.wl-score-n span{font-size:.9rem;color:var(--muted);}
+.wl-score-s{font-size:.72rem;font-weight:800;color:var(--muted);}
+.wl-suggest{margin-top:14px;font-size:1rem;font-weight:800;background:#e8f8ef;border:1.5px solid #8fd6ac;border-radius:12px;padding:13px 16px;}
+@media(max-width:640px){
+  .wl-daybadges{margin-left:0;width:100%;}
+  .wl-block{padding:17px;}
+}
+
+/* ════ TEACH MODE — full-screen, projector-facing chart lesson ════ */
+#teachmode{position:fixed;inset:0;z-index:9000;display:none;flex-direction:column;
+  background:radial-gradient(1200px 700px at 20% -10%,#2c2c5a 0%,#16162e 55%,#0e0e1e 100%);color:#fff;overflow:hidden;}
+#teachmode.on{display:flex;}
+.tm-top{display:flex;align-items:center;gap:14px;padding:14px 26px;border-bottom:1px solid rgba(255,255,255,.1);flex:0 0 auto;}
+.tm-chip{font-family:'Fredoka One',cursive;font-size:.95rem;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);
+  padding:5px 16px;border-radius:50px;}
+.tm-chip-p{background:var(--accent);color:#16162e;border-color:var(--accent);}
+.tm-steps{display:flex;gap:7px;margin-left:auto;flex-wrap:wrap;}
+.tm-stepdot{font-size:.76rem;font-weight:900;padding:5px 13px;border-radius:50px;background:rgba(255,255,255,.07);
+  border:1.5px solid rgba(255,255,255,.13);color:rgba(255,255,255,.55);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tm-stepdot:hover{background:rgba(255,255,255,.16);color:#fff;}
+.tm-stepdot.on{background:var(--accent);border-color:var(--accent);color:#16162e;}
+.tm-stepdot.done{color:#8fd6ac;border-color:rgba(143,214,172,.45);}
+.tm-x{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-size:1.05rem;font-weight:900;
+  width:38px;height:38px;border-radius:50%;cursor:pointer;transition:all .18s;}
+.tm-x:hover{background:#e8547a;border-color:#e8547a;transform:rotate(90deg);}
+
+.tm-stage{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:22px 34px;text-align:center;overflow-y:auto;position:relative;}
+.tm-kicker{font-size:.82rem;font-weight:900;letter-spacing:2.2px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.tm-say{font-size:clamp(1.05rem,2.3vw,1.7rem);font-weight:800;line-height:1.45;max-width:1000px;margin:0 auto;color:rgba(255,255,255,.93);}
+.tm-sub{font-size:clamp(.85rem,1.35vw,1.05rem);font-weight:700;color:rgba(255,255,255,.6);margin-top:12px;max-width:900px;}
+
+.tm-pattern{font-family:'Fredoka One',cursive;font-size:clamp(4.5rem,17vw,15rem);line-height:1;letter-spacing:2px;
+  background:linear-gradient(96deg,#F5C518 0%,#ff9d4d 42%,#ff6f91 72%,#a78bfa 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:tmDrop .75s cubic-bezier(.16,1.4,.5,1) both;cursor:pointer;display:inline-block;filter:drop-shadow(0 10px 34px rgba(245,197,24,.28));}
+.tm-pattern:hover{animation:tmWobble .6s ease both;}
+@keyframes tmDrop{0%{opacity:0;transform:translateY(-90px) scale(.55) rotate(-7deg);}100%{opacity:1;transform:none;}}
+@keyframes tmWobble{0%,100%{transform:rotate(0) scale(1);}22%{transform:rotate(-3.5deg) scale(1.07);}55%{transform:rotate(3deg) scale(1.05);}80%{transform:rotate(-1.5deg) scale(1.02);}}
+
+.tm-facts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:26px;}
+.tm-fact{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.16);border-radius:18px;padding:14px 22px;
+  max-width:460px;animation:tmRise .55s cubic-bezier(.16,1.2,.5,1) both;}
+.tm-fact:nth-child(2){animation-delay:.12s;}
+.tm-fact:nth-child(3){animation-delay:.24s;}
+.tm-fact b{display:block;font-size:.7rem;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.tm-fact span{font-size:clamp(.95rem,1.5vw,1.2rem);font-weight:800;line-height:1.4;}
+@keyframes tmRise{0%{opacity:0;transform:translateY(26px) scale(.94);}100%{opacity:1;transform:none;}}
+
+/* word wall */
+.tm-wall{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;align-items:center;max-width:1500px;margin-top:6px;}
+.tm-word{font-family:'Fredoka One',cursive;font-size:clamp(1.5rem,3.9vw,3.5rem);line-height:1.15;padding:8px 20px;border-radius:18px;
+  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);cursor:pointer;
+  transition:transform .18s cubic-bezier(.3,1.6,.5,1),background .18s,border-color .18s,box-shadow .18s;
+  animation:tmPop .5s cubic-bezier(.16,1.5,.5,1) both;user-select:none;}
+.tm-word:hover{transform:scale(1.14) rotate(-2deg);background:rgba(255,255,255,.14);border-color:var(--accent);
+  box-shadow:0 16px 44px rgba(0,0,0,.4);z-index:2;}
+.tm-word:active{transform:scale(.97);}
+.tm-word.read{background:rgba(143,214,172,.16);border-color:rgba(143,214,172,.5);}
+@keyframes tmPop{0%{opacity:0;transform:scale(.4) translateY(22px);}100%{opacity:1;transform:none;}}
+
+/* the bit of the word the chart is about */
+.tm-hl{color:#F5C518;position:relative;display:inline-block;animation:tmGlow 2.6s ease-in-out infinite;}
+@keyframes tmGlow{0%,100%{text-shadow:0 0 0 rgba(245,197,24,0);}50%{text-shadow:0 0 26px rgba(245,197,24,.75);}}
+.tm-word:hover .tm-hl{color:#fff;background:linear-gradient(180deg,transparent 58%,rgba(245,197,24,.55) 58%);border-radius:4px;}
+
+/* spotlight one word */
+.tm-spot{position:absolute;inset:0;background:rgba(9,9,22,.9);display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:18px;cursor:pointer;z-index:5;animation:tmFade .22s ease both;}
+@keyframes tmFade{from{opacity:0}to{opacity:1}}
+.tm-spot-word{font-family:'Fredoka One',cursive;font-size:clamp(3rem,13vw,11rem);line-height:1;
+  animation:tmDrop .55s cubic-bezier(.16,1.4,.5,1) both;}
+.tm-spot-hint{font-size:.95rem;font-weight:800;color:rgba(255,255,255,.5);}
+
+/* syllable split */
+.tm-syls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;}
+.tm-syl{font-family:'Fredoka One',cursive;font-size:clamp(2.2rem,7.5vw,6rem);line-height:1;padding:10px 24px;border-radius:20px;
+  background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);cursor:pointer;
+  animation:tmSplit .55s cubic-bezier(.16,1.5,.5,1) both;transition:transform .16s;}
+.tm-syl:hover,.tm-syl.clapped{transform:translateY(-12px) scale(1.08);background:rgba(245,197,24,.22);border-color:var(--accent);}
+.tm-syl:nth-child(2){animation-delay:.1s}.tm-syl:nth-child(3){animation-delay:.2s}
+.tm-syl:nth-child(4){animation-delay:.3s}.tm-syl:nth-child(5){animation-delay:.4s}
+@keyframes tmSplit{0%{opacity:0;transform:scale(.6);}100%{opacity:1;transform:none;}}
+.tm-clap{font-size:clamp(1.6rem,4vw,3rem);}
+
+/* the big single word used through spell-three-words */
+.tm-big{font-family:'Fredoka One',cursive;font-size:clamp(3rem,12vw,10rem);line-height:1.05;letter-spacing:1px;
+  animation:tmDrop .6s cubic-bezier(.16,1.4,.5,1) both;display:inline-block;}
+.tm-big.pulse{animation:tmBreathe 2.6s ease-in-out infinite;}
+@keyframes tmBreathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(245,197,24,0));}
+  50%{transform:scale(1.06);filter:drop-shadow(0 0 40px rgba(245,197,24,.5));}}
+.tm-letter{display:inline-block;animation:tmLetter .45s cubic-bezier(.16,1.6,.5,1) both;}
+@keyframes tmLetter{0%{opacity:0;transform:translateY(-36px) scale(.4) rotate(-12deg);}100%{opacity:1;transform:none;}}
+
+/* the cover card */
+.tm-cover{width:min(760px,86vw);height:clamp(150px,26vh,260px);border-radius:26px;display:flex;align-items:center;justify-content:center;
+  background:repeating-linear-gradient(45deg,#2a2a52 0 22px,#31315e 22px 44px);border:3px dashed rgba(255,255,255,.25);
+  font-family:'Fredoka One',cursive;font-size:clamp(1.3rem,3.2vw,2.4rem);color:rgba(255,255,255,.55);
+  animation:tmSlideCover .5s cubic-bezier(.4,1.3,.5,1) both;}
+@keyframes tmSlideCover{0%{transform:translateY(-40px) scaleY(.5);opacity:0;}100%{transform:none;opacity:1;}}
+
+/* countdown ring */
+.tm-timer{display:flex;align-items:center;gap:14px;margin-top:22px;justify-content:center;}
+.tm-time{font-family:'Fredoka One',cursive;font-size:clamp(2rem,5vw,3.6rem);min-width:2.6em;
+  background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.16);border-radius:20px;padding:4px 22px;}
+.tm-time.low{color:#ff8fa3;border-color:#ff8fa3;animation:tmBeat .6s ease-in-out infinite;}
+@keyframes tmBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+
+.tm-bottom{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:16px 26px;border-top:1px solid rgba(255,255,255,.1);
+  background:rgba(0,0,0,.22);flex-wrap:wrap;}
+.tm-btn{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(.85rem,1.2vw,1.05rem);padding:12px 28px;border-radius:14px;
+  border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:all .18s;}
+.tm-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-2px);}
+.tm-btn:disabled{opacity:.3;cursor:default;transform:none;}
+.tm-btn-go{background:var(--accent);border-color:var(--accent);color:#16162e;}
+.tm-btn-go:hover{background:#ffd84d;border-color:#ffd84d;}
+.tm-hintbar{margin-left:auto;font-size:.78rem;font-weight:800;color:rgba(255,255,255,.42);}
+.tm-hintbar kbd{background:rgba(255,255,255,.12);border-radius:6px;padding:2px 8px;font-family:inherit;font-size:.75rem;}
+
+.tm-teachbtn{margin-left:auto;background:linear-gradient(96deg,#7c5cbf,#f07844);color:#fff;border:none;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.85rem;padding:10px 20px;border-radius:12px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(124,92,191,.35);transition:all .18s;white-space:nowrap;}
+.tm-teachbtn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 28px rgba(124,92,191,.5);}
+.tm-teachrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px;}
+.tm-teachrow .tm-teachbtn{margin-left:0;font-size:.8rem;padding:8px 16px;}
+@media(max-width:700px){.tm-steps{display:none;}.tm-hintbar{display:none;}}
+
+/* ════ ERROR PATTERNS ════ */
+.err-headline{font-size:.92rem;font-weight:800;line-height:1.55;background:#faf8f4;border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 15px;margin-bottom:16px;}
+.err-row{margin-bottom:16px;}
+.err-head{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.err-dot{width:11px;height:11px;border-radius:50%;flex:0 0 auto;}
+.err-label{font-weight:900;font-size:.87rem;}
+.err-n{margin-left:auto;font-family:'Fredoka One',cursive;font-size:1rem;color:var(--muted);}
+.err-bar{height:9px;border-radius:50px;background:#f0ece5;overflow:hidden;}
+.err-bar span{display:block;height:100%;border-radius:50px;transition:width .5s cubic-bezier(.2,1,.4,1);}
+.err-words{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.err-hint{font-size:.75rem;font-weight:700;color:var(--muted);margin-top:5px;}
+.err-pick{font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;padding:6px 9px;border:2px solid var(--border);
+  border-radius:9px;background:#fff;color:var(--text);max-width:210px;}
+.err-pick.set{border-color:#e8547a;background:#fdf2f4;}
+.ftest-errrow{display:flex;align-items:center;gap:8px;justify-content:flex-end;padding:0 0 10px;margin-top:-6px;}
+.ftest-errrow label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);}
+
+/* ════ WORD INQUIRY + JOURNAL ════ */
+.wi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;}
+.wi-field{background:#faf8f4;border:1.5px solid var(--border);border-radius:13px;padding:12px 14px;}
+.wi-field label{display:block;font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;}
+.wi-field input,.wi-field textarea{width:100%;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:700;
+  padding:8px 11px;border:2px solid var(--border);border-radius:9px;background:#fff;color:var(--text);outline:none;resize:vertical;}
+.wi-field input:focus,.wi-field textarea:focus{border-color:var(--accent);}
+.wi-field .wi-help{font-size:.72rem;font-weight:700;color:var(--muted);margin-top:5px;}
+.wi-word{font-family:'Fredoka One',cursive;font-size:1.9rem;}
+.wi-pick{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px;}
+.wi-pick button{font-family:'Nunito',sans-serif;font-size:.83rem;font-weight:800;padding:7px 15px;border-radius:50px;
+  border:1.5px solid var(--border);background:#faf8f4;cursor:pointer;transition:all .16s;}
+.wi-pick button:hover{border-color:var(--accent);transform:translateY(-2px);}
+.wi-pick button.on{background:var(--accent);border-color:var(--accent);}
+.jr-row{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.jr-word{font-family:'Fredoka One',cursive;font-size:1.05rem;min-width:130px;}
+.jr-note{font-size:.85rem;font-weight:700;color:var(--text);flex:1;line-height:1.5;}
+.jr-date{font-size:.72rem;font-weight:800;color:var(--muted);white-space:nowrap;}
+.jr-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:.95rem;padding:2px 5px;border-radius:6px;}
+.jr-del:hover{background:#fee;color:#e55;}
+
+/* ════ HOMEWORK ════ */
+.hw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:6px;}
+.hw-card{background:#faf8f4;border:2px solid var(--border);border-radius:15px;padding:15px;cursor:pointer;transition:all .18s;text-align:left;
+  font-family:'Nunito',sans-serif;}
+.hw-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.08);}
+.hw-card.on{border-color:var(--accent);background:#fffbee;}
+.hw-emoji{font-size:1.5rem;}
+.hw-title{font-family:'Fredoka One',cursive;font-size:1rem;margin:5px 0 4px;}
+.hw-blurb{font-size:.78rem;font-weight:700;color:var(--muted);line-height:1.5;}
+.hwp-block{border:1.5pt solid #ddd;border-radius:8pt;padding:12pt 14pt;margin-bottom:11pt;page-break-inside:avoid;}
+.hwp-block h3{font-size:12pt;margin:0 0 7pt;}
+.hwp-line{border-bottom:1pt solid #999;height:19pt;margin-bottom:6pt;}
+.hwp-word{font-weight:900;font-size:11pt;margin-bottom:3pt;}
+.hwp-mono{font-family:ui-monospace,Menlo,monospace;font-size:13pt;letter-spacing:3pt;}
+
+/* ════ OUR WORDS TEACH MODE ════ */
+.ow-word{font-family:'Fredoka One',cursive;font-size:clamp(2.4rem,8vw,6.5rem);line-height:1.5;letter-spacing:2px;
+  animation:tmDrop .6s cubic-bezier(.16,1.4,.5,1) both;}
+.ow-word.big{font-size:clamp(3rem,11vw,9rem);}
+.ow-l{display:inline-block;line-height:1.12;padding:0 .05em 16px;cursor:pointer;
+  transition:transform .15s,color .15s;position:relative;background-repeat:no-repeat;}
+.ow-l:hover{transform:translateY(-6px) scale(1.08);color:var(--accent);}
+/* one letter, one sound: its own short bar, gapped so each is countable */
+.ow-under{background-image:linear-gradient(#F5C518,#F5C518);background-size:64% 6px;background-position:center bottom 5px;}
+/* letters making one sound: a full-width bar, so a digraph joins into one band */
+.ow-circle{color:#7ee0ff;background-image:linear-gradient(#7ee0ff,#7ee0ff);background-size:100% 6px;background-position:center bottom 5px;}
+/* silent letter: a wavy line, the way it's drawn in the book */
+.ow-zig{color:rgba(255,255,255,.45);text-decoration:underline wavy #ff8fa3;
+  text-decoration-thickness:3px;text-underline-offset:7px;}
+.ow-key{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;margin-top:20px;
+  font-size:.85rem;font-weight:800;color:rgba(255,255,255,.6);}
+.ow-key .ow-l{font-family:'Fredoka One',cursive;font-size:1.3rem;cursor:default;margin-right:5px;}
+.ow-key .ow-l:hover{transform:none;color:inherit;}
+.ow-chiprow{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:16px auto 6px;max-width:900px;min-height:44px;}
+.ow-chip{font-family:'Fredoka One',cursive;font-size:clamp(1rem,2vw,1.5rem);padding:8px 20px;border-radius:50px;
+  background:rgba(245,197,24,.16);border:2px solid var(--accent);color:#F5C518;cursor:pointer;
+  animation:tmPop .4s cubic-bezier(.16,1.5,.5,1) both;}
+.ow-chip:hover{background:rgba(232,84,122,.22);border-color:#ff8fa3;color:#ff8fa3;}
+.ow-entry{display:flex;gap:9px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.ow-entry input{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;padding:11px 18px;border-radius:12px;
+  border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;outline:none;min-width:260px;}
+.ow-entry input::placeholder{color:rgba(255,255,255,.4);}
+.ow-entry input:focus{border-color:var(--accent);}
+
 </style>
 </head>
 <body>
@@ -375,11 +670,14 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
 <style>@keyframes boot-spin{to{transform:rotate(360deg);}}</style>
 
 
+<div id="teachmode"></div>
+
 <header>
   <div class="logo" onclick="openLoginModal()" style="cursor:pointer;" title="Teacher / Admin login">Spelling<span>Hub</span></div>
   <span id="auth-status" style="display:none;"></span>
   <nav>
     <button class="active" onclick="showPage('students')">Students</button>
+    <button onclick="showPage('pretest')">🎯 Pre-test</button>
     <button onclick="showPage('lessons')">📅 Lesson Planner</button>
     <button onclick="showPage('test')">📝 Spelling Test</button>
     <button onclick="showPage('wordlists')">Word Lists</button>
@@ -461,9 +759,17 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
   <div class="card" style="margin-bottom:18px;">
     <div class="form-row" style="margin-bottom:0;">
       <div class="form-group">
-        <label>Spelling Level</label>
-        <select id="lp-level" onchange="renderLessonContent()" style="min-width:150px;">
-          <option value="4">Year 4</option><option value="5">Year 5</option><option value="6">Year 6</option>
+        <label>Chart cycle</label>
+        <select id="lp-cycle" onchange="setChartCycle(this.value)" style="min-width:170px;"
+          title="Composite classes teach one year's charts right through this year and the other year's next year, so no child repeats a chart.">
+          <option value="5">Year 5 charts</option><option value="6">Year 6 charts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Extra-activity level</label>
+        <select id="lp-level" onchange="renderLessonContent()" style="min-width:150px;"
+          title="Only used for the optional early-finisher game at the bottom of the page — the lesson itself runs both Y5 and Y6 Our Words side by side.">
+          <option value="4">Year 4</option><option value="5" selected>Year 5</option><option value="6">Year 6</option>
           <option value="7">Year 7</option><option value="8">Year 8</option><option value="9">Year 9</option>
         </select>
       </div>
@@ -487,13 +793,28 @@ input[type="text"]:focus,select:focus{border-color:var(--accent);}
         <label>Day</label>
         <select id="lp-day" onchange="renderLessonContent()">
           <option value="0">Monday</option><option value="1">Tuesday</option>
-          <option value="2">Wednesday</option><option value="3">Thursday — Stop, Spell, Smell</option>
+          <option value="2">Wednesday</option><option value="3">Thursday — Chart review</option>
           <option value="4">Friday</option>
         </select>
       </div>
     </div>
   </div>
   <div id="lesson-content"></div>
+</div>
+
+
+<!-- ════ PRE-TEST (placement) ════ -->
+<div class="page" id="page-pretest">
+  <div class="section-title">🎯 Placement Pre-test <span class="pill">assign by level, not age</span></div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="form-row" style="margin-bottom:0;">
+      <div class="form-group">
+        <label>Student</label>
+        <select id="pt-pre-student" onchange="pretestDraft=null;renderPretestContent()" style="min-width:230px;"></select>
+      </div>
+    </div>
+  </div>
+  <div id="pretest-content"></div>
 </div>
 
 <!-- ════ SPELLING TEST ════ -->
@@ -859,6 +1180,7 @@ async function loadClassroomData(teacherId,{silent=false}={}){
     }else{
       localStorage.setItem('wl_p','{}');localStorage.setItem('wl_h','{}');localStorage.setItem('wl_a','{}');localStorage.setItem('wl_wk','{}');
     }
+    await loadWordLabExtras(teacherId,ids);
   }catch(err){
     console.error('Failed to load classroom data from Supabase',err);
     if(!silent)alert('Could not reach the server to load your class — showing the last saved copy on this device instead. Check your internet connection and try reloading.');
@@ -878,6 +1200,7 @@ function refreshVisiblePage(){
   else if(id==='student-detail'&&typeof activeId!=='undefined'&&activeId!=null)renderDetail();
   else if(id==='wordlists')renderWordListPage();
   else if(id==='lessons'&&document.getElementById('lp-level'))renderLessonContent();
+  else if(id==='pretest')renderPretestPage();
   else if(id==='test'&&document.getElementById('tp-student'))renderTestContent();
   else if(id==='data'&&document.getElementById('tbd-date'))renderTestsByDate();
 }
@@ -1666,7 +1989,7 @@ function renderStudents(){
       <button class="delete-btn" onclick="event.stopPropagation();removeStudent(${s.id})" title="Remove">✕</button>
       <div class="avatar" style="background:${s.color}">${ini(s.name)}</div>
       <div class="sname">${esc(s.name)}</div>
-      <span class="year-badge" style="background:${YC[s.year]}">Year ${s.year}</span>
+      <span class="year-badge" style="background:${YC[s.year]}">${esc(levelLabel(s))}</span>
       <div class="donut-wrap">
         <canvas id="dn-${s.id}" width="64" height="64"></canvas>
         <div class="donut-pct" id="dnpct-${s.id}">${pct}%</div>
@@ -1774,7 +2097,7 @@ function renderDetail(){
 
   const sets=Object.keys(WL[s.year]);
   document.getElementById('detail-tabs').innerHTML=
-    [...sets,'📈 Progress'].map((t,i)=>`<button class="dtab ${i===activeTab?'active':''}" onclick="switchTab(${i})">${t}</button>`).join('');
+    [...sets,'📈 Progress','🔍 Extension'].map((t,i)=>`<button class="dtab ${i===activeTab?'active':''}" onclick="switchTab(${i})">${t}</button>`).join('');
   renderTab();
 }
 
@@ -1794,8 +2117,10 @@ function renderTab(){
   const el=document.getElementById('detail-tab-content');
   if(activeTab<sets.length){
     renderWordTab(s,sets[activeTab],el);
-  }else{
+  }else if(activeTab===sets.length){
     renderProgressTabContent(s,el);
+  }else{
+    renderExtensionTab();
   }
 }
 
@@ -2121,6 +2446,8 @@ function renderProgressTabContent(s,el){
       <div class="stat-box"><div class="sv" style="color:${YC[s.year]}">${accuracy}%</div><div class="sl">Accuracy</div></div>
       <div class="stat-box"><div class="sv">${pct}%</div><div class="sl">Complete</div></div>
     </div>
+
+    ${renderErrorPatternCard(s)}
 
     ${testHistoryHtml}
 
@@ -2736,6 +3063,8 @@ function setWeeklyResult(sid,weekIndex,word,type){
   if(type==='correct'){wd.correct=(wd.correct||0)+1;wd.mastered=true;wd.masteredDate=tod();}
   else if(type==='incorrect'){wd.incorrect=(wd.incorrect||0)+1;}
   wl.results[word]=type;
+  // An error category only makes sense while the word is still marked wrong.
+  if(type!=='incorrect')clearErrorFor(sid,weekIndex,word);
   LS.saveProgress(prog,sid);
   LS.saveWeeklyLists(all,sid);
   recordSnapshot(sid);
@@ -3019,6 +3348,1361 @@ function shuffleActivity(weekIndex,day){
   renderLessonContent();
 }
 
+const CHARTS={"5":{"1":[{"t":"suffix","p":"-ness","w":["nastiness","noisiness","naughtiness","steadiness","uneasiness","weariness","grumpiness","drowsiness","liveliness","shabbiness"],"m":"State of being. These are all nouns formed by adding ness to adjectives. Note that y has changed to i.","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness12n"},{"t":"prefix","p":"re","w":["recover","revisit","review","recycle","replace","rebuild","rewind","repaid","rewrite","rethink"],"m":"do again","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent k","w":["knack","knapsack","knave","knead","kneel","knew","knickers","knuckle","knowledge"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent k and that it is followed by n 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentk2"}],"2":[{"t":"suffix","p":"-or","w":["emperor","donor","mentor","narrator","translator","imitator","demonstrator","prosecutor","contributor","decorator","educator","supervisor"],"m":"a person or thing that performs an action (These are all nouns.)","o":"Latin","e":"Find the meaning of each word. Think of a suitable spelling rule for these","c":"or4n"},{"t":"suffix","p":"-y","w":["lazy","tasty","juicy","scary","icy","greasy","noisy","breezy","easy","hazy","rosy"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":""},{"t":"prefix","p":"un","w":["unused","uncommon","untrue","unafraid","unequal","unsteady","unhappy","unhealthy","unknown","unaware","unlucky","uninvited","unusual","uncertain","unalike","unbroken","unlikely","unnamed"],"m":"not","o":"Latin","e":"Find the meaning of each word. What part of speech are these words?","c":""}],"3":[{"t":"suffix","p":"-ate","w":["hibernate","negotiate","pollinate","translate","suffocate","terminate","ventilate","fascinate","circulate","evaporate"],"m":"These words ending in -ate are all verbs. (Sometimes -ate is used to form nouns e.g. estate)","o":"Latin (-are, atus)","e":"Discuss the spelling and meaning of each word.","c":"271"},{"t":"prefix","p":"over","w":["overact","overcharge","overspend","overfond","overweight","overstock","overjoyed","overstay","overstep","overflow","overhang","overfish"],"m":"Go beyond or above a limit","o":"Middle English, Old English","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent gh","w":["bough","plough","drought","dough","though","although","through","throughout"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent gh 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"gh5"}],"4":[{"t":"suffix","p":"-er","w":["designer","interpreter","labourer","foreigner","commisioner","reporter","broadcaster","questioner","taxpayer","pitcher","goalkeeper"],"m":"a person, animal or thing that performs an action (These are all nouns.)","o":"Old English (-ere)","e":"","c":"er7n"},{"t":"prefix","p":"dis","w":["disconnect","disinterest","dislocated","distasteful","disapprove","disappoint","disarm","disabled","disallow","disorganised","disinfect","disadvantage","disgust","disorder"],"m":"not, not any, reversal","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"ph","w":["orphan","pamphlet","trophy","triumph","alphabet","biography","geography","telegraph","nephew"],"m":"","o":"","e":"1. Read the words. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ph2"}],"5":[{"t":"suffix","p":"-al","w":["accidental","aerial","criminal","dismissal","facial","floral","gradual","natural","plural","practical","seasonal","technical","tropical"],"m":"relating to","o":"Latin","e":"Find the meaning of each word. (These are all adjectives.)","c":""},{"t":"suffix","p":"-ment","w":["involvement","achievement","announcement","advertisement","appointment","requirement","establishment","entertainment","encouragement"],"m":"These nouns have been formed by adding -ment to the verb","o":"Latin (-mentum)","e":"Discuss the spelling and meaning of each word. (note the last 2 words)","c":"disappointment-ment7n"},{"t":"prefix","p":"pro","w":["produce","progress","project","pronounce","propose","protect","protest","provide"],"m":"forward, for","o":"Latin","e":"Find the meaning of each word.","c":""}],"6":[{"t":"suffix","p":"-tion","w":["cremation","digestion","education","execution","flotation","formation","inflation","injection","objection","evolution"],"m":"nouns - result of doing something","o":"Latin","e":"Discuss the spelling and meaning of each word.","c":"tion7"},{"t":"prefix","p":"in","w":["incorrect","inconsistent","inconvenient","informal","inhuman","inexpensive","insufficient"],"m":"not","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"-ance","w":["dance","lance","chance","glance","France","prance","trance","finance","ambulance"],"m":"","o":"","e":"1. Read the words. Take careful note of the spelling pattern. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ance-1"}],"7":[{"t":"suffix","p":"-al","w":["typical","traditional","several","punctual","physical","nasal","national","mental","internal","formal","external","fatal","educational"],"m":"relating to","o":"Latin","e":"Find the meaning of each word. (These are all adjectives.)","c":""},{"t":"prefix","p":"de","w":["defog","debug","decode","deface","deport","delay","detour","derail"],"m":"remove, reverse, reduce","o":"Latin","e":"This prefix has several definitions. de Think carefully about the meaning of each word.","c":""},{"t":"pattern","p":"ph","w":["phantom","phone","pharmacy","photograph","photocopier","graph","autograph","paragraph","elephant"],"m":"","o":"","e":"1. Read the words. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ph1"}],"8":[{"t":"suffix","p":"-tion","w":["deduction","detection","dictation","direction","elevation","addiction","adoration","agitation","attention","detention"],"m":"nouns - result of doing something","o":"Latin","e":"Discuss the spelling and meaning of each word.","c":"tion6"},{"t":"suffix","p":"-y","w":["piracy","mutiny","expiry","dinghy","policy","celery","salary","colony","trophy","energy"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y8n"},{"t":"pattern","p":"Soft g","w":["logic","logical","courage","sausage","gymnasium","gymnastics","gentleman","messenger"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft g sound. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"g4"}],"9":[{"t":"suffix","p":"-or","w":["dictator","operator","spectator","narrator","translator","imitator","demonstrator","prosecutor","contributor","decorator","educator","supervisor"],"m":"a person or thing that performs an action (These are all nouns.)","o":"Latin","e":"Find the meaning of each word. Think of a suitable spelling rule for these","c":"or3n"},{"t":"prefix","p":"in","w":["invest","infuse","inhabit","inhale","inspire","inflict","invade","ingest","indent"],"m":"in, into. (These are all verbs)","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"-le adjectives","w":["horrible","triple","capable","terrible","stable","comfortable","flexible","available","responsible"],"m":"","o":"","e":"1. Read the words. Take careful note of the le ending.. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"adj2"}],"10":[{"t":"suffix","p":"-ness","w":["holiness","friendliness","business","rowdiness","bossiness","clumsiness","cloudiness","drowsiness","filthiness","loneliness"],"m":"State of being. These are all nouns formed by adding ness to adjectives. Note that y has changed to i.","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness11n"},{"t":"prefix","p":"pre","w":["prefix","precook","prepay","preschool","preset","preview","pretest","premix"],"m":"before","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"3 syllable words","w":["kangaroo","interrupt","Saturday","understand","umbrella","forever","compartment","department","visitor","syllable"],"m":"","o":"","e":"1. Read the words. Take careful note of the three syllables. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":""}],"11":[{"t":"suffix","p":"-ship","w":["cadetship","readership","scholarship","partnership","studentship","citizenship","censorship","fellowship","relationship","championship"],"m":"Position held","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ship2"},{"t":"prefix","p":"ultra","w":["ultraclean","ultraclever","ultracool","ultrafast","ultrahard","ultrahot","ultrasharp","ultraslow","ultrathin","ultrasmart"],"m":"beyond","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent c","w":["scissors","scent","scene","muscle","crescent","conscience","fascinated","descend","ascend"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent c. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentc1"}],"12":[{"t":"suffix","p":"-ible","w":["visible","invisible","terrible","divisible","horrible","impossible","possible","sensible","collapsible","distractible","flexible","incredible","responsible"],"m":"able to be","o":"","e":"Find the meaning of each word. (These are all adjectives.) Note: When a word ends in -ible, it's unlikely that the part before the ending will be a recognisable English word. There are exceptions to the general rule. E.g. accessible and collapsible","c":"ible-1"},{"t":"prefix","p":"ex","w":["expose","exhale","excavate","extreme","extinct","explain","explode","exhaust","extract"],"m":"out of, from, beyond","o":"Latin","e":"Find the meaning of each word ex","c":""},{"t":"pattern","p":"ph","w":["catastrophe","xylophone","microphone","aphid","phonics","autobiography","daphne","hyphen","Joseph"],"m":"","o":"","e":"1. Read the words. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ph3"}],"13":[{"t":"suffix","p":"-tion","w":["position","question","relation","rotation","solution","traction","affection","animation","condition","deception"],"m":"nouns - result of doing something","o":"Latin","e":"Discuss the spelling and meaning of each word.","c":"tion5"},{"t":"suffix","p":"-y","w":["shiny","slimy","smoky","sneezy","stripy","bony","crazy","drowsy","spicy","smily","achy"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":""},{"t":"prefix","p":"under","w":["underpass","underclothes","undergarment","undergrowth","underlie"],"m":"(a) below, beneath","o":"Old English","e":"Find the meaning of each word","c":""}],"14":[{"t":"suffix","p":"-ism","w":["magnetism","mannerism","heroism","criticism","alcoholism","organism","vandalism","terrorism","optimism","pessimism","tribalism"],"m":"nouns - state or quality","o":"Greek (-ismos, -isma)","e":"Find the meaning of each word. Think of other words which may connect with these.","c":"ism1n"},{"t":"prefix","p":"de","w":["decay","deform","depart","defuse","deport","deduct","defeat","defend"],"m":"remove, reverse, reduce","o":"Latin","e":"This prefix has several definitions. de Think carefully about the meaning of each word.","c":""},{"t":"pattern","p":"Soft c","w":["cyberspace","cyclamen","cygnet","cynical","cypress","cyst","anticyclone"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft c sound. Check which vowel follows the c 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"softc9"}],"15":[{"t":"suffix","p":"-al","w":["antisocial","bacterial","confidential","economical","environmental","essential","exceptional","feral","industrial","partial","sensational","tribal","verbal"],"m":"relating to","o":"Latin","e":"Find the meaning of each word. (These are all adjectives.)","c":""},{"t":"prefix","p":"super","w":["superhuman","supercharge","supernormal","supervisor","superior","superb","supersonic","superpower"],"m":"over, above","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Soft c","w":["cinnamon","circuit","circular","circulation","circumstances","cistern","citrus","civil","civilisation"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft c sound. Check which vowel follows the c 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"softc6"}],"16":[{"t":"suffix","p":"-ic","w":["energetic","fantastic","gigantic","heroic","gymnastic","historic","magnetic","drastic","organic","pathetic","romantic","scientific","terrific","toxic"],"m":"relating to","o":"Latin -icus, Greek -ikos","e":"Find the meaning of each word. (These are all adjectives formed from nouns. Discuss what the original noun would be. )","c":""},{"t":"suffix","p":"-ive","w":["abusive","aggressive","competitive","cursive","descriptive","destructive","effective","expensive","explosive","imaginative","primitive","protective"],"m":"tending to, having the nature of","o":"Latin (ivus)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ive2"},{"t":"prefix","p":"semi","w":["semifinal","semisweet","semiprecious","semiconscious","semitone","semicolon","semicircle"],"m":"half","o":"Latin","e":"Find the meaning of each word","c":""}],"17":[{"t":"pattern","p":"ue","w":["virtue","subdue","revenue","pursue","miscue","barbecue","autocue","continue","residue","fondue"],"m":"","o":"","e":"1. Read the words. Take careful note of the spelling pattern. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"Ue3"},{"t":"suffix","p":"-y","w":["allergy","balcony","quality","archery","robbery","cookery","scenery","library","history","victory"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y10n"},{"t":"pattern","p":"3 syllable words","w":["Wednesday","different","interest","underground","coconut","sharpener","understood","October","minister","syllable"],"m":"","o":"","e":"1. Read the words. Take careful note of the three syllables. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":""}],"18":[{"t":"suffix","p":"-able","w":["achievable","admirable","adorable","advisable","believable","curable","excitable","excusable","lovable","movable","reusable","usable","valuable"],"m":"able to be","o":"","e":"Find the meaning of each word. (These are all adjectives.) Note: When a word ends in -able (not -ible), the main part of the word is usually a complete word in itself- wash washable (Some words drop the e at the end - advise advisable; some words double the final consonant- forget forgettable)","c":"able-6"},{"t":"prefix","p":"en","w":["encase","enchant","encrust","enfold","engage","enliven","enrich","ensnare"],"m":"put into or on, bring into the condition of","o":"mixed - Latin, old French, Greek","e":"","c":"en-2"},{"t":"pattern","p":"ea (head)","w":["treasure","measure","pleasure","weapon","dreaded","breakfast","breathless","heather","unsteady"],"m":"","o":"","e":"1. Read the words. Think about the sound of the ea part. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"head4"}],"19":[{"t":"suffix","p":"-en","w":["heighten","lengthen","christen","straighten","enlighten","dishearten","reawaken","threaten","unfasten","unburden"],"m":"These words ending in -en are all verbs. (The suffix - en is used in several other ways to from nouns e.g. chicken, adjectives e.g. golden, plurals e.g. oxen and past participles of verbs e.g. spoken)","o":"Old English","e":"Discuss the spelling and meaning of each word.","c":"en5verb"},{"t":"prefix","p":"e","w":["eject","emit","erase","erode","erupt","escape","evade","evict","emerge","edit"],"m":"out, away","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Soft c","w":["pencil","council","stencil","herbicide","coincide","decide","recite","excited","official"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft c sound. Check which vowel follows the c 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"softc7"}],"20":[{"t":"suffix","p":"-ence","w":["absence","conference","confidence","difference","evidence","existence","experience","influence","insistence","patience","sequence","silence"],"m":"state or quality of (These are all nouns, although some can also be verbs.)","o":"Latin (-entia)","e":"Find the meaning of each word. Think about their matching verbs.","c":"ence1"},{"t":"suffix","p":"-y","w":["envy","jury","beauty","bounty","county","bakery","gypsy","gravy","enemy","memory"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y3n"},{"t":"prefix","p":"fore","w":["forehead","forearm","forecast","forego","forehand","foreleg","foreman","foremost","foresee","foretell"],"m":"before","o":"Old English","e":"Find the meaning of each word","c":""}],"21":[{"t":"suffix","p":"-ish","w":["English","British","Scottish","Irish","Danish","Swedish","Finnish","Spanish","Flemish","Polish","Turkish"],"m":"having characteristics of, somewhat","o":"Old English (-isc)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ish2"},{"t":"prefix","p":"out","w":["outrun","outreach","outgrow","outlast","outlive","outnumber","outshine","outstrip","outsmart","outwit"],"m":"(b) better, longer","o":"Old English","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent n","w":["autumn","column","condemn","damn","hymn","solemn"],"m":"","o":"","e":"1. Read the words. Take careful note of the m before the silent n. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentn1"}],"22":[{"t":"suffix","p":"-ate","w":["evacuate","excavate","hesitate","irrigate","liberate","meditate","navigate","marinate","separate","tolerate"],"m":"These words ending in -ate are all verbs. (Sometimes -ate is used to form nouns e.g. estate)","o":"Latin (-are, atus)","e":"Discuss the spelling and meaning of each word.","c":"ate6verb"},{"t":"prefix","p":"bi","w":["bicycle","bifocals","bilingual","biplane","biennial","biannual","bimonthly","biweekly"],"m":"two, twice","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Soft c","w":["certain","centimetre","cedar","cellophane","cellphone","Celsius","cement","cemetery","centennial"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft c sound. Check which vowel follows the c 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"softc2"}],"23":[{"t":"suffix","p":"-ness","w":["aimlessness","attractiveness","awkwardness","nervousness","shallowness","seasickness","selfishness","childishness","carelessness","recklessness"],"m":"State of being. These are all nouns formed by adding ness to adjectives","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness7n"},{"t":"suffix","p":"-y","w":["moody","filthy","bushy","showy","grouchy","creamy","handy","broody","creepy","greedy","husky"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":",my4adj"},{"t":"prefix","p":"aero","w":["aeroplane","aerobatics","aerogram","aeronaut","aeronautics","aerodrome","aerosol","aerospace","aerial","aerate"],"m":"air","o":"Greek","e":"Find the meaning of each word.","c":""}],"24":[{"t":"pattern","p":"u-e","w":["brochure","exposure","manicure","agriculture","architecture","enclosure","treasure","aperture","literature","expenditure"],"m":"","o":"","e":"1. Read the words. Take careful note of the vowel sounds. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"u-e9"},{"t":"suffix","p":"-ful","w":["bashful","boastful","doubtful","dreadful","lawful","purposeful","resentful","resourceful","successful","thoughtful","truthful","youthful"],"m":"full of","o":"Old English","e":"Find the meaning of each word. (These are all adjectives.)","c":"ful-4"},{"t":"suffix","p":"-y","w":["needy","newsy","pearly","peppery","salty","risky","showery","sketchy","sooty","springy","squeaky"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":"y5adj"}],"25":[{"t":"suffix","p":"-ive","w":["abrasive","adoptive","alternative","appreciative","defective","digestive","disruptive","impulsive","inactive","inclusive","possessive","selective"],"m":"tending to, having the nature of","o":"Latin (ivus)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ive3"},{"t":"suffix","p":"-ory","w":["lavatory","observatory","territory","laboratory","category","dormitory","conservatory","directory","depository","repository","factory","rectory","inventory"],"m":"nouns - a place for a particular function","o":"Latin (-oria, -orium)","e":"Find the meaning of each word. Think what happens in each of these places.","c":"ory1"},{"t":"pattern","p":"Silent h","w":["ache","anchor","choir","chemist","chorus","chord","echo"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent h. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silenth1"}],"26":[{"t":"suffix","p":"-ical","w":["alphabetical","comical","chemical","critical","electrical","historical","identical","magical","mechanical","medical","musical","physical","practical","typical"],"m":"relating to","o":"Latin -icus, Greek -ikos","e":"Find the meaning of each word. (These are all adjectives formed from nouns. Discuss what the original noun would be. Some words above can also be nouns. Discuss which ones are both adjectives and nouns.)","c":""},{"t":"suffix","p":"-ment","w":["enrolment","adornment","amendment","management","wonderment","easement","attachment","commitment","adjustment","assessment"],"m":"These nouns have been formed by adding -ment to the verb","o":"Latin (-mentum)","e":"Discuss the spelling and meaning of each word.","c":"ment4n"},{"t":"pattern","p":"Silent g","w":["sign","resign","design","gnaw","gnome","foreign","gnu","reign"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent g and that it is followed by n 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentg1"}],"27":[{"t":"suffix","p":"-ify, -fy","w":["rectify","unify","specify","gratify","glorify","verify","signify","certify","personify","dignify","intensify","stupefy"],"m":"make or become. These words are all verbs.","o":"Latin (-ficare, -facere)","e":"Discuss the spelling and meaning of each word.","c":"fy3verb"},{"t":"suffix","p":"-ist","w":["journalist","machinist","canoeist","terrorist","colonist","colourist","activist","dramatist","royalist","novelist","receptionist"],"m":"nouns -one who does an action or practises in a certain field","o":"Latin (-ista)","e":"Find the meaning of each word. Think of other words which may connect with these.","c":"ist5"},{"t":"suffix","p":"-ize, -ise","w":["realize","realise","baptize","baptise","finalize","finalise","itemize","itemise","organize","organise","civilize","civilise","agonize","agonise","localize","localise","equalize","equalise","mobilize","mobilise"],"m":"make or become. These words are all verbs.","o":"French (-iser) via Latin (-izare) from Greek verbs ending in -izein","e":"Discuss the spelling and meaning of each word. Note: -ize and -ise are interchangeable but it is recommended to stick with one consistent form when writing.","c":"e1v"}],"28":[{"t":"suffix","p":"-ment","w":["apartment","basement","document","monument","ornament","ointment","casement","implement","instrument","experiment"],"m":"These nouns are all based on Latin words.","o":"Latin (-mentum)","e":"Discuss the spelling and meaning of each word.","c":"ment9n"},{"t":"suffix","p":"-ness","w":["bluntness","bitterness","brightness","cleverness","giftedness","politeness","ruggedness","shrillness","usefulness","wickedness"],"m":"State of being. These are all nouns formed by adding ness to adjectives","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness6n"},{"t":"suffix","p":"-or","w":["transistor","monitor","adaptor","divisor","protractor","factor","reflector","detector","incisor","liquor","meteor"],"m":"a person or thing that performs an action (These are all nouns.)","o":"Latin","e":"Find the meaning of each word. Think of verbs that go with these.","c":"or11n"}],"29":[{"t":"prefix","p":"fore","w":["forehead","forearm","forecast","forego","forehand","foreleg","foreman","foremost","foresee","foretell"],"m":"before","o":"Old English","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"out","w":["outrun","outreach","outgrow","outlast","outlive","outnumber","outshine","outstrip","outsmart","outwit"],"m":"(b) better, longer","o":"Old English","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"ph","w":["catastrophe","xylophone","microphone","aphid","phonics","autobiography","daphne","hyphen","Joseph"],"m":"","o":"","e":"1. Read the words. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ph3"}],"30":[{"t":"prefix","p":"in","w":["incorrect","inconsistent","inconvenient","informal","inhuman","inexpensive","insufficient"],"m":"not","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"semi","w":["semifinal","semisweet","semiprecious","semiconscious","semitone","semicolon","semicircle"],"m":"half","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"under","w":["underpass","underclothes","undergarment","undergrowth","underlie"],"m":"(a) below, beneath","o":"Old English","e":"Find the meaning of each word","c":""}],"31":[{"t":"suffix","p":"-ship","w":["cadetship","readership","scholarship","partnership","studentship","citizenship","censorship","fellowship","relationship","championship"],"m":"Position held","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ship2"},{"t":"suffix","p":"-y","w":["piracy","mutiny","expiry","dinghy","policy","celery","salary","colony","trophy","energy"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y8n"},{"t":"pattern","p":"Soft c","w":["certain","centimetre","cedar","cellophane","cellphone","Celsius","cement","cemetery","centennial"],"m":"","o":"","e":"1. Read the words. Take careful note of the soft c sound. Check which vowel follows the c 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"softc2"}],"32":[{"t":"suffix","p":"-able","w":["achievable","admirable","adorable","advisable","believable","curable","excitable","excusable","lovable","movable","reusable","usable","valuable"],"m":"able to be","o":"","e":"Find the meaning of each word. (These are all adjectives.) Note: When a word ends in -able (not -ible), the main part of the word is usually a complete word in itself- wash washable (Some words drop the e at the end - advise advisable; some words double the final consonant- forget forgettable)","c":"able-6"},{"t":"suffix","p":"-ive","w":["abusive","aggressive","competitive","cursive","descriptive","destructive","effective","expensive","explosive","imaginative","primitive","protective"],"m":"tending to, having the nature of","o":"Latin (ivus)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ive2"},{"t":"suffix","p":"-y","w":["needy","newsy","pearly","peppery","salty","risky","showery","sketchy","sooty","springy","squeaky"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":"y5adj"}],"33":[{"t":"stem","p":"form","w":["form","inform","information","deform","transform","transformer","perform","uniform"],"m":"shape","o":"Latin (forma-form)","e":"Find the meaning of each word","c":""},{"t":"stem","p":"added. port","w":["port","deport","import","export","report","support","transport","porter","airport"],"m":"carry","o":"Latin (portare-carry)","e":"Find the meaning of each word","c":""},{"t":"stem","p":"sta","w":["stand","standard","stage","stable","station","stadium","statue","distance","constant"],"m":"stand","o":"Latin (stare-to stand)","e":"Find the meaning of each word","c":""}],"34":[{"t":"suffix","p":"-er","w":["peddler","soldier","farrier","financier","fishmonger","lawyer","soothsayer","bibliographer","philosopher","treasurer","mariner"],"m":"a person, animal or thing that performs an action (These are all nouns.)","o":"Old English (-ere)","e":"","c":"er8n"},{"t":"suffix","p":"-ful","w":["awful","delightful","disgraceful","faithful","forceful","frightful","graceful","respectful","shameful","sorrowful","spoonful","tasteful"],"m":"full of","o":"Old English","e":"Find the meaning of each word. (These are all adjectives.)","c":"ful-3"},{"t":"suffix","p":"-or","w":["emperor","mentor","sponsor","vendor","ancestor","successor","aviator","tenor","captor","censor","victor"],"m":"a person or thing that performs an action (These are all nouns.)","o":"Latin","e":"Find the meaning of each word. Think about other words connect with them.","c":"or6n"}],"35":[{"t":"suffix","p":"-en","w":["broaden","cheapen","enliven","flatten","freshen","gladden","quieten","roughen","sharpen","lighten"],"m":"These words ending in -en are all verbs. (The suffix - en is used in several other ways to from nouns e.g. chicken, adjectives e.g. golden, plurals e.g. oxen and past participles of verbs e.g. spoken)","o":"Old English","e":"Discuss the spelling and meaning of each word.","c":"en3verb"},{"t":"prefix","p":"out","w":["outboard","outbreak","outcast","outlaw","output","outfield","outpost","outburst","outbuilding"],"m":"(a) external, some way off","o":"Old English","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"under","w":["undercooked","underpaid","undervalue","underfed","underpriced","underdone","undercharge"],"m":"(b) Below what it should be","o":"Old English","e":"Find the meaning of each word Under--","c":""}],"36":[{"t":"suffix","p":"-ey","w":["abbey","barley","kidney","galley","pulley","valley","volley","trolley","turkey","chimney"],"m":"These words ending in -ey are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"ey2n"},{"t":"suffix","p":"-ish","w":["thirtyish","fortyish","fiftyish","sixtyish","brutish","peevish","lavish","outlandish","garish","fiendish","ticklish"],"m":"having characteristics of, somewhat","o":"Old English (-isc)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ish4"},{"t":"pattern","p":"Silent h","w":["chaos","school","stomach","monarch","orchid","orchestra","Christmas","mechanic"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent h. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silenth2"}]},"6":{"1":[{"t":"suffix","p":"-ship","w":["hardship","lordship","ladyship","ownership","friendship","leadership","dealership","kingship","membership","airmanship"],"m":"Position held","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ship1"},{"t":"suffix","p":"-tion","w":["suction","addition","ambition","creation","donation","equation","eruption","fraction","location","adoption"],"m":"nouns - result of doing something","o":"Latin","e":"Discuss the spelling and meaning of each word.","c":"tion3"},{"t":"prefix","p":"un","w":["unconscious","unlimited","unfaithful","unaffected","unamusing","unavailable","unbalanced","unemployed","unreasonable","unselfish"],"m":"not","o":"Latin","e":"Find the meaning of each word. What part of speech are these words?","c":""}],"2":[{"t":"suffix","p":"-er","w":["blender","container","steamer","sinker","dishwasher","computer","amplifier","carrier","enlarger","photocopier","printer"],"m":"a person, animal or thing that performs an action (These are all nouns.)","o":"Old English (-ere)","e":"","c":"er10n"},{"t":"suffix","p":"-y","w":["company","novelty","privacy","surgery","urgency","vacancy","century","cruelty","cutlery"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y11n"},{"t":"prefix","p":"re","w":["relocate","reform","resale","relive","reword","reappear","rework","refresh","regrowth","recharge"],"m":"do again","o":"Latin","e":"Find the meaning of each word","c":""}],"3":[{"t":"suffix","p":"-al","w":["arrival","removal","reversal","denial","burial","dispersal","retrieval","confessional","proposal","acquittal","trial","refusal","recital"],"m":"(forming nouns from verbs) - act or process of an action","o":"Latin (- alia)","e":"Find the meaning of each word. (These are all nouns - think about the verb they came from.)","c":""},{"t":"suffix","p":"-ment","w":["catchment","judgement","pavement","shipment","punishment","settlement","statement","investment","excitement","engagement"],"m":"These nouns have been formed by adding -ment to the verb","o":"Latin (-mentum)","e":"Discuss the spelling and meaning of each word.","c":"ment3n"},{"t":"prefix","p":"in","w":["invest","infuse","inhabit","inhale","inspire","inflict","invade","ingest","indent"],"m":"in, into. (These are all verbs)","o":"Latin","e":"Find the meaning of each word","c":""}],"4":[{"t":"suffix","p":"-able","w":["favourable","portable","suitable","remarkable","respectable","reviewable","sizeable","transportable","unspeakable","controllable","regrettable","unforgettable","swimmable"],"m":"able to be","o":"","e":"Find the meaning of each word. (These are all adjectives.) Note: When a word ends in -able (not -ible), the main part of the word is usually a complete word in itself- wash washable (Some words drop the e at the end - advise advisable; some words double the final consonant- forget forgettable)","c":"able-5"},{"t":"prefix","p":"mis","w":["misplace","misbehave","miscall","mistreat","misprint","misjudge","misspell","misunderstand"],"m":"bad, badly, wrong, wrongly","o":"Old English","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"over","w":["over-nice","overactive","overgrown","overreach","overrun","overdose","over-excited","overpower","overladen","overbalance","overlap","overshoot"],"m":"Go beyond or above a limit","o":"Middle English, Old English","e":"Find the meaning of each word","c":""}],"5":[{"t":"suffix","p":"-er","w":["manufacturer","producer","lecturer","consumer","receiver","believer","announcer","debater","settler","promoter","advertiser"],"m":"a person, animal or thing that performs an action (These are all nouns.)","o":"Old English (-ere)","e":"","c":"er6n"},{"t":"suffix","p":"-tion","w":["audition","devotion","dilution","election","function","ejection","petition","reaction","taxation","vacation"],"m":"nouns - result of doing something","o":"Latin","e":"Discuss the spelling and meaning of each word.","c":"tion4"},{"t":"prefix","p":"pre","w":["prehistoric","prejudge","preplan","predate","preseason","prewrite","preapprove","prevent"],"m":"before","o":"Latin","e":"Find the meaning of each word","c":""}],"6":[{"t":"suffix","p":"-able","w":["acceptable","affordable","avoidable","bearable","breakable","forgivable","manageable","noticeable","removable","serviceable","spreadable","stackable","predictable"],"m":"able to be","o":"","e":"Find the meaning of each word. (These are all adjectives.) Note: When a word ends in -able (not -ible), the main part of the word is usually a complete word in itself- wash washable (Some words drop the e at the end - advise advisable; some words double the final consonant- forget forgettable)","c":"able-2"},{"t":"prefix","p":"word to change its kilo meaning.","w":["kilogram","kilometre","kilolitre","kiloton","kilowatt","kilohertz","kilobit","kilobyte","kilocalorie","kilocycle"],"m":"thousand","o":"Greek","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"ultra","w":["ultracheap","ultraheavy","ultrahigh","ultranarrow","ultrarich","ultraripe","ultrashort","ultrasmooth","ultraweak","ultracareful"],"m":"beyond","o":"Latin","e":"Find the meaning of each word","c":""}],"7":[{"t":"suffix","p":"-ey","w":["storey","chutney","curtsey","parsley","spinney","paisley","whiskey","odyssey","attorney"],"m":"These words ending in -ey are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"ey3n"},{"t":"suffix","p":"-y","w":["botany","aviary","apiary","vanity","winery","canopy","canary","brandy","melody"],"m":"These words ending in -y are all nouns.","o":"varies","e":"Discuss the spelling and meaning of each word.","c":"y9n"},{"t":"prefix","p":"mid","w":["midriff","midship","midst","midwife","midwicket","middling","midsection","mid-century","mid-level"],"m":"middle","o":"Old English","e":"Find the meaning of each word","c":""}],"8":[{"t":"pattern","p":"u-e","w":["leisure","failure","measure","conjure","closure","pleasure","treasure","pressure","departure","structure"],"m":"","o":"","e":"1. Read the words. Take careful note of the vowel sounds. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"u-e8"},{"t":"stem","p":"sens, sent","w":["sense","resent","sensible","consent","sensitive","dissent","sensitize","assent","senseless","sentiment","sensor","sentimental","sensory","sensation","sensational","consensus","nonsense"],"m":"feel","o":"Latin (sensus-feeling, sentire -to feel)","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"ex","w":["ex-husband","ex-wife","ex-boyfriend","ex-girlfriend","ex-principal","ex-teacher","ex-guitarist","ex-drummer","ex-friend","ex-smoker","ex-employee","ex-boss"],"m":"former","o":"Latin","e":"Find the meaning of each word Note: When the prefix ex- is used to mean former, it should be connected to the noun with a hyphen. ex","c":""}],"9":[{"t":"suffix","p":"-ate","w":["mediate","radiate","migrate","decorate","amputate","delegate","irritate","laminate","dominate","activate"],"m":"These words ending in -ate are all verbs. (Sometimes -ate is used to form nouns e.g. estate)","o":"Latin (-are, atus)","e":"Discuss the spelling and meaning of each word.","c":"ate4verb"},{"t":"suffix","p":"-ness","w":["sourness","softness","awareness","alertness","closeness","freshness","quietness","looseness","roughness","sharpness"],"m":"State of being. These are all nouns formed by adding ness to adjectives","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness4n"},{"t":"prefix","p":"tele","w":["telephone","television","telescope","telegraph","telegram","teleprinter","telethon","telemarket","teleport","telecast"],"m":"at a distance","o":"Greek","e":"Find the meaning of each word","c":""}],"10":[{"t":"suffix","p":"-al","w":["social","personal","original","oral","naval","medical","local","loyal","historical","general","electrical","comical","bridal"],"m":"relating to","o":"Latin","e":"Find the meaning of each word. (These are all adjectives.)","c":""},{"t":"suffix","p":"-ous","w":["dangerous","enormous","fabulous","famous","generous","glamorous","jealous","joyous","monstrous","nervous","poisonous","tremendous"],"m":"characterised by","o":"Latin (osus)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ous1"},{"t":"prefix","p":"con","w":["confirm","conform","confide","confine","confess","conflict","confront","confer","configure","conjoin","conjunction"],"m":"with, together, thoroughly","o":"Middle English from Latin (com)","e":"Find the meaning of each word","c":""}],"11":[{"t":"suffix","p":"-ance","w":["acceptance","annoyance","appearance","assistance","attendance","brilliance","clearance","disappearance","distance","entrance","guidance","importance","balance"],"m":"state or quality of (These are all nouns.)","o":"Latin (-antia)","e":"Find the meaning of each word. Think about their matching verbs.","c":"ance1"},{"t":"suffix","p":"-less","w":["motionless","purposeless","aimless","countless","limitless","seedless","crimeless","humourless","flavourless","noiseless"],"m":"without","o":"Old English (leas - devoid)","e":"Find the meaning of each word.","c":"less4adj"},{"t":"prefix","p":"pro","w":["procure","protrude","proceed","profile","profit","prohibit","prolong","propel"],"m":"forward, for","o":"Latin","e":"Find the meaning of each word.","c":""}],"12":[{"t":"pattern","p":"u-e","w":["picture","manure","vulture","costume","fortune","moisture","perfume","produce","puncture","nature"],"m":"","o":"","e":"1. Read the words. Take careful note of the vowel sounds. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"u-e5"},{"t":"suffix","p":"-or","w":["sculptor","contractor","conqueror","surveyor","prospector","aggressor","auditor","debtor","creditor","professor"],"m":"a person or thing that performs an action (These are all nouns.)","o":"Latin","e":"Find the meaning of each word.","c":"or2n"},{"t":"prefix","p":"trans","w":["transport","transplant","transform","transparent","translate","transcribe","transpose","transatlantic","transalpine"],"m":"across","o":"Latin","e":"Find the meaning of each word","c":""}],"13":[{"t":"suffix","p":"-ate","w":["aerate","notate","sedate","pupate","berate","equate","fixate","agitate","elevate","isolate"],"m":"These words ending in -ate are all verbs. (Sometimes -ate is used to form nouns e.g. estate)","o":"Latin (-are, atus)","e":"Discuss the spelling and meaning of each word.","c":"ate3verb"},{"t":"suffix","p":"-y","w":["twinkly","wrinkly","muddly","grizzly","crumbly","bubbly","cuddly","wobbly","dribbly","fiddly"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":"y12adj"},{"t":"prefix","p":"de","w":["detach","detain","derive","demote","deploy","detest","delude","decamp","deflate"],"m":"remove, reverse, reduce","o":"Latin","e":"This prefix has several definitions. de Think carefully about the meaning of each word.","c":""}],"14":[{"t":"suffix","p":"-acy","w":["numeracy","literacy","accuracy","privacy","piracy","delicacy","pharmacy"],"m":"forming nouns of state or quality","o":"Latin (-atia)","e":"Find the meaning of each word. (These are all nouns.)","c":"acy1"},{"t":"prefix","p":"com","w":["combine","compact","compare","compatible","composite","committee","community","communication"],"m":"with, together, thoroughly","o":"Middle English from Latin (com)","e":"Find the meaning of each word. com","c":""},{"t":"prefix","p":"sub","w":["submarine","submerge","subway","substandard","subnormal","sub-zero","subtract","subtitle","subset"],"m":"under, away","o":"Latin","e":"Find the meaning of each word","c":""}],"15":[{"t":"suffix","p":"-ful","w":["bountiful","deceitful","dutiful","fretful","merciful","mournful","neglectful","pitiful","plentiful","skilful","vengeful","wistful"],"m":"full of","o":"Old English","e":"Find the meaning of each word. (These are all adjectives.)","c":"ful-5"},{"t":"prefix","p":"anti","w":["antifreeze","antibody","anticlimax","antidote","antiseptic","antisocial","anticlockwise","antibiotic","anticyclone","anti-aircraft","anti-tank"],"m":"opposing, against","o":"Greek","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"word to change its mega meaning.","w":["megastar","megatanker","megastore","megadose","megahit","mega-rich","megastructure","megaphone"],"m":"very large","o":"Greek","e":"Find the meaning of each word","c":""}],"16":[{"t":"suffix","p":"-al","w":["actual","artificial","brutal","casual","choral","critical","cultural","financial","illegal","individual","initial","legal","official"],"m":"relating to","o":"Latin","e":"Find the meaning of each word. (These are all adjectives.)","c":""},{"t":"suffix","p":"-en","w":["moisten","quicken","shorten","smarten","stiffen","sweeten","toughen","thicken","brighten","frighten"],"m":"These words ending in -en are all verbs. (The suffix - en is used in several other ways to from nouns e.g. chicken, adjectives e.g. golden, plurals e.g. oxen and past participles of verbs e.g. spoken)","o":"Old English","e":"Discuss the spelling and meaning of each word.","c":"en4verb"},{"t":"prefix","p":"dis","w":["displaced","displeased","disprove","disqualify","disrespect","dissatisfy","discontinue","discontented","discomfort","discolour","dishonour","dishonest","dishearten","dissimilar"],"m":"not, not any, reversal","o":"Latin","e":"Find the meaning of each word","c":""}],"17":[{"t":"suffix","p":"-y","w":["spotty","starry","chatty","foggy","baggy","saggy","yummy","dotty","runny","tubby","nutty"],"m":"full of, having the quality of (when forming adjectives)","o":"Old English (-ig)","e":"Find the meaning of each word.","c":"y11adj"},{"t":"prefix","p":"en","w":["enchain","encourage","endear","enforce","engrave","enlist","enthuse","envelop"],"m":"put into or on, bring into the condition of","o":"mixed - Latin, old French, Greek","e":"","c":"en-3"},{"t":"prefix","p":"uni","w":["unicycle","unique","uniform","unison","unity","unicorn","union","universe","unify","unite"],"m":"one","o":"Latin","e":"Find the meaning of each word","c":""}],"18":[{"t":"suffix","p":"-ar","w":["altar","calendar","vinegar","caterpillar","mortar","cedar","grammar","vicar","bursar","scholar"],"m":"In these words -ar has been used to form nouns","o":"Latin (are, arius)","e":"Find the meaning of each word. Think of other words which may have similar parts.","c":"ar2n"},{"t":"suffix","p":"-ic","w":["Atlantic","Pacific","Antarctic","Arctic","artistic","aquatic","athletic","classic","metric","oceanic","electric","scenic"],"m":"relating to","o":"Latin -icus, Greek -ikos","e":"Find the meaning of each word. (These are all adjectives formed from nouns. Discuss what the original noun would be. )","c":""},{"t":"prefix","p":"de","w":["deflect","depend","depleat","depress","descend","despise","despond","destroy","devour","detect"],"m":"remove, reverse, reduce","o":"Latin","e":"This prefix has several definitions. de Think carefully about the meaning of each word.","c":""}],"19":[{"t":"pattern","p":"-ove","w":["galore","anymore","restore","folklore","seashore","pinafore","carnivore","herbivore","omnivore","core","therefore"],"m":"","o":"","e":"1. Read the words. Take careful note of the spelling pattern. Note how they differ from words such as bone. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ore3"},{"t":"suffix","p":"-ish","w":["cheapish","dampish","roundish","unselfish","feverish","fairish","stylish","squeamish","sheepish","peckish","sluggish"],"m":"having characteristics of, somewhat","o":"Old English (-isc)","e":"Find the meaning of each word. (These are all adjectives.)","c":"ish3"},{"t":"prefix","p":"con","w":["concur","concoct","concuss","concord","concise","conclude","concern","concrete"],"m":"with, together, thoroughly","o":"Middle English from Latin (com)","e":"Find the meaning of each word","c":""}],"20":[{"t":"suffix","p":"-dom","w":["freedom","kingdom","wisdom","seldom","boredom","random","officialdom","dukedom","martyrdom","Christendom"],"m":"state of being or condition (These are all nouns.)","o":"Old English (-dom)","e":"Find the meaning of each word.","c":"dom1"},{"t":"prefix","p":"ex","w":["excerpt","exceed","exile","extinguish","execute","expel","exempt","expend","external"],"m":"out of, from, beyond","o":"Latin ex","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"mille, milli","w":["millennium","millimetre","million","millilitre","mile","milligram","mil","millibar","millipede","millisecond"],"m":"mille-thousand, milli- thousandth","o":"Latin mille,","e":"","c":""}],"21":[{"t":"stem","p":"spect","w":["aspect","expect","inspect","prospect","respect","spectacle","spectacles","spectator","suspect","disrespect"],"m":"to look","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"stem","p":"vac","w":["vacate","vacant","vacancy","vacuous","vacuum","evacuate","evacuee","vacation"],"m":"empty","o":"Latin (vacare-be empty)","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"bi","w":["bisect","billion","binocular","bilateral","bivalve","biceps","binary","bicentenary","bicentennial"],"m":"two, twice","o":"Latin","e":"Find the meaning of each word","c":""}],"22":[{"t":"suffix","p":"-ify, -fy","w":["modify","amplify","notify","justify","qualify","testify","solidify","disqualify","crucify","pacify","liquefy","dissatisfy"],"m":"make or become. These words are all verbs.","o":"Latin (-ficare, -facere)","e":"Discuss the spelling and meaning of each word.","c":"fy2verb"},{"t":"prefix","p":"e","w":["eclipse","elect","eliminate","evacuate","emigrate","elaborate","elapse","elope","evaporate","evolve"],"m":"out, away","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"ir","w":["irrelevant","irregular","irrational","irretrievable","irrecoverable","irreducible","irremovable","irreparable","irreplaceable","irresponsible","irreversible"],"m":"not","o":"Latin","e":"Find the meaning of each word. Note: Latin prefix for NOT- Use ir before words starting with 'r'","c":""}],"23":[{"t":"stem","p":"form","w":["format","formless","formation","formula","formal","reform","conform","informer","informal"],"m":"shape","o":"Latin (forma-form)","e":"Find the meaning of each word","c":""},{"t":"stem","p":"pop","w":["population","popular","popularity","popularise","populist","populate","populous","populace","unpopular","depopulate","repopulate"],"m":"people","o":"Latin (populus-people)","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent h","w":["architect","archeology","character","chrome","scheme","technical","technique","melancholy"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent h. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silenth3"}],"24":[{"t":"prefix","p":"du, duo","w":["duet","dual","duo","duplex","duplicate","duplicity","duopoly","duologue","double"],"m":"two, twice","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"hydro","w":["hydrogen","hydrometer","hydroplane","hydroponics","hydroelectric","hydrofoil","hydrophone","hydroscope","hydro-ski"],"m":"water","o":"Greek","e":"Find the meaning of each","c":""},{"t":"prefix","p":"ig","w":["ignore","ignoramus","ignorant","ignoble","ignominious"],"m":"not","o":"Latin","e":"Find the meaning of each word.","c":"ig-1"}],"25":[{"t":"stem","p":"phone","w":["phone","cellphone","telephone","microphone","megaphone","saxophone","xylophone","gramophone","earphone","headphone","speakerphone"],"m":"sound, voice","o":"Greek (phone-sound)","e":"Find the meaning of each word","c":"phon-1"},{"t":"stem","p":"added. port","w":["portable","seaport","passport","portfolio","deportment","reporter","portly","portage","teleport"],"m":"carry","o":"Latin (portare-carry)","e":"Find the meaning of each word","c":"port-2"},{"t":"pattern","p":"Silent u","w":["rogue","colleague","vogue","plague","fatigue","league","morgue"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent u 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentu3"}],"26":[{"t":"prefix","p":"inter","w":["interest","internet","interfere","interlock","interact","interplay","interrupt","intersection","interval","intercity","interview"],"m":"between","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"mono","w":["monorail","monoplane","monotone","monocle","monogram","monosyllable","monoculture","monotype"],"m":"one, alone","o":"Greek","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"under","w":["undergraduate","underscore","understudy","undertone","underworld"],"m":"(a) below, beneath","o":"Old English","e":"Find the meaning of each word","c":""}],"27":[{"t":"pattern","p":"ue","w":["hue","cue","argue","avenue","value","statue","untrue","issue","tissue","rescue"],"m":"","o":"","e":"1. Read the words. Take careful note of the spelling pattern. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"Ue2"},{"t":"prefix","p":"bio","w":["biology","biodegradable","biofuel","bionic","biohazard","biography","autobiography","and","biotic","antibiotic"],"m":"life","o":"Greek- bios","e":"Find the meaning of each","c":""},{"t":"prefix","p":"co","w":["co-pilot","co-owner","co-writer","co-star","co-education","co-operate","co-author","co-founder","co-driver","coincidence","coordinate"],"m":"with, together, thoroughly","o":"Middle English from Latin (com)","e":"Find the meaning of each word","c":""}],"28":[{"t":"stem","p":"herb","w":["herb","herbal","herbalism","herbalist","herbicide","herbivore","herbivorous","herbarium","herbaceous","herbage"],"m":"plant, grass","o":"Latin (herba - grass, plant)","e":"Find the meaning of each word","c":"herb-1"},{"t":"prefix","p":"cent, centi","w":["cent","centimetre","century","centilitre","centenarian","centigram","centenary","centigrade","centennial","centurion","centuple","percent"],"m":"cent-hundred, centi- hundredth","o":"Latin","e":"","c":""},{"t":"prefix","p":"pre","w":["prehistoric","prejudge","preplan","predate","preseason","prewrite","preapprove","prevent"],"m":"before","o":"Latin","e":"Find the meaning of each word","c":""}],"29":[{"t":"stem","p":"phys","w":["physical","physics","physicist","physique","physician","physiology","physiotherapist","biophysical","metaphysical"],"m":"nature, medicine, the body","o":"Greek (phusis-nature)","e":"Find the meaning of each word","c":""},{"t":"suffix","p":"-er","w":["sprinter","prisoner","newsreader","borrower","preacher","butcher","customer","commander","plumber","employer"],"m":"a person, animal or thing that performs an action (These are all nouns.)","o":"Old English (-ere)","e":"","c":"er3n"},{"t":"prefix","p":"sur","w":["surname","surface","surplus","surprise","surround","survive","surreal","surpass","surcharge"],"m":"over, above, beyond","o":"Middle English, Old French, Latin (super)","e":"Find the meaning of each word","c":""}],"30":[{"t":"stem","p":"flect, flex","w":["deflect","deflector","inflection","reflect","reflection","reflector","flex","reflex","flexible","inflexible"],"m":"bend","o":"Latin (flectere - bend)","e":"Find the meaning of each word","c":""},{"t":"suffix","p":"-less","w":["reckless","ruthless","regardless","flawless","doubtless","defenceless","merciless","ceaseless","relentless","wireless","tactless"],"m":"without","o":"Old English (leas - devoid)","e":"Find the meaning of each word.","c":"less5adj"},{"t":"prefix","p":"min, mini","w":["minor","minus","minute","miniature","minimum","minibus","miniskirt","minicab","minivan"],"m":"small, less","o":"Latin (minor, minus-less, smaller, minutus-small)","e":"Find the meaning of each word","c":""}],"31":[{"t":"suffix","p":"-ment","w":["agreement","amazement","amusement","placement","treatment","enjoyment","equipment","payment","repayment","movement"],"m":"These nouns have been formed by adding -ment to the verb","o":"Latin (-mentum)","e":"Discuss the spelling and meaning of each word.","c":"ment2n"},{"t":"suffix","p":"-ness","w":["dizziness","fizziness","prettiness","daintiness","shabbiness","sickliness","sleepiness","stickiness","silliness","juiciness"],"m":"State of being. These are all nouns formed by adding ness to adjectives. Note that y has changed to i.","o":"Old English (of Germanic origin)","e":"Discuss the spelling and meaning of each word.","c":"ness10n"},{"t":"prefix","p":"col","w":["collect","collection","collapse","collide","collision","collate","collage","collude","collaborate"],"m":"with, together, thoroughly","o":"Middle English from Latin (com)","e":"Find the meaning of each word.","c":""}],"32":[{"t":"stem","p":"fract, frag","w":["fraction","fracture","fractals","fractious","refract","infraction","fragile","fragment"],"m":"break","o":"Latin (frangere -to break)","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"ph","w":["phase","phrase","phlegm","physical","phoenix","prophet","amphibian","pharoah","pheasant"],"m":"","o":"","e":"1. Read the words. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"ph4"},{"t":"pattern","p":"Silent gh","w":["caught","taught","naughty","daughter","slaughter","fraught","distraught","onslaught"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent gh 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"gh6"}],"33":[{"t":"stem","p":"cycl","w":["cycle","cyclic","cyclist","Cyclops","cyclone","anticyclone","encyclopaedia","recycle","unicycle","bicycle","tricycle","motorcycle"],"m":"circle, ring","o":"Greek (kuklos-circle)","e":"Find the meaning of each word","c":"cycl-1"},{"t":"suffix","p":"-ate","w":["emigrate","immigrate","escalate","evaluate","germinate","graduate","incubate","estimate","generate","indicate"],"m":"These words ending in -ate are all verbs. (Sometimes -ate is used to form nouns e.g. estate)","o":"Latin (-are, atus)","e":"Discuss the spelling and meaning of each word.","c":"ate5verb"},{"t":"prefix","p":"en","w":["enact","encode","encounter","endure","engrain","engross","engulf","enlighten"],"m":"put into or on, bring into the condition of","o":"mixed - Latin, old French, Greek","e":"","c":"en-4"}],"34":[{"t":"suffix","p":"-al","w":["admiral","arsenal","capital","carnival","cathedral","centennial","chemical","editorial","festival","individual","mineral","ritual","rival"],"m":"These nouns are all formed from Latin words","o":"Latin (- alis)","e":"Find the meaning of each word.","c":""},{"t":"prefix","p":"aqua aque, aqui, aquo","w":["aqua","aqueduct","aqualung","aqueous","aquamarine","aquanaut","aquifer","aquaplane","aquiculture","aquarelle","Aquarius","aquosity","aquarium","aquatic","aquarist"],"m":"water","o":"Latin","e":"Find the meaning of each word.","c":""},{"t":"prefix","p":"fore","w":["forecourt","forefinger","forefather","forelock","foremast","foreshadow","foreshorten","forewarn","foreword","forethought","foreshore"],"m":"before","o":"Old English","e":"Find the meaning of each word","c":""}],"35":[{"t":"stem","p":"fer","w":["ferry","fertile","differ","suffer","transfer","confer","conference","offer","prefer","refer"],"m":"bear, bring, carry","o":"Latin (ferre-to bear)","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"circ","w":["circle","circuit","circlet","circulate","circus","circa","circuitry","circardian"],"m":"round, ring","o":"Latin","e":"Find the meaning of each word","c":""},{"t":"prefix","p":"its meaning. equ equi","w":["equal","equality","equate","equation","equator","equalize","equivalent","equidistant"],"m":"equal, equally","o":"Latin","e":"Find the meaning of each word","c":""}],"36":[{"t":"pattern","p":"u-e","w":["salute","volume","secure","adventure","temperature","furniture","future","amusement","mixture","texture"],"m":"","o":"","e":"1. Read the words. Take careful note of the vowel sounds. 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"u-e6"},{"t":"prefix","p":"hexa, hex","w":["hexagon","hexagram","hexahedron","hexameter","hexapod","hexastich","hexangular","hexad"],"m":"six","o":"Greek","e":"Find the meaning of each word","c":""},{"t":"pattern","p":"Silent g","w":["align","campaign","champagne","gnarl","gnash","gnat","consign","assign"],"m":"","o":"","e":"1. Read the words. Take careful note of the silent g and that it is followed by n 2. Spell the words….What sounds can I hear? What is the easy part? What is the hard part? Can I cover and spell them? Look and check. 3. What do these words mean?","c":"silentg2"}]}};
+
+// ════════════════════════════════════════════════════════
+//   WORDLAB SETTINGS
+//   Composite Y5/6 class settings. Device-local (like the word
+//   bank above) — no new Supabase table needed. The chart cycle
+//   follows WordLab's own advice for composite classes: teach one
+//   year's charts right through this year, the other year's next
+//   year, so no child sees the same chart twice.
+// ════════════════════════════════════════════════════════
+const WL_SET_DEFAULT={chartCycle:5, ourWordsPerWeek:4};
+let WLSET;
+try{WLSET=Object.assign({},WL_SET_DEFAULT,JSON.parse(localStorage.getItem('wl_settings')||'{}'));}
+catch{WLSET=Object.assign({},WL_SET_DEFAULT);}
+function saveWLSet(){localStorage.setItem('wl_settings',JSON.stringify(WLSET));debounceSync('wlsettings',syncTeacherSettings);}
+function setChartCycle(v){WLSET.chartCycle=parseInt(v);saveWLSet();renderLessonContent();}
+
+// Enrolment year (the child's actual year group on the roll) is kept
+// separate from `student.year`, which is their SPELLING LEVEL — the word
+// bank their lessons and tests draw from. WordLab assigns that by pre-test,
+// not by age, so a Year 6 can sit on the Year 4 list. Stored device-locally
+// so no database column is needed; if it's missing we just fall back to the
+// spelling level.
+function enrolMap(){try{return JSON.parse(localStorage.getItem('wl_enrol')||'{}')}catch{return{}}}
+function getEnrol(sid){const m=enrolMap();return m[sid]||null;}
+function setEnrol(sid,year){const m=enrolMap();if(year)m[sid]=parseInt(year);else delete m[sid];localStorage.setItem('wl_enrol',JSON.stringify(m));debounceSync('wlsettings',syncTeacherSettings);}
+function levelLabel(s){
+  const e=getEnrol(s.id);
+  if(!e||e===s.year)return `Year ${s.year}`;
+  return `Year ${e} · working at Y${s.year}`;
+}
+
+// ════════════════════════════════════════════════════════
+//   CHARTS — accessors
+// ════════════════════════════════════════════════════════
+function chartsForWeek(weekIndex,cycle){
+  const c=String(cycle||WLSET.chartCycle);
+  const wk=String(((weekIndex-1)%36)+1);   // 36 charts weeks wrap over a 40-week year
+  return (CHARTS[c]&&CHARTS[c][wk])||[];
+}
+const CHART_TYPE_LABEL={suffix:'Suffix chart',prefix:'Prefix chart',stem:'Stem chart',pattern:'Spelling pattern chart'};
+const CHART_TYPE_INTRO={
+  suffix:'A suffix is a group of letters placed at the END of a base word to change its meaning.',
+  prefix:'A prefix is a group of letters placed at the START of a base word to change its meaning.',
+  stem:'A stem is the main part of the word to which prefixes and suffixes are added.',
+  pattern:'A spelling pattern is a letter combination that behaves the same way across many words.'
+};
+
+// ════════════════════════════════════════════════════════
+//   OUR WORDS — 4 new words a week, in list order
+//   Two parallel lists: a Y5-level child learns 4 Y5 words, a
+//   Y6-level child learns 4 Y6 words, in the same lesson. Everyone
+//   joins the teaching; each child is accountable for their own.
+//   Deterministic from (year, weekIndex) so it never drifts.
+// ════════════════════════════════════════════════════════
+function getOurWords(year,weekIndex){
+  const bank=masterBank(year);
+  if(!bank.length)return [];
+  const n=WLSET.ourWordsPerWeek||4;
+  const start=((weekIndex-1)*n)%bank.length;
+  const out=[];
+  for(let i=0;i<n;i++)out.push(bank[(start+i)%bank.length]);
+  return out;
+}
+function ourWordOfDay(year,weekIndex,day){
+  const w=getOurWords(year,weekIndex);
+  return w[Math.min(day,w.length-1)]||'';
+}
+
+// Syllable-ish split, used only as a teaching prompt — the teacher
+// still says the word and the class claps it. Deliberately simple.
+function syllableGuess(word){
+  const w=String(word||'').toLowerCase().replace(/[^a-z']/g,'');
+  if(w.length<4)return [w];
+  const VOW='aeiou';
+  const isV=(c,i)=>VOW.includes(c)||(c==='y'&&i>0);
+  // nuclei = runs of vowel letters, so a vowel digraph counts as one
+  const nuclei=[];
+  let i=0;
+  while(i<w.length){
+    if(isV(w[i],i)){let j=i;while(j<w.length&&isV(w[j],j))j++;nuclei.push([i,j]);i=j;}
+    else i++;
+  }
+  if(nuclei.length<2)return [w];
+  const DIG=['ph','th','ch','sh','wh','gh','ck','ng','qu','ss','ll','ff','zz'];
+  const ONSET3=['thr','str','spr','scr','shr','sch','squ'];
+  // Only consonant + l/r blends get pulled across to start the next syllable
+  // (mi|cro, ae|ro|plane, ta|ble). s-clusters and the like split instead,
+  // which is what gives nas|ti|ness, lis|ten, mag|ni|fi|cent.
+  const ONSET2=['bl','br','cl','cr','dr','fl','fr','gl','gr','pl','pr','tr','tw','thr'];
+  const cuts=[];
+  for(let n=0;n<nuclei.length-1;n++){
+    const cs=nuclei[n][1], ce=nuclei[n+1][0];
+    const cl=w.slice(cs,ce);
+    let cut;
+    if(cl.length===0){cut=ce;}
+    else if(cl.length===1){cut=cs;}
+    else{
+      if(DIG.includes(cl))cut=cs;
+      else if(cl.length>=3&&ONSET3.includes(cl.slice(-3)))cut=ce-3;
+      else if(ONSET2.includes(cl.slice(-2)))cut=ce-2;
+      else if(cl.length>=3&&DIG.includes(cl.slice(-2)))cut=ce-2;
+      else if(cl.length>=3&&DIG.includes(cl.slice(0,2)))cut=cs+2;
+      else cut=cs+Math.floor(cl.length/2)||cs+1;
+    }
+    if(cut<=(cuts[cuts.length-1]||0))continue;
+    cuts.push(cut);
+  }
+  let parts=[]; let prev=0;
+  cuts.forEach(c=>{if(c>prev&&c<w.length){parts.push(w.slice(prev,c));prev=c;}});
+  parts.push(w.slice(prev));
+  parts=parts.filter(Boolean);
+  // a silent final e rides with the syllable before it (la|ne -> lane), but
+  // the -le ending keeps its own syllable (ta|ble)
+  const hasV=p=>/[aeiouy]/.test(p);
+  if(parts.length>1){
+    const last=parts[parts.length-1];
+    if(/^[^aeiouy]?e$/.test(last)&&!/^l?e$/.test(last)){
+      parts[parts.length-2]+=parts.pop();
+    }
+  }
+  for(let k=parts.length-1;k>=0;k--){
+    if(!hasV(parts[k])){
+      if(k>0){parts[k-1]+=parts[k];parts.splice(k,1);}
+      else if(parts.length>1){parts[1]=parts[0]+parts[1];parts.splice(0,1);}
+    }
+  }
+  return parts.length?parts:[w];
+}
+
+// A word built on a common prefix breaks at the prefix first — the
+// morphological split WordLab actually teaches (dis|ap|pear|ed), rather than
+// the purely phonetic one. Still only a prompt: the class claps the word.
+const SYL_PREFIXES=['trans','under','inter','super','anti','over','semi','sub','pre','pro','dis','mis','non','out','un','re','in','im','ir','il','ex','de'];
+function syllablePrompt(word){
+  const w=String(word||'').toLowerCase().replace(/[^a-z']/g,'');
+  for(const p of SYL_PREFIXES){
+    if(w.length>=p.length+3&&w.startsWith(p)&&/[aeiouy]/.test(w.slice(p.length))){
+      return [p].concat(syllableGuess(w.slice(p.length)));
+    }
+  }
+  return syllableGuess(w);
+}
+
+// ════════════════════════════════════════════════════════
+//   FRIDAY ASSESSMENT — 3-week rotating cycle
+//   Week 1 Word Sort · Week 2 Formal Test · Week 3 Word Hunt.
+//   Mastery data is only meant to move on Formal Test weeks; the
+//   Test page still works every week so nothing is ever blocked.
+// ════════════════════════════════════════════════════════
+const ASSESS_CYCLE=[
+  {id:'sort', emoji:'🗂️', name:'Word Sort',   sub:'Formative — observe, don\'t record',
+   body:'Write a selection of this week\'s chart words on the board. Children do a CLOSED sort (a category you give them — e.g. group by the same vowel sound) and then an OPEN sort (their own category, which they explain). Finish with a pairs test of this week\'s Our Words — no mastery test logged.'},
+  {id:'formal', emoji:'📝', name:'Formal Test', sub:'Recorded — this is the week mastery moves',
+   body:'Run the full Our Words test on the Spelling Test page. Testing can be cumulative across weeks. Analyse the errors afterwards rather than just re-testing the same list.'},
+  {id:'hunt', emoji:'🔦', name:'Word Hunt',   sub:'Formative — observe, don\'t record',
+   body:'Students hunt their own reading texts for words matching a pattern from the week\'s charts. Finish with a pairs test of this week\'s Our Words — no mastery test logged.'}
+];
+function assessmentForWeek(weekIndex){return ASSESS_CYCLE[(weekIndex-1)%3];}
+
+// ════════════════════════════════════════════════════════
+//   WORD GRID — the paper Word Grid template, fillable
+//   Device-local: this is a practice scaffold, not assessment data,
+//   so it deliberately doesn't go anywhere near the progress tables.
+// ════════════════════════════════════════════════════════
+function gridStore(){try{return JSON.parse(localStorage.getItem('wl_grid')||'{}')}catch{return{}}}
+function gridKey(weekIndex,day){return `${WLSET.chartCycle}-${weekIndex}-${day}`;}
+function getGrid(weekIndex,day){return gridStore()[gridKey(weekIndex,day)]||{};}
+function saveGridCell(weekIndex,day,row,field,val){
+  const all=gridStore();const k=gridKey(weekIndex,day);
+  if(!all[k])all[k]={};
+  if(!all[k][row])all[k][row]={};
+  all[k][row][field]=val;
+  localStorage.setItem('wl_grid',JSON.stringify(all));
+  debounceSync('wordgrids',syncGrids);
+}
+function clearGrid(weekIndex,day){
+  const all=gridStore();delete all[gridKey(weekIndex,day)];
+  localStorage.setItem('wl_grid',JSON.stringify(all));
+  debounceSync('wordgrids',syncGrids);
+  renderLessonContent();
+}
+function renderWordGrid(weekIndex,day,suggested,title,note){
+  const saved=getGrid(weekIndex,day);
+  const rows=[0,1,2,3,4,5].map(i=>{
+    const r=saved[i]||{};
+    const sug=suggested[i]||'';
+    return `<tr>
+      <td><input type="text" class="wl-gcell" value="${esc(r.word!==undefined?r.word:sug)}" placeholder="${esc(sug)}" oninput="saveGridCell(${weekIndex},${day},${i},'word',this.value)"></td>
+      <td><input type="text" class="wl-gcell" value="${esc(r.affix||'')}" placeholder="affix / stem" oninput="saveGridCell(${weekIndex},${day},${i},'affix',this.value)"></td>
+      <td><input type="text" class="wl-gcell" value="${esc(r.meaning||'')}" placeholder="what it means" oninput="saveGridCell(${weekIndex},${day},${i},'meaning',this.value)"></td>
+      <td><input type="text" class="wl-gcell" value="${esc(r.syll||'')}" placeholder="syl / la / bles" oninput="saveGridCell(${weekIndex},${day},${i},'syll',this.value)"></td>
+      <td style="text-align:center;color:var(--muted);font-size:.72rem;font-weight:800;">draw</td>
+    </tr>`;
+  }).join('');
+  return `<div class="wl-block">
+    <div class="wl-block-head"><span class="wl-step-n">📋</span><div><div class="wl-block-title">${esc(title)}</div>
+      <div class="wl-block-sub">${esc(note||'')}</div></div>
+      <button class="btn btn-ghost" style="margin-left:auto;padding:6px 13px;font-size:.78rem;" onclick="clearGrid(${weekIndex},${day})">Clear</button></div>
+    <div style="overflow-x:auto;">
+    <table class="wl-grid-table">
+      <thead><tr><th>Word</th><th>Affix / stem</th><th>Affix / stem meaning</th><th>Syllables</th><th>Picture</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div class="wl-hint">Typed here it stays on this device, so you can model it on the board. Students still draw the picture column in their books.</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//   PRE-TEST — places a student on a spelling level
+//   15 words: 5 each from the Year 4, 5 and 6 lists, spread evenly
+//   through each list rather than taken off the top, so the sample
+//   isn't all easy words. Deterministic, so a student re-tested
+//   later gets the same 15 words.
+// ════════════════════════════════════════════════════════
+const PRETEST_LEVELS=[4,5,6];
+function pretestWords(){
+  const out=[];
+  PRETEST_LEVELS.forEach(yr=>{
+    const bank=masterBank(yr);
+    if(!bank.length)return;
+    for(let i=0;i<5;i++){
+      const idx=Math.floor((i+0.5)*bank.length/5);
+      out.push({year:yr,word:bank[Math.min(idx,bank.length-1)]});
+    }
+  });
+  return out;
+}
+function pretestStore(){try{return JSON.parse(localStorage.getItem('wl_pretest')||'{}')}catch{return{}}}
+function savePretest(sid,data){
+  const all=pretestStore();all[sid]=data;
+  localStorage.setItem('wl_pretest',JSON.stringify(all));
+  debounceSync('pretests',syncPretests);
+}
+function suggestLevel(marks){
+  // marks: {index: 'correct'|'incorrect'}
+  const words=pretestWords();
+  const score={};
+  PRETEST_LEVELS.forEach(y=>score[y]={c:0,done:0});
+  words.forEach((w,i)=>{
+    if(marks[i]){score[w.year].done++;if(marks[i]==='correct')score[w.year].c++;}
+  });
+  // Highest level the student holds at 4/5 or better is the one they've
+  // outgrown, so they start on the level ABOVE it — capped at Year 6, per
+  // WordLab: very able spellers stay on their own list and get chart
+  // extension work rather than being pushed up.
+  let suggested=4, extension=false;
+  if(score[4].c>=4) suggested=5;
+  if(score[5].c>=4) suggested=6;
+  if(score[6].c>=4){suggested=6;extension=true;}
+  if(score[4].c<4) suggested=4;
+  return {score,suggested,extension};
+}
+
+
+
+// ════════════════════════════════════════════════════════
+//   WORDLAB EXTRAS — error log, journal, word inquiry
+//   These all live in their own localStorage keys and their own
+//   Supabase tables, mirroring the existing pattern. Every write
+//   here is SOFT-SYNCED: if the teacher hasn't run the SQL
+//   migration yet the table won't exist, and that must never
+//   raise the red banner that a failed progress/test write does,
+//   because none of this is assessment data.
+// ════════════════════════════════════════════════════════
+async function sbWriteSoft(what,query){
+  try{
+    const res=await query;
+    if(res&&res.error){
+      console.warn(`[wordlab] optional sync skipped (${what}):`,res.error.message||res.error);
+      return false;
+    }
+    return true;
+  }catch(e){
+    console.warn(`[wordlab] optional sync skipped (${what}):`,e&&e.message);
+    return false;
+  }
+}
+
+const EX={
+  errors:()=>{try{return JSON.parse(localStorage.getItem('wl_err')||'{}')}catch{return{}}},
+  saveErrors:(d,sid)=>{localStorage.setItem('wl_err',JSON.stringify(d));debounceSync('errors:'+sid,()=>syncErrors(sid,EX.errors()[sid]||[]));},
+  journal:()=>{try{return JSON.parse(localStorage.getItem('wl_journal')||'{}')}catch{return{}}},
+  saveJournal:(d,sid)=>{localStorage.setItem('wl_journal',JSON.stringify(d));debounceSync('journal:'+sid,()=>syncJournal(sid,EX.journal()[sid]||[]));},
+  inquiry:()=>{try{return JSON.parse(localStorage.getItem('wl_inquiry')||'{}')}catch{return{}}},
+  saveInquiry:(d,sid)=>{localStorage.setItem('wl_inquiry',JSON.stringify(d));debounceSync('inquiry:'+sid,()=>syncInquiry(sid,EX.inquiry()[sid]||{}));},
+};
+
+// ── ERROR ANALYSIS ──
+// WordLab's own Error Analysis Grid categories. Filling this in is always
+// optional — the teacher's call on a miss worth classifying, not a form to
+// complete on every wrong word.
+const ERROR_CATS=[
+  {id:'phon',  label:'Phonemically acceptable', hint:'Spelled how it sounds — "sed" for "said"', color:'#7c5cbf'},
+  {id:'dbl',   label:'Consonant not doubled',   hint:'"hoping" for "hopping"',                  color:'#e8547a'},
+  {id:'blend', label:'Consonant blend error',   hint:'A letter dropped from a blend — "stength"',color:'#f07844'},
+  {id:'vdig',  label:'Vowel digraph error',     hint:'"recieve", "beleive"',                    color:'#2fa8d5'},
+  {id:'split', label:'Split vowel digraph',     hint:'Magic-e missed or misplaced — "hopeing"', color:'#3aaa6b'},
+  {id:'med',   label:'Medial grapheme error',   hint:'A wrong letter in the middle',            color:'#a259ff'},
+  {id:'omit',  label:'Letters omitted',         hint:'"rember" for "remember"',                 color:'#e84393'},
+  {id:'trans', label:'Letters transposed',      hint:'"freind" for "friend"',                   color:'#40c9a2'},
+  {id:'unc',   label:'Unclassifiable',          hint:"Doesn't fit any of the above",            color:'#8a8aaa'},
+];
+function errorCat(id){return ERROR_CATS.find(c=>c.id===id)||null;}
+
+function getErrorFor(sid,weekIndex,word){
+  const list=EX.errors()[sid]||[];
+  const hit=list.find(e=>e.week===weekIndex&&e.word===word);
+  return hit?hit.cat:'';
+}
+function setErrorFor(sid,weekIndex,word,cat){
+  const all=EX.errors();
+  if(!all[sid])all[sid]=[];
+  const i=all[sid].findIndex(e=>e.week===weekIndex&&e.word===word);
+  if(!cat){ if(i>-1)all[sid].splice(i,1); }
+  else if(i>-1){ all[sid][i].cat=cat; all[sid][i].date=tod(); }
+  else all[sid].push({week:weekIndex,word,cat,date:tod()});
+  EX.saveErrors(all,sid);
+}
+// When a word stops being marked incorrect, its logged error is no longer true.
+function clearErrorFor(sid,weekIndex,word){
+  const all=EX.errors();
+  if(!all[sid])return;
+  const i=all[sid].findIndex(e=>e.week===weekIndex&&e.word===word);
+  if(i>-1){all[sid].splice(i,1);EX.saveErrors(all,sid);}
+}
+function errorSummary(sid){
+  const list=EX.errors()[sid]||[];
+  const byCat={};
+  list.forEach(e=>{if(!byCat[e.cat])byCat[e.cat]=[];byCat[e.cat].push(e);});
+  const rows=ERROR_CATS.map(c=>({cat:c,entries:byCat[c.id]||[]}))
+                       .filter(r=>r.entries.length)
+                       .sort((a,b)=>b.entries.length-a.entries.length);
+  return {total:list.length,rows};
+}
+
+function renderErrorPatternCard(s){
+  const {total,rows}=errorSummary(s.id);
+  if(!total){
+    return `<div class="chart-card"><h3>🔍 Error Patterns</h3>
+      <p style="font-size:.85rem;font-weight:700;color:var(--muted);line-height:1.55;">
+        Nothing logged yet. On the Spelling Test page, when you mark a word ✗ you can pick what kind of
+        error it was. Do that for a handful of misses a term and this turns into a picture of what to
+        reteach, rather than a count of what went wrong.</p></div>`;
+  }
+  const top=rows[0];
+  const bars=rows.map(r=>{
+    const pct=Math.round(r.entries.length/total*100);
+    const words=[...new Set(r.entries.map(e=>e.word))];
+    return `<div class="err-row">
+      <div class="err-head">
+        <span class="err-dot" style="background:${r.cat.color}"></span>
+        <span class="err-label">${esc(r.cat.label)}</span>
+        <span class="err-n">${r.entries.length}</span>
+      </div>
+      <div class="err-bar"><span style="width:${pct}%;background:${r.cat.color}"></span></div>
+      <div class="err-words">${words.map(w=>`<span class="attempt-badge incorrect">${esc(w)}</span>`).join('')}</div>
+      <div class="err-hint">${esc(r.cat.hint)}</div>
+    </div>`;
+  }).join('');
+  const share=Math.round(top.entries.length/total*100);
+  const headline=share>=40
+    ? `${esc(s.name)}'s misses cluster on <b>${esc(top.cat.label.toLowerCase())}</b> — ${share}% of ${total} logged errors. That's a teaching point, not a re-test.`
+    : `${total} errors logged across ${rows.length} categories — no single pattern dominating yet.`;
+  return `<div class="chart-card"><h3>🔍 Error Patterns</h3>
+    <div class="err-headline">${headline}</div>${bars}</div>`;
+}
+
+
+// ════════════════════════════════════════════════════════
+//   WORD INQUIRY STUDY CHART
+//   WordLab's extension task for able spellers: rather than moving
+//   them onto a higher word list, they go deeper into one chart
+//   word. Ten parts, straight off the paper template.
+// ════════════════════════════════════════════════════════
+const WI_FIELDS=[
+  {k:'syn',   label:'2 synonyms',            help:'Words that mean nearly the same thing',                   lines:1},
+  {k:'syl',   label:'Syllables',             help:'Break the word up, one syllable per part',                lines:1},
+  {k:'pos',   label:'Part of speech',        help:'Noun, verb, adjective, adverb…',                          lines:1},
+  {k:'ety',   label:'Etymology facts',       help:'Where does it come from? Which language?',                lines:3},
+  {k:'pic',   label:'Picture — describe it', help:'Sketch it in your book; write here what you drew',        lines:2},
+  {k:'affix', label:'Prefix / suffix / stem + meaning', help:'Name the word part and say what it does',      lines:2},
+  {k:'change',label:'Add or change the suffix', help:'happy → happiness → happily…',                         lines:2},
+  {k:'small', label:'6 small words hiding inside', help:'Only using letters from the word',                  lines:2},
+  {k:'same3', label:'3 words starting with the same 3 letters', help:'',                                     lines:2},
+];
+
+function getInquiry(sid,word){return (EX.inquiry()[sid]||{})[word]||{};}
+function saveInquiryField(sid,word,k,v){
+  const all=EX.inquiry();
+  if(!all[sid])all[sid]={};
+  if(!all[sid][word])all[sid][word]={};
+  all[sid][word][k]=v;
+  all[sid][word].__updated=tod();
+  EX.saveInquiry(all,sid);
+}
+function inquiryDone(sid,word){
+  const d=getInquiry(sid,word);
+  return WI_FIELDS.filter(f=>String(d[f.k]||'').trim()).length;
+}
+function pickInquiryWord(sid,word){
+  const all=EX.inquiry();
+  if(!all[sid])all[sid]={};
+  if(!all[sid][word])all[sid][word]={};
+  all[sid].__current=word;
+  EX.saveInquiry(all,sid);
+  renderExtensionTab();
+}
+
+// The words on offer are this week's chart words — WordLab is explicit that
+// extension comes from the charts, not from a harder Our Words list.
+function inquiryWordChoices(){
+  const wk=currentPlannerWeek();
+  const charts=chartsForWeek(wk);
+  const out=[];
+  charts.forEach(c=>c.w.slice(0,4).forEach(w=>out.push(w)));
+  return [...new Set(out)];
+}
+function currentPlannerWeek(){
+  const t=parseInt(document.getElementById('lp-term')?.value||'1');
+  const w=parseInt(document.getElementById('lp-week')?.value||'1');
+  return (t-1)*10+w;
+}
+
+function renderWordInquiry(s){
+  const store=EX.inquiry()[s.id]||{};
+  const current=store.__current||'';
+  const choices=inquiryWordChoices();
+  const started=Object.keys(store).filter(k=>k!=='__current');
+  const chips=[...new Set(choices.concat(started))].map(w=>
+    `<button class="${w===current?'on':''}" onclick="pickInquiryWord(${s.id},'${esc(w).replace(/'/g,"\\'")}')">${esc(w)}${inquiryDone(s.id,w)?` · ${inquiryDone(s.id,w)}/9`:''}</button>`).join('');
+
+  if(!current){
+    return `<div class="chart-card"><h3>🔍 Word Inquiry Study</h3>
+      <p style="font-size:.85rem;font-weight:700;color:var(--muted);line-height:1.55;">
+        For a speller who already knows their list. Pick one word from this week's charts and go deep into it —
+        this is WordLab's alternative to pushing an able child onto a higher word list.</p>
+      <div class="wi-pick">${chips}</div>
+      <p style="font-size:.78rem;font-weight:700;color:var(--muted);margin-top:8px;">Pick a word to begin. Week ${currentPlannerWeek()} charts · Year ${WLSET.chartCycle} cycle.</p>
+    </div>`;
+  }
+  const d=getInquiry(s.id,current);
+  const wq=esc(current).replace(/'/g,"\\'");
+  const fields=WI_FIELDS.map(f=>{
+    const val=esc(d[f.k]||'');
+    const input=f.lines>1
+      ? `<textarea rows="${f.lines}" oninput="saveInquiryField(${s.id},'${wq}','${f.k}',this.value)">${val}</textarea>`
+      : `<input type="text" value="${val}" oninput="saveInquiryField(${s.id},'${wq}','${f.k}',this.value)">`;
+    return `<div class="wi-field"><label>${esc(f.label)}</label>${input}${f.help?`<div class="wi-help">${esc(f.help)}</div>`:''}</div>`;
+  }).join('');
+  return `<div class="chart-card"><h3>🔍 Word Inquiry Study</h3>
+    <div class="wi-pick">${chips}</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 12px;">
+      <div class="wi-word">${esc(current)}</div>
+      <span class="pill">${inquiryDone(s.id,current)}/9 parts done</span>
+      <button class="btn btn-ghost" style="margin-left:auto;" onclick="printWordInquiry(${s.id},'${wq}')">🖨 Print blank sheet</button>
+    </div>
+    <div class="wi-grid">${fields}</div>
+    <p style="font-size:.76rem;font-weight:700;color:var(--muted);margin-top:10px;">Saves as you type.</p>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//   SPELLING JOURNAL
+//   Two or three words a week the student chooses themselves, out
+//   of their own reading and writing. Deliberately lightweight —
+//   it is not tested and does not touch mastery.
+// ════════════════════════════════════════════════════════
+function journalFor(sid){return EX.journal()[sid]||[];}
+function addJournalWord(sid){
+  const wEl=document.getElementById('jr-word'),nEl=document.getElementById('jr-note');
+  const word=(wEl?.value||'').trim();
+  if(!word){wEl?.focus();return;}
+  const all=EX.journal();
+  if(!all[sid])all[sid]=[];
+  all[sid].unshift({word,note:(nEl?.value||'').trim(),date:tod()});
+  EX.saveJournal(all,sid);
+  wEl.value='';nEl.value='';
+  renderExtensionTab();
+}
+function removeJournalWord(sid,i){
+  const all=EX.journal();
+  if(!all[sid])return;
+  all[sid].splice(i,1);
+  EX.saveJournal(all,sid);
+  renderExtensionTab();
+}
+function renderJournal(s){
+  const list=journalFor(s.id);
+  const rows=list.length?list.map((e,i)=>`<div class="jr-row">
+      <div class="jr-word">${esc(e.word)}</div>
+      <div class="jr-note">${esc(e.note||'—')}</div>
+      <div class="jr-date">${esc(e.date)}</div>
+      <button class="jr-del" onclick="removeJournalWord(${s.id},${i})" title="Remove">✕</button>
+    </div>`).join('')
+    :`<p style="font-size:.85rem;font-weight:700;color:var(--muted);line-height:1.55;">
+       Nothing yet. Two or three words a week that ${esc(s.name)} has met in their own reading, writing or topic
+       work and wants to learn — not tested, just noticed.</p>`;
+  return `<div class="chart-card"><h3>📓 Spelling Journal</h3>
+    <div class="form-row" style="margin-bottom:12px;">
+      <div class="form-group"><label>Word</label>
+        <input type="text" id="jr-word" placeholder="e.g. gravitational" style="width:190px;"
+          onkeydown="if(event.key==='Enter')addJournalWord(${s.id})"></div>
+      <div class="form-group" style="flex:1;min-width:180px;"><label>Where it came from (optional)</label>
+        <input type="text" id="jr-note" placeholder="e.g. from our space article" style="width:100%;"
+          onkeydown="if(event.key==='Enter')addJournalWord(${s.id})"></div>
+      <button class="btn btn-primary" onclick="addJournalWord(${s.id})">＋ Add</button>
+    </div>
+    ${rows}
+  </div>`;
+}
+
+function renderExtensionTab(){
+  const s=LS.students().find(x=>x.id===activeId);if(!s)return;
+  const el=document.getElementById('detail-tab-content');
+  if(!el)return;
+  el.innerHTML=renderWordInquiry(s)+renderJournal(s)+renderHomeworkPicker(s);
+}
+
+function printWordInquiry(sid,word){
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const html=`<div class="lsnp-page">
+    <div class="lsnp-header"><h1>🔍 Word Inquiry Study</h1><p>${esc(s.name)} · my chosen word</p></div>
+    <div class="hwp-block"><h3>${esc(word)}</h3></div>
+    ${WI_FIELDS.map(f=>`<div class="hwp-block"><h3>${esc(f.label)}</h3>
+      ${Array.from({length:Math.max(2,f.lines)}).map(()=>'<div class="hwp-line"></div>').join('')}</div>`).join('')}
+    <div class="hwp-block"><h3>Picture to show what the word means</h3><div class="lsnp-draw"></div></div>
+  </div>`;
+  printSheet(html,`${pdfSlug(s.name)}_wordinquiry`);
+}
+
+// Shared print plumbing for the new sheets, matching the existing ones.
+function printSheet(html,titleName){
+  const elp=document.getElementById('print-lesson');
+  elp.innerHTML=html;elp.style.display='block';
+  document.getElementById('print-report').style.display='none';
+  document.getElementById('print-wordlist').style.display='none';
+  const orig=setPrintTitle(titleName);
+  setTimeout(()=>{window.print();elp.style.display='none';document.title=orig;},250);
+}
+
+// ════════════════════════════════════════════════════════
+//   HOMEWORK MENU
+//   WordLab's position is that the classroom is where spelling is
+//   learned and homework is optional — but if it's set, it should
+//   make the child THINK about the word rather than copy it out.
+//   These are the six activities from the training, generated from
+//   the student's own current words.
+// ════════════════════════════════════════════════════════
+const HOMEWORK=[
+  {id:'allit', emoji:'🔁', title:'Alliterative phrases', words:5,
+   blurb:'Write each word inside a phrase where the other words start with the same sound. Underline the spelling word.',
+   inst:'Write an alliterative phrase for each word — every word in the phrase starts with the same sound. Underline your spelling word.'},
+  {id:'anto', emoji:'↔️', title:'Antonyms', words:10,
+   blurb:'Write a word that means the opposite of each spelling word.',
+   inst:'Write an antonym — a word that means the opposite — beside each spelling word.'},
+  {id:'colour', emoji:'🖍️', title:'Consonants & vowels', words:10,
+   blurb:'Write each word using a blue pencil for consonants and a red pencil for vowels.',
+   inst:'Copy each word: consonants in blue, vowels in red.'},
+  {id:'search', emoji:'🔎', title:'Build a word search', words:10,
+   blurb:"Hide the words in the empty grid, then fill the gaps with random letters. Don't solve it — that's your partner's job.",
+   inst:"Hide all ten words in this grid — across, down or diagonally. Fill every empty square with a random letter. Do NOT solve it; give it to a partner."},
+  {id:'define', emoji:'📖', title:'Definition match', words:5,
+   blurb:'Write a definition for each word in a jumbled order for a partner to match up.',
+   inst:'Write a definition for each word in the boxes on the right — but in a different order from the words. Give it to a partner to match up.'},
+  {id:'missing', emoji:'🕳️', title:'Missing letters', words:10,
+   blurb:'Write each word twice — once with only the vowels showing, once with only the consonants. A partner fills the gaps.',
+   inst:'Each word appears twice: first with only its vowels, then with only its consonants. Fill in the missing letters.'},
+];
+
+function hwSelected(){
+  try{return JSON.parse(localStorage.getItem('wl_hw_pick')||'[]')}catch{return[]}
+}
+function hwToggle(id){
+  const cur=hwSelected();
+  const i=cur.indexOf(id);
+  if(i>-1)cur.splice(i,1);else cur.push(id);
+  localStorage.setItem('wl_hw_pick',JSON.stringify(cur));
+  renderExtensionTab();
+}
+
+// A student's own words: whatever is on their current outstanding test.
+function homeworkWords(sid){
+  const wk=getCurrentTestRound(sid);
+  const wl=getWeekList(sid,wk);
+  if(!wl)return [];
+  return (wl.results&&wl.results.__testWords)||wl.words||[];
+}
+
+function renderHomeworkPicker(s){
+  const picked=hwSelected();
+  const words=homeworkWords(s.id);
+  const cards=HOMEWORK.map(h=>`<button class="hw-card ${picked.includes(h.id)?'on':''}" onclick="hwToggle('${h.id}')">
+      <div class="hw-emoji">${h.emoji}</div>
+      <div class="hw-title">${esc(h.title)}</div>
+      <div class="hw-blurb">${esc(h.blurb)}</div>
+    </button>`).join('');
+  return `<div class="chart-card"><h3>🏠 Homework Sheet</h3>
+    <p style="font-size:.85rem;font-weight:700;color:var(--muted);line-height:1.55;">
+      Optional — WordLab's view is that spelling is learned in class. If you do set it, these ask the child to
+      <i>think about</i> the word rather than copy it. Built from ${esc(s.name)}'s own ${words.length} current words.</p>
+    <div class="hw-grid">${cards}</div>
+    <div class="wl-cta" style="margin-top:14px;">
+      <button class="btn btn-primary" onclick="printHomework(${s.id})" ${picked.length?'':'disabled'}>
+        🖨 ${picked.length?`Print ${picked.length} activit${picked.length===1?'y':'ies'}`:'Pick an activity first'}</button>
+      ${picked.length?`<button class="btn btn-ghost" onclick="localStorage.setItem('wl_hw_pick','[]');renderExtensionTab()">Clear</button>`:''}
+      <span class="wl-hint-inline">One sheet, ${esc(s.name)}'s words.</span>
+    </div>
+  </div>`;
+}
+
+function vowelsOnly(w){return w.split('').map(c=>/[aeiouAEIOU]/.test(c)?c:'_').join(' ');}
+function consonantsOnly(w){return w.split('').map(c=>/[aeiouAEIOU]/.test(c)?'_':c).join(' ');}
+
+function printHomework(sid){
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const picked=hwSelected();
+  if(!picked.length)return;
+  const all=homeworkWords(sid);
+  const blocks=HOMEWORK.filter(h=>picked.includes(h.id)).map(h=>{
+    const words=all.slice(0,h.words);
+    let body='';
+    if(h.id==='allit'||h.id==='colour'){
+      body=words.map(w=>`<div class="hwp-word">${esc(w)}</div><div class="hwp-line"></div>`).join('');
+    }else if(h.id==='anto'){
+      body=`<table style="width:100%;border-collapse:collapse;">${words.map(w=>
+        `<tr><td style="width:45%;padding:5pt 0;font-weight:900;font-size:11pt;">${esc(w)}</td>
+             <td style="padding:5pt 0;border-bottom:1pt solid #999;"></td></tr>`).join('')}</table>`;
+    }else if(h.id==='search'){
+      const n=12;
+      body=`<div style="display:grid;grid-template-columns:repeat(${n},20pt);gap:0;margin-bottom:9pt;">
+        ${Array.from({length:n*n}).map(()=>'<div style="width:20pt;height:20pt;border:0.5pt solid #bbb;"></div>').join('')}</div>
+        <div style="font-size:10pt;font-weight:800;">${words.map(w=>esc(w)).join(' · ')}</div>`;
+    }else if(h.id==='define'){
+      body=`<table style="width:100%;border-collapse:collapse;">${words.map(w=>
+        `<tr><td style="width:38%;padding:7pt 0;font-weight:900;font-size:11pt;vertical-align:top;">${esc(w)}</td>
+             <td style="padding:7pt 6pt;border:1pt solid #bbb;height:26pt;"></td></tr>`).join('')}</table>`;
+    }else{
+      body=words.map(w=>`<div style="margin-bottom:8pt;">
+        <div class="hwp-mono">${esc(vowelsOnly(w))}</div>
+        <div class="hwp-mono" style="margin-top:3pt;">${esc(consonantsOnly(w))}</div></div>`).join('');
+    }
+    return `<div class="hwp-block"><h3>${h.emoji} ${esc(h.title)}</h3>
+      <div style="font-size:9pt;color:#555;font-weight:700;margin-bottom:9pt;">${esc(h.inst)}</div>${body}</div>`;
+  }).join('');
+  printSheet(`<div class="lsnp-page">
+    <div class="lsnp-header"><h1>🏠 Spelling Homework</h1><p>${esc(s.name)} · Year ${s.year} list · ${esc(tod())}</p></div>
+    ${blocks}</div>`, `${pdfSlug(s.name)}_homework`);
+}
+
+// ════════════════════════════════════════════════════════
+//   TEACH MODE
+//   The chart lesson, full screen, for the projector. Same five
+//   steps as the printed routine — just big enough for the back
+//   row and interactive enough that the class watches the screen
+//   instead of the teacher's notes.
+// ════════════════════════════════════════════════════════
+let TM=null;          // {weekIndex, ci, step, wi, phase, clapped:Set, read:Set, spot}
+let tmTimerId=null;
+
+// Where the chart's pattern actually sits inside a word, so it can be
+// coloured in. Handles "-ness", "re", "sens, sent", "Silent k", "Soft c",
+// "ph" and the split-digraph labels like "u-e".
+function patternTargets(ch){
+  const raw=String(ch.p||'').trim();
+  const out=[];
+  const special=raw.match(/^(silent|soft|hard)\s+([a-z]+)$/i);
+  if(special){out.push({kind:'letters',v:special[2].toLowerCase(),where:'any'});return out;}
+  const split=raw.match(/^([a-z])-([a-z])$/i);   // u-e, a-e … split digraph
+  if(split){out.push({kind:'split',a:split[1].toLowerCase(),b:split[2].toLowerCase()});return out;}
+  raw.split(',').forEach(part=>{
+    let p=part.trim().toLowerCase();
+    if(!p)return;
+    const isSuffix=p.startsWith('-')||ch.t==='suffix';
+    const isPrefix=ch.t==='prefix';
+    p=p.replace(/^-+|-+$/g,'');
+    if(!p)return;
+    out.push({kind:'letters',v:p,where:isSuffix?'end':(isPrefix?'start':'any')});
+  });
+  return out;
+}
+
+// Returns the word as HTML with the pattern letters wrapped in .tm-hl
+function highlightPattern(word,ch){
+  const w=String(word||'');
+  const lw=w.toLowerCase();
+  const marks=new Array(w.length).fill(false);
+  let hit=false;
+  patternTargets(ch).forEach(t=>{
+    if(hit)return;
+    if(t.kind==='split'){
+      const i=lw.indexOf(t.a);
+      const j=lw.lastIndexOf(t.b);
+      if(i>-1&&j>i){marks[i]=true;marks[j]=true;hit=true;}
+      return;
+    }
+    const v=t.v;
+    let idx=-1;
+    if(t.where==='end'&&lw.endsWith(v))idx=lw.length-v.length;
+    else if(t.where==='start'&&lw.startsWith(v))idx=0;
+    if(idx<0)idx=lw.indexOf(v);
+    if(idx>-1){for(let k=idx;k<idx+v.length;k++)marks[k]=true;hit=true;}
+  });
+  let html='',open=false;
+  for(let i=0;i<w.length;i++){
+    if(marks[i]&&!open){html+='<span class="tm-hl">';open=true;}
+    else if(!marks[i]&&open){html+='</span>';open=false;}
+    html+=esc(w[i]);
+  }
+  if(open)html+='</span>';
+  return html;
+}
+
+// Same, but every letter animates in one after another (the reveal).
+function cascadeWord(word,ch){
+  const w=String(word||'');
+  const lw=w.toLowerCase();
+  const marks=new Array(w.length).fill(false);
+  patternTargets(ch).forEach(t=>{
+    if(t.kind==='split'){
+      const i=lw.indexOf(t.a),j=lw.lastIndexOf(t.b);
+      if(i>-1&&j>i){marks[i]=true;marks[j]=true;}
+      return;
+    }
+    let idx=-1;
+    if(t.where==='end'&&lw.endsWith(t.v))idx=lw.length-t.v.length;
+    else if(t.where==='start'&&lw.startsWith(t.v))idx=0;
+    if(idx<0)idx=lw.indexOf(t.v);
+    if(idx>-1)for(let k=idx;k<idx+t.v.length;k++)marks[k]=true;
+  });
+  return w.split('').map((c,i)=>
+    `<span class="tm-letter ${marks[i]?'tm-hl':''}" style="animation-delay:${i*0.075}s">${esc(c)}</span>`).join('');
+}
+
+// The three words the class spells together — first, middle, last.
+function tmThreeWords(ch){
+  const w=ch.w;
+  return [w[0],w[Math.floor(w.length/2)],w[w.length-1]].filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);
+}
+
+const TM_PHASES=['read','clap','meaning','visualise','cover','check'];
+
+function openTeachMode(weekIndex,ci){
+  const charts=chartsForWeek(weekIndex);
+  if(!charts[ci])return;
+  TM={kind:'chart',weekIndex,ci,step:0,wi:0,phase:0,clapped:new Set(),read:new Set(),spot:null};
+  document.getElementById('teachmode').classList.add('on');
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',tmKey);
+  renderTeachMode();
+}
+function closeTeachMode(){
+  TM=null;
+  if(tmTimerId){clearInterval(tmTimerId);tmTimerId=null;}
+  document.getElementById('teachmode').classList.remove('on');
+  document.body.style.overflow='';
+  document.removeEventListener('keydown',tmKey);
+}
+function tmKey(e){
+  if(!TM)return;
+  if(e.key==='Escape'){if(TM.spot){TM.spot=null;renderTeachMode();}else closeTeachMode();e.preventDefault();return;}
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){tmNext();e.preventDefault();}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){tmBack();e.preventDefault();}
+}
+function tmGoStep(n){
+  if(!TM)return;
+  if(tmTimerId){clearInterval(tmTimerId);tmTimerId=null;}
+  TM.step=n;TM.wi=0;TM.phase=0;TM.spot=null;
+  renderTeachMode();
+}
+function tmNext(){
+  if(!TM)return;
+  if(TM.kind==='ow'){owNext();return;}
+  if(TM.spot){TM.spot=null;renderTeachMode();return;}
+  if(TM.step===3){
+    const three=tmThreeWords(chartsForWeek(TM.weekIndex)[TM.ci]);
+    if(TM.phase<TM_PHASES.length-1){TM.phase++;renderTeachMode();return;}
+    if(TM.wi<three.length-1){TM.wi++;TM.phase=0;renderTeachMode();return;}
+    tmGoStep(4);return;
+  }
+  if(TM.step<4)tmGoStep(TM.step+1);
+  else closeTeachMode();
+}
+function tmBack(){
+  if(!TM)return;
+  if(TM.kind==='ow'){owBack();return;}
+  if(TM.spot){TM.spot=null;renderTeachMode();return;}
+  if(TM.step===3){
+    if(TM.phase>0){TM.phase--;renderTeachMode();return;}
+    if(TM.wi>0){TM.wi--;TM.phase=TM_PHASES.length-1;renderTeachMode();return;}
+    tmGoStep(2);return;
+  }
+  if(TM.step>0)tmGoStep(TM.step-1);
+}
+function tmToggleRead(i){
+  if(!TM)return;
+  if(TM.read.has(i))TM.read.delete(i);else TM.read.add(i);
+  renderTeachMode();
+}
+function tmSpot(w){if(!TM)return;TM.spot=w;renderTeachMode();}
+function tmClap(i){
+  if(!TM)return;
+  if(TM.clapped.has(i))TM.clapped.delete(i);else TM.clapped.add(i);
+  renderTeachMode();
+}
+function tmStartTimer(secs){
+  if(tmTimerId){clearInterval(tmTimerId);tmTimerId=null;}
+  let t=secs;
+  const paint=()=>{
+    const el=document.getElementById('tm-time');
+    if(!el){clearInterval(tmTimerId);tmTimerId=null;return;}
+    el.textContent=t>0?t+'s':"⏰";
+    el.classList.toggle('low',t<=10&&t>0);
+  };
+  paint();
+  tmTimerId=setInterval(()=>{t--;if(t<0){clearInterval(tmTimerId);tmTimerId=null;t=0;}paint();},1000);
+}
+
+const TM_STEP_NAMES=['1 · The pattern','2 · Read the words','3 · Discover','4 · Spell three words','5 · Grid it'];
+
+function renderTeachMode(){
+  if(!TM)return;
+  if(TM.kind==='ow'){renderOWMode();return;}
+  const ch=chartsForWeek(TM.weekIndex)[TM.ci];
+  if(!ch){closeTeachMode();return;}
+  const root=document.getElementById('teachmode');
+  const dayNames=['Monday','Tuesday','Wednesday'];
+  const stage=tmStage(ch);
+  root.innerHTML=`
+    <div class="tm-top">
+      <span class="tm-chip tm-chip-p">${esc(ch.p)}</span>
+      <span class="tm-chip">${esc(CHART_TYPE_LABEL[ch.t]||'Chart')}</span>
+      <span class="tm-chip">Week ${TM.weekIndex} · ${esc(dayNames[TM.ci]||('Chart '+(TM.ci+1)))}</span>
+      <div class="tm-steps">
+        ${TM_STEP_NAMES.map((n,i)=>`<button class="tm-stepdot ${i===TM.step?'on':(i<TM.step?'done':'')}" onclick="tmGoStep(${i})">${esc(n)}</button>`).join('')}
+      </div>
+      <button class="tm-x" onclick="closeTeachMode()" title="Close (Esc)">✕</button>
+    </div>
+    <div class="tm-stage">${stage.html}</div>
+    <div class="tm-bottom">
+      <button class="tm-btn" onclick="tmBack()" ${(TM.step===0)?'disabled':''}>← Back</button>
+      <button class="tm-btn tm-btn-go" onclick="tmNext()">${esc(stage.next||'Next →')}</button>
+      ${stage.extra||''}
+      <span class="tm-hintbar"><kbd>→</kbd> next · <kbd>←</kbd> back · <kbd>Esc</kbd> close</span>
+    </div>`;
+  if(stage.timer)tmStartTimer(stage.timer);
+}
+
+function tmStage(ch){
+  // ── spotlight overrides everything ──
+  if(TM.spot!=null){
+    return {html:`<div class="tm-spot" onclick="tmSpot(null)">
+        <div class="tm-spot-word">${highlightPattern(TM.spot,ch)}</div>
+        <div class="tm-spot-hint">Click anywhere to go back to the wall</div>
+      </div>`, next:'Back to the wall'};
+  }
+
+  // ── STEP 1 · the pattern ──
+  if(TM.step===0){
+    const facts=[];
+    if(ch.m)facts.push(`<div class="tm-fact"><b>What it means</b><span>${esc(ch.m)}</span></div>`);
+    if(ch.o)facts.push(`<div class="tm-fact"><b>Where it comes from</b><span>${esc(ch.o)}</span></div>`);
+    facts.push(`<div class="tm-fact"><b>${esc(CHART_TYPE_LABEL[ch.t]||'Chart')}</b><span>${esc(CHART_TYPE_INTRO[ch.t]||'')}</span></div>`);
+    return {html:`
+      <div class="tm-kicker">Today we are learning about</div>
+      <div class="tm-pattern" onclick="this.style.animation='none';void this.offsetWidth;this.style.animation='tmWobble .6s ease both'">${esc(ch.p)}</div>
+      <div class="tm-facts">${facts.join('')}</div>`,
+      next:'Read the words →'};
+  }
+
+  // ── STEP 2 · read the words ──
+  if(TM.step===1){
+    const wall=ch.w.map((w,i)=>
+      `<div class="tm-word ${TM.read.has(i)?'read':''}" style="animation-delay:${i*0.055}s"
+        onclick="tmToggleRead(${i})" ondblclick="tmSpot('${esc(w).replace(/'/g,"\\'")}')"
+        title="Click to tick it off · double-click to blow it up">${highlightPattern(w,ch)}</div>`).join('');
+    return {html:`
+      <div class="tm-kicker">Read them together — you first, then the class</div>
+      <div class="tm-wall">${wall}</div>
+      <div class="tm-sub">The <span style="color:#F5C518;font-weight:900;">${esc(ch.p)}</span> is coloured in every word. Click a word to tick it off, double-click to blow it up.</div>`,
+      next:'Discover in pairs →',
+      extra:`<button class="tm-btn" onclick="TM.read=new Set();renderTeachMode()">Clear ticks</button>`};
+  }
+
+  // ── STEP 3 · pairs discovery ──
+  if(TM.step===2){
+    return {html:`
+      <div class="tm-kicker">Turn and talk</div>
+      <div class="tm-pattern" style="font-size:clamp(2.4rem,7vw,6rem);">2 facts</div>
+      <div class="tm-say">What are <b>two facts</b> you can discover about the spelling pattern in these words?</div>
+      ${ch.e?`<div class="tm-sub">From the chart: ${esc(ch.e)}</div>`:''}
+      <div class="tm-timer"><span class="tm-time" id="tm-time">60s</span>
+        <button class="tm-btn" onclick="tmStartTimer(60)">↻ Restart</button></div>
+      <div class="tm-sub">Then take feedback from about four pairs.</div>`,
+      next:'Spell three words →', timer:60};
+  }
+
+  // ── STEP 4 · spell three words ──
+  if(TM.step===3){
+    const three=tmThreeWords(ch);
+    const word=three[TM.wi];
+    const phase=TM_PHASES[TM.phase];
+    const counter=`<div class="tm-kicker">Word ${TM.wi+1} of ${three.length}</div>`;
+    if(phase==='read')return {html:`${counter}
+      <div class="tm-big">${highlightPattern(word,ch)}</div>
+      <div class="tm-say" style="margin-top:22px;">Read it together.</div>`, next:'Clap the syllables →'};
+
+    if(phase==='clap'){
+      const syls=syllablePrompt(word);
+      return {html:`${counter}
+        <div class="tm-syls">${syls.map((s,i)=>
+          `<div class="tm-syl ${TM.clapped.has(i)?'clapped':''}" onclick="tmClap(${i})">${highlightPattern(s,ch)}</div>`).join('')}</div>
+        <div class="tm-clap" style="margin-top:20px;">${syls.map((s,i)=>TM.clapped.has(i)?'👏':'👐').join(' ')}</div>
+        <div class="tm-say" style="margin-top:14px;">Clap the syllables — click each part as you clap it.</div>
+        <div class="tm-sub">${syls.length} syllable${syls.length!==1?'s':''} — but trust your ears over the screen.</div>`,
+        next:'What does it mean? →',
+        extra:`<button class="tm-btn" onclick="TM.clapped=new Set();renderTeachMode()">Reset claps</button>`};
+    }
+    if(phase==='meaning')return {html:`${counter}
+      <div class="tm-big">${highlightPattern(word,ch)}</div>
+      <div class="tm-say" style="margin-top:20px;">What does it mean? Ten seconds.</div>
+      <div class="tm-timer"><span class="tm-time" id="tm-time">10s</span>
+        <button class="tm-btn" onclick="tmStartTimer(10)">↻ Again</button></div>`,
+      next:'Close your eyes →', timer:10};
+
+    if(phase==='visualise')return {html:`${counter}
+      <div class="tm-big pulse">${highlightPattern(word,ch)}</div>
+      <div class="tm-say" style="margin-top:26px;">👀 Close your eyes and <b>picture the word</b>. Where does the ${esc(ch.p)} sit?</div>`,
+      next:'Cover it →'};
+
+    if(phase==='cover')return {html:`${counter}
+      <div class="tm-cover">covered 🤫</div>
+      <div class="tm-say" style="margin-top:26px;">Whisper-spell it to your partner.</div>
+      <div class="tm-sub">No peeking — the word comes back in a moment.</div>`,
+      next:'Uncover and check →'};
+
+    return {html:`${counter}
+      <div class="tm-big">${cascadeWord(word,ch)}</div>
+      <div class="tm-say" style="margin-top:26px;">Look and check — did you get every letter?</div>`,
+      next:(TM.wi<three.length-1)?'Next word →':'Grid a word →',
+      extra:`<button class="tm-btn" onclick="renderTeachMode()">↻ Replay letters</button>`};
+  }
+
+  // ── STEP 5 · grid one word ──
+  const gw=ch.w[0];
+  const syls=syllablePrompt(gw);
+  const affix=String(ch.p||'').replace(/^-+|-+$/g,'').split(',')[0].trim();
+  return {html:`
+    <div class="tm-kicker">Model one word on the Word Grid</div>
+    <div class="tm-big" style="font-size:clamp(2.4rem,8vw,6rem);">${highlightPattern(gw,ch)}</div>
+    <div class="tm-facts" style="margin-top:28px;">
+      <div class="tm-fact"><b>Affix / stem</b><span>${esc(affix)}</span></div>
+      <div class="tm-fact"><b>Meaning</b><span>${esc(ch.m||'—')}</span></div>
+      <div class="tm-fact"><b>Syllables</b><span>${syls.map(s=>esc(s)).join(' / ')}</span></div>
+    </div>
+    <div class="tm-sub">Then the class grids the rest in independent practice.</div>`,
+    next:'Finish ✓',
+    extra:`<button class="tm-btn" onclick="closeTeachMode()">Back to the planner</button>`};
+}
+
+
+
+// ════════════════════════════════════════════════════════
+//   SYNC — the WordLab additions
+//   All of these go through sbWriteSoft: until the SQL migration
+//   in wordlab_migration.sql has been run these tables don't
+//   exist, and a missing optional table must never look like a
+//   lost test result. Everything keeps working device-locally
+//   either way.
+// ════════════════════════════════════════════════════════
+async function syncErrors(sid,list){
+  if(!sbReady())return;
+  const sidNum=parseInt(sid);
+  await sbWriteSoft('errors delete',SB.from('spelling_errors').delete().eq('student_id',sidNum));
+  if(!list.length)return;
+  const rows=list.map(e=>({student_id:sidNum,week_index:e.week,word:e.word,category:e.cat,logged_date:e.date||null}));
+  await sbWriteSoft('errors insert',SB.from('spelling_errors').insert(rows));
+}
+async function syncJournal(sid,list){
+  if(!sbReady())return;
+  const sidNum=parseInt(sid);
+  await sbWriteSoft('journal delete',SB.from('journal_entries').delete().eq('student_id',sidNum));
+  if(!list.length)return;
+  const rows=list.map((e,i)=>({student_id:sidNum,position:i,word:e.word,note:e.note||null,added_date:e.date||null}));
+  await sbWriteSoft('journal insert',SB.from('journal_entries').insert(rows));
+}
+async function syncInquiry(sid,obj){
+  if(!sbReady())return;
+  const sidNum=parseInt(sid);
+  const words=Object.keys(obj||{}).filter(k=>k!=='__current');
+  await sbWriteSoft('inquiry delete',SB.from('word_inquiries').delete().eq('student_id',sidNum));
+  const rows=words.map(w=>({student_id:sidNum,word:w,data:obj[w]}));
+  if(obj&&obj.__current)rows.push({student_id:sidNum,word:'__current',data:{word:obj.__current}});
+  if(rows.length)await sbWriteSoft('inquiry insert',SB.from('word_inquiries').insert(rows));
+}
+async function syncPretests(){
+  if(!sbReady())return;
+  const all=pretestStore();
+  const rows=Object.keys(all).map(sid=>({student_id:parseInt(sid),tested_date:all[sid].date||null,
+    marks:all[sid].marks||{},suggested:all[sid].suggested||null,extension:!!all[sid].extension}));
+  if(rows.length)await sbWriteSoft('pretests',SB.from('pretests').upsert(rows,{onConflict:'student_id'}));
+}
+async function syncGrids(){
+  const teacherId=getActiveTeacherId();
+  if(!sbReady()||!teacherId)return;
+  const all=gridStore();
+  const rows=Object.keys(all).map(k=>{
+    const [cycle,week,day]=k.split('-').map(Number);
+    return {teacher_id:teacherId,cycle,week_index:week,day,rows:all[k]};
+  });
+  if(rows.length)await sbWriteSoft('word grids',SB.from('word_grids').upsert(rows,{onConflict:'teacher_id,cycle,week_index,day'}));
+  // A grid cleared on this device must not reappear from the server on the
+  // next load, so drop any of this teacher's rows that no longer exist here.
+  try{
+    const r=await SB.from('word_grids').select('cycle,week_index,day').eq('teacher_id',teacherId);
+    if(!r.error){
+      const keep=new Set(Object.keys(all));
+      const gone=(r.data||[]).filter(x=>!keep.has(`${x.cycle}-${x.week_index}-${x.day}`));
+      for(const g of gone){
+        await sbWriteSoft('word grid delete',SB.from('word_grids').delete()
+          .eq('teacher_id',teacherId).eq('cycle',g.cycle).eq('week_index',g.week_index).eq('day',g.day));
+      }
+    }
+  }catch(e){console.warn('[wordlab] grid cleanup skipped:',e&&e.message);}
+}
+async function syncTeacherSettings(){
+  const teacherId=getActiveTeacherId();
+  if(!sbReady()||!teacherId)return;
+  await sbWriteSoft('settings',SB.from('teacher_settings').upsert(
+    {teacher_id:teacherId,settings:WLSET,enrolment:enrolMap()},{onConflict:'teacher_id'}));
+}
+
+// Pulled back down alongside the existing class load. Each read is wrapped on
+// its own so a table that hasn't been created yet just leaves that feature
+// device-local rather than failing the whole load.
+async function loadWordLabExtras(teacherId,ids){
+  if(!sbReady())return;
+  const soft=async (what,q,apply)=>{
+    try{const r=await q; if(r.error){console.warn(`[wordlab] optional load skipped (${what}):`,r.error.message);return;} apply(r.data||[]);}
+    catch(e){console.warn(`[wordlab] optional load skipped (${what}):`,e&&e.message);}
+  };
+  if(ids.length){
+    await soft('errors',SB.from('spelling_errors').select('*').in('student_id',ids),rows=>{
+      const out={};rows.forEach(r=>{(out[r.student_id]=out[r.student_id]||[]).push({week:r.week_index,word:r.word,cat:r.category,date:r.logged_date||''});});
+      localStorage.setItem('wl_err',JSON.stringify(out));
+    });
+    await soft('journal',SB.from('journal_entries').select('*').in('student_id',ids).order('position'),rows=>{
+      const out={};rows.forEach(r=>{(out[r.student_id]=out[r.student_id]||[]).push({word:r.word,note:r.note||'',date:r.added_date||''});});
+      localStorage.setItem('wl_journal',JSON.stringify(out));
+    });
+    await soft('inquiries',SB.from('word_inquiries').select('*').in('student_id',ids),rows=>{
+      const out={};rows.forEach(r=>{
+        out[r.student_id]=out[r.student_id]||{};
+        if(r.word==='__current')out[r.student_id].__current=(r.data&&r.data.word)||'';
+        else out[r.student_id][r.word]=r.data||{};
+      });
+      localStorage.setItem('wl_inquiry',JSON.stringify(out));
+    });
+    await soft('pretests',SB.from('pretests').select('*').in('student_id',ids),rows=>{
+      const out={};rows.forEach(r=>{out[r.student_id]={date:r.tested_date||'',marks:r.marks||{},suggested:r.suggested,extension:!!r.extension};});
+      localStorage.setItem('wl_pretest',JSON.stringify(out));
+    });
+  }
+  await soft('word grids',SB.from('word_grids').select('*').eq('teacher_id',teacherId),rows=>{
+    const out={};rows.forEach(r=>{out[`${r.cycle}-${r.week_index}-${r.day}`]=r.rows||{};});
+    localStorage.setItem('wl_grid',JSON.stringify(out));
+  });
+  await soft('settings',SB.from('teacher_settings').select('*').eq('teacher_id',teacherId).maybeSingle(),row=>{
+    if(!row)return;
+    if(row.settings)WLSET=Object.assign({},WL_SET_DEFAULT,row.settings);
+    if(row.enrolment)localStorage.setItem('wl_enrol',JSON.stringify(row.enrolment));
+    localStorage.setItem('wl_settings',JSON.stringify(WLSET));
+    const sel=document.getElementById('lp-cycle');
+    if(sel)sel.value=String(WLSET.chartCycle);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//   MORPHEME MINI-DICTIONARY
+//   Enough of the common Y5–6 prefixes, suffixes and roots that
+//   "Interesting parts" doesn't stall on "what does that bit mean?"
+// ════════════════════════════════════════════════════════
+const MORPHEMES=[
+  {m:'dis',  k:'prefix', mean:'not, opposite of',        from:'Latin'},
+  {m:'un',   k:'prefix', mean:'not',                     from:'Old English'},
+  {m:'in',   k:'prefix', mean:'not, into',               from:'Latin'},
+  {m:'im',   k:'prefix', mean:'not (before m, b, p)',    from:'Latin'},
+  {m:'ir',   k:'prefix', mean:'not (before r)',          from:'Latin'},
+  {m:'il',   k:'prefix', mean:'not (before l)',          from:'Latin'},
+  {m:'re',   k:'prefix', mean:'again, back',             from:'Latin'},
+  {m:'pre',  k:'prefix', mean:'before',                  from:'Latin'},
+  {m:'pro',  k:'prefix', mean:'forward, for',            from:'Latin'},
+  {m:'sub',  k:'prefix', mean:'under, below',            from:'Latin'},
+  {m:'super',k:'prefix', mean:'above, beyond',           from:'Latin'},
+  {m:'trans',k:'prefix', mean:'across',                  from:'Latin'},
+  {m:'inter',k:'prefix', mean:'between',                 from:'Latin'},
+  {m:'anti', k:'prefix', mean:'against',                 from:'Greek'},
+  {m:'auto', k:'prefix', mean:'self',                    from:'Greek'},
+  {m:'micro',k:'prefix', mean:'small',                   from:'Greek'},
+  {m:'tele', k:'prefix', mean:'far off, distant',        from:'Greek'},
+  {m:'mono', k:'prefix', mean:'one',                     from:'Greek'},
+  {m:'bi',   k:'prefix', mean:'two',                     from:'Latin'},
+  {m:'tri',  k:'prefix', mean:'three',                   from:'Greek/Latin'},
+  {m:'mis',  k:'prefix', mean:'wrongly, badly',          from:'Old English'},
+  {m:'non',  k:'prefix', mean:'not',                     from:'Latin'},
+  {m:'over', k:'prefix', mean:'too much, above',         from:'Old English'},
+  {m:'under',k:'prefix', mean:'below, too little',       from:'Old English'},
+  {m:'ex',   k:'prefix', mean:'out of, former',          from:'Latin'},
+  {m:'de',   k:'prefix', mean:'remove, reverse, down',   from:'Latin'},
+  {m:'con',  k:'prefix', mean:'with, together',          from:'Latin'},
+  {m:'com',  k:'prefix', mean:'with, together',          from:'Latin'},
+  {m:'semi', k:'prefix', mean:'half',                    from:'Latin'},
+  {m:'ness', k:'suffix', mean:'state of being (makes a noun)',       from:'Old English'},
+  {m:'ment', k:'suffix', mean:'the result or act of (noun)',         from:'Latin'},
+  {m:'tion', k:'suffix', mean:'the result of doing something (noun)',from:'Latin'},
+  {m:'sion', k:'suffix', mean:'the result of doing something (noun)',from:'Latin'},
+  {m:'ship', k:'suffix', mean:'a position held (noun)',              from:'Old English'},
+  {m:'hood', k:'suffix', mean:'a state or condition',                from:'Old English'},
+  {m:'able', k:'suffix', mean:'able to be (adjective)',              from:'Latin'},
+  {m:'ible', k:'suffix', mean:'able to be (adjective)',              from:'Latin'},
+  {m:'ful',  k:'suffix', mean:'full of (adjective)',                 from:'Old English'},
+  {m:'less', k:'suffix', mean:'without (adjective)',                 from:'Old English'},
+  {m:'ly',   k:'suffix', mean:'in this way (adverb)',                from:'Old English'},
+  {m:'ous',  k:'suffix', mean:'characterised by (adjective)',        from:'Latin'},
+  {m:'ive',  k:'suffix', mean:'tending to (adjective)',              from:'Latin'},
+  {m:'ist',  k:'suffix', mean:'a person who does this',              from:'Greek'},
+  {m:'ism',  k:'suffix', mean:'a state or belief (noun)',            from:'Greek'},
+  {m:'ian',  k:'suffix', mean:'belonging to, a person who',          from:'Latin'},
+  {m:'or',   k:'suffix', mean:'a person or thing that does this',    from:'Latin'},
+  {m:'er',   k:'suffix', mean:'one who does this; or "more"',        from:'Old English'},
+  {m:'est',  k:'suffix', mean:'the most',                            from:'Old English'},
+  {m:'ed',   k:'suffix', mean:'past tense',                          from:'Old English'},
+  {m:'ing',  k:'suffix', mean:'happening now, or makes a noun',      from:'Old English'},
+  {m:'ity',  k:'suffix', mean:'the quality of (noun)',               from:'Latin'},
+  {m:'ance', k:'suffix', mean:'the act or state of (noun)',          from:'Latin'},
+  {m:'ence', k:'suffix', mean:'the act or state of (noun)',          from:'Latin'},
+  {m:'ify',  k:'suffix', mean:'to make or become (verb)',            from:'Latin'},
+  {m:'ise',  k:'suffix', mean:'to make or become (verb)',            from:'Greek'},
+  {m:'phon', k:'root',   mean:'sound, voice',            from:'Greek'},
+  {m:'port', k:'root',   mean:'to carry',                from:'Latin'},
+  {m:'form', k:'root',   mean:'shape',                   from:'Latin'},
+  {m:'spect',k:'root',   mean:'to look',                 from:'Latin'},
+  {m:'script',k:'root',  mean:'to write',                from:'Latin'},
+  {m:'scrib',k:'root',   mean:'to write',                from:'Latin'},
+  {m:'dict', k:'root',   mean:'to say',                  from:'Latin'},
+  {m:'graph',k:'root',   mean:'to write or draw',        from:'Greek'},
+  {m:'photo',k:'root',   mean:'light',                   from:'Greek'},
+  {m:'therm',k:'root',   mean:'heat',                    from:'Greek'},
+  {m:'aqua', k:'root',   mean:'water',                   from:'Latin'},
+  {m:'terr', k:'root',   mean:'earth, land',             from:'Latin'},
+  {m:'vis',  k:'root',   mean:'to see',                  from:'Latin'},
+  {m:'aud',  k:'root',   mean:'to hear',                 from:'Latin'},
+  {m:'struct',k:'root',  mean:'to build',                from:'Latin'},
+  {m:'cycl', k:'root',   mean:'circle, ring',            from:'Greek'},
+];
+// Longest match wins, so "trans" beats "tri" and "script" beats "scrib".
+function findMorphemes(word){
+  const w=String(word||'').toLowerCase();
+  const hits=[];
+  const pick=kind=>MORPHEMES.filter(m=>m.k===kind);
+  const pre=pick('prefix').filter(m=>w.startsWith(m.m)&&w.length>m.m.length+2).sort((a,b)=>b.m.length-a.m.length)[0];
+  if(pre)hits.push(pre);
+  const suf=pick('suffix').filter(m=>w.endsWith(m.m)&&w.length>m.m.length+2).sort((a,b)=>b.m.length-a.m.length)[0];
+  if(suf)hits.push(suf);
+  const root=pick('root').filter(m=>w.includes(m.m)).sort((a,b)=>b.m.length-a.m.length)[0];
+  if(root)hits.push(root);
+  return hits;
+}
+
+// ════════════════════════════════════════════════════════
+//   OUR WORDS TEACH MODE — the 7-step routine, full screen
+// ════════════════════════════════════════════════════════
+const OW_MARKS=['none','under','circle','zig'];
+const OW_STEPS=['1 · The new word','2 · Syllables','3 · What can I hear?','4 · Tricky parts',
+                '5 · Interesting parts','6 · Spell and write','7 · Review'];
+
+function openOWTeach(level,weekIndex,day){
+  const word=ourWordOfDay(level,weekIndex,day);
+  if(!word)return;
+  TM={kind:'ow',level,weekIndex,day,word,step:0,marks:{},tricky:[],clapped:new Set(),covered:true};
+  document.getElementById('teachmode').classList.add('on');
+  document.body.style.overflow='hidden';
+  document.addEventListener('keydown',tmKey);
+  renderTeachMode();
+}
+function owCycleMark(i){
+  if(!TM)return;
+  const cur=TM.marks[i]||'none';
+  TM.marks[i]=OW_MARKS[(OW_MARKS.indexOf(cur)+1)%OW_MARKS.length];
+  renderTeachMode();
+}
+function owClearMarks(){if(TM){TM.marks={};renderTeachMode();}}
+
+// A starting point for step 3, not an answer key — the class still says what
+// they can hear, and any letter can be clicked to change its mark.
+const OW_DIGRAPHS=['ough','augh','eigh','igh','tch','dge',
+  'ph','th','ch','sh','wh','ck','ng','qu','gh','wr','kn',
+  'ae','ee','ea','oo','ou','ow','oi','oy','ai','ay','au','aw','ei','ie','oa','oe','ue','ui',
+  'ar','er','ir','or','ur'];
+function owSuggestMarks(){
+  if(!TM)return;
+  const w=TM.word.toLowerCase();
+  const marks={};
+  let i=0;
+  while(i<w.length){
+    const hit=OW_DIGRAPHS.find(d=>w.startsWith(d,i));
+    if(hit){for(let k=i;k<i+hit.length;k++)marks[k]='circle';i+=hit.length;}
+    else{marks[i]='under';i++;}
+  }
+  if(/^(kn|wr|gn)/.test(w))marks[0]='zig';
+  if(w.length>3&&w.endsWith('e')&&!/[aeiou]e$/.test(w))marks[w.length-1]='zig';
+  if(/mb$/.test(w))marks[w.length-1]='zig';
+  if(/igh/.test(w)){const j=w.indexOf('igh');marks[j+1]='zig';marks[j+2]='zig';}
+  TM.marks=marks;
+  renderTeachMode();
+}
+function owAddTricky(){
+  const el=document.getElementById('ow-tricky-in');
+  const v=(el?.value||'').trim();
+  if(!v||!TM)return;
+  TM.tricky.push(v);el.value='';
+  renderTeachMode();
+  setTimeout(()=>document.getElementById('ow-tricky-in')?.focus(),30);
+}
+function owDropTricky(i){if(TM){TM.tricky.splice(i,1);renderTeachMode();}}
+function owUncover(){if(TM){TM.covered=false;renderTeachMode();}}
+function owGoStep(n){if(TM){TM.step=n;TM.covered=(n===5);renderTeachMode();}}
+function owNext(){
+  if(TM.step===5&&TM.covered){TM.covered=false;renderTeachMode();return;}
+  if(TM.step<6)owGoStep(TM.step+1);
+  else closeTeachMode();
+}
+function owBack(){
+  if(TM.step===5&&!TM.covered){TM.covered=true;renderTeachMode();return;}
+  if(TM.step>0)owGoStep(TM.step-1);
+}
+function owMarkedWord(big){
+  const w=TM.word;
+  return `<div class="ow-word ${big?'big':''}">${w.split('').map((c,i)=>
+    `<span class="ow-l ow-${TM.marks[i]||'none'}" onclick="owCycleMark(${i})">${esc(c)}</span>`).join('')}</div>`;
+}
+
+function owStage(){
+  const s=TM.step, word=TM.word, lvl=TM.level;
+  const counter=`<div class="tm-kicker">Year ${lvl} list · Our Words</div>`;
+
+  if(s===0)return {html:`${counter}
+    <div class="tm-big">${esc(word)}</div>
+    <div class="tm-say" style="margin-top:26px;">Today we are learning to spell the word <b>${esc(word)}</b>.</div>`,
+    next:'Clap the syllables →'};
+
+  if(s===1){
+    const syls=syllablePrompt(word);
+    return {html:`${counter}
+      <div class="tm-syls">${syls.map((x,i)=>
+        `<div class="tm-syl ${TM.clapped.has(i)?'clapped':''}" onclick="tmClap(${i})">${esc(x)}</div>`).join('')}</div>
+      <div class="tm-clap" style="margin-top:20px;">${syls.map((x,i)=>TM.clapped.has(i)?'👏':'👐').join(' ')}</div>
+      <div class="tm-say" style="margin-top:14px;">Clap the syllables and mark the breaks.</div>
+      <div class="tm-sub">${syls.length} syllable${syls.length!==1?'s':''} — trust your ears over the screen.</div>`,
+      next:'What can I hear? →',
+      extra:`<button class="tm-btn" onclick="TM.clapped=new Set();renderTeachMode()">Reset claps</button>`};
+  }
+
+  if(s===2)return {html:`${counter}
+    ${owMarkedWord(true)}
+    <div class="ow-key">
+      <span><span class="ow-l ow-under">a</span> one letter, one sound</span>
+      <span><span class="ow-l ow-circle">ea</span> letters making one sound</span>
+      <span><span class="ow-l ow-zig">e</span> silent letter</span>
+    </div>
+    <div class="tm-say" style="margin-top:18px;">What can you hear? Click a letter to mark it.</div>`,
+    next:'Tricky parts →',
+    extra:`<button class="tm-btn" onclick="owSuggestMarks()">💡 Suggest marks</button>
+           <button class="tm-btn" onclick="owClearMarks()">Clear</button>`};
+
+  if(s===3){
+    const chips=TM.tricky.map((t,i)=>
+      `<span class="ow-chip" onclick="owDropTricky(${i})" title="Click to remove">${esc(t)} ✕</span>`).join('');
+    return {html:`${counter}
+      ${owMarkedWord(false)}
+      <div class="tm-say" style="margin-top:20px;">What's <b>tricky</b> about this word?</div>
+      <div class="ow-chiprow">${chips||'<span class="tm-sub">Type what the class says and it appears here.</span>'}</div>
+      <div class="ow-entry">
+        <input id="ow-tricky-in" placeholder="e.g. the silent e" onkeydown="if(event.key==='Enter')owAddTricky()">
+        <button class="tm-btn tm-btn-go" onclick="owAddTricky()">Add</button>
+      </div>
+      <div class="tm-sub">Silent letters · a letter that sounds like another · letter groups making one sound.</div>`,
+      next:'Interesting parts →'};
+  }
+
+  if(s===4){
+    const hits=findMorphemes(word);
+    const cards=hits.length?hits.map(h=>`<div class="tm-fact">
+        <b>${esc(h.k)} · ${esc(h.m)}</b>
+        <span>${esc(h.mean)}${lvl>=6?` <i style="opacity:.75">— ${esc(h.from)}</i>`:''}</span></div>`).join('')
+      :`<div class="tm-fact"><b>No obvious word parts</b><span>Ask anyway — does anything inside this word turn up in other words?</span></div>`;
+    return {html:`${counter}
+      ${owMarkedWord(false)}
+      <div class="tm-say" style="margin-top:20px;">Is there a prefix or suffix? What does it <b>do</b> to the word?</div>
+      <div class="tm-facts">${cards}</div>
+      ${lvl>=6?`<div class="tm-sub">Year 6: where does that word part come from, and what other words share it?</div>`
+             :`<div class="tm-sub">Can anyone think of another word with the same word part?</div>`}`,
+      next:'Cover and spell →'};
+  }
+
+  if(s===5){
+    if(TM.covered)return {html:`${counter}
+      <div class="tm-cover">covered 🤫</div>
+      <div class="tm-say" style="margin-top:26px;">Read and spell it out loud, syllable by syllable. Now close your eyes and spell it.</div>
+      <div class="tm-sub">Then write it in your book and show me.</div>`,
+      next:'Uncover and check →',
+      extra:`<button class="tm-btn" onclick="owUncover()">👀 Uncover now</button>`};
+    return {html:`${counter}
+      <div class="tm-big">${cascadeWord(word,{p:'',t:'none'})}</div>
+      <div class="tm-say" style="margin-top:26px;">Look and check — every letter.</div>`,
+      next:'Review it →',
+      extra:`<button class="tm-btn" onclick="renderTeachMode()">↻ Replay letters</button>`};
+  }
+
+  const hits=findMorphemes(word);
+  return {html:`${counter}
+    ${owMarkedWord(false)}
+    <div class="tm-say" style="margin-top:22px;">In pairs: <b>what did we learn?</b></div>
+    <div class="tm-facts">
+      <div class="tm-fact"><b>Syllables</b><span>${syllablePrompt(word).join(' / ')}</span></div>
+      <div class="tm-fact"><b>Tricky parts</b><span>${TM.tricky.length?esc(TM.tricky.join(' · ')):'—'}</span></div>
+      <div class="tm-fact"><b>Word parts</b><span>${hits.length?hits.map(h=>esc(h.m+' = '+h.mean)).join(' · '):'—'}</span></div>
+    </div>`,
+    next:'Finish ✓',
+    extra:`<button class="tm-btn" onclick="closeTeachMode()">Back to the planner</button>`};
+}
+
+function renderOWMode(){
+  const root=document.getElementById('teachmode');
+  const stage=owStage();
+  const dayNames=['Monday','Tuesday','Wednesday','Thursday'];
+  root.innerHTML=`
+    <div class="tm-top">
+      <span class="tm-chip tm-chip-p">${esc(TM.word)}</span>
+      <span class="tm-chip">Our Words · Year ${TM.level} list</span>
+      <span class="tm-chip">Week ${TM.weekIndex} · ${esc(dayNames[TM.day]||'')}</span>
+      <div class="tm-steps">
+        ${OW_STEPS.map((n,i)=>`<button class="tm-stepdot ${i===TM.step?'on':(i<TM.step?'done':'')}" onclick="owGoStep(${i})">${esc(n)}</button>`).join('')}
+      </div>
+      <button class="tm-x" onclick="closeTeachMode()" title="Close (Esc)">✕</button>
+    </div>
+    <div class="tm-stage">${stage.html}</div>
+    <div class="tm-bottom">
+      <button class="tm-btn" onclick="tmBack()" ${TM.step===0?'disabled':''}>← Back</button>
+      <button class="tm-btn tm-btn-go" onclick="tmNext()">${esc(stage.next||'Next →')}</button>
+      ${stage.extra||''}
+      <span class="tm-hintbar"><kbd>→</kbd> next · <kbd>←</kbd> back · <kbd>Esc</kbd> close</span>
+    </div>`;
+}
+
 // ════════════════════════════════════════════════════════
 //   LESSON PLANNER — render
 // ════════════════════════════════════════════════════════
@@ -3042,47 +4726,395 @@ function bakedWordChipsHtml(words){
 
 function renderLessonContent(){
   const el=document.getElementById('lesson-content');
+  if(!el)return;
   const year=parseInt(document.getElementById('lp-level').value);
   const term=parseInt(document.getElementById('lp-term').value);
   const week=parseInt(document.getElementById('lp-week').value);
   const day=parseInt(document.getElementById('lp-day').value);
   const weekIndex=(term-1)*10+week;
-  // Lesson activities only need the spelling level — the words are baked
-  // per (year, week, day), so every student in the same year level gets
-  // the exact same activity and words for a given week/day. There's no
-  // connection to any individual student here at all; that data lives
-  // entirely in the Test page instead.
-  const words=getBakedWords(year,weekIndex,day);
   const dayNames=['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  stopShhhMeter(); // the Shhh-o-Meter only belongs to the Test page's Quiet Zone now
+  stopShhhMeter(); // the Shhh-o-Meter only belongs to the Test page's Quiet Zone
 
-  if(!words.length){
-    el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>No word list found for Year ${year} yet — check the Word Lists page.</p></div>`;
+  const cycle=WLSET.chartCycle;
+  const charts=chartsForWeek(weekIndex,cycle);
+  const ourY5=getOurWords(5,weekIndex);
+  const ourY6=getOurWords(6,weekIndex);
+  const assess=assessmentForWeek(weekIndex);
+
+  if(!charts.length){
+    el.innerHTML=`<div class="empty-state"><div class="emoji">📚</div><p>No Year ${cycle} chart found for week ${weekIndex}.</p></div>`;
     return;
   }
 
-  let body='';
-  if(day===3){
-    body=renderStopSpellSmell(words,weekIndex);
+  // ── PLENARY (10 min, whole class, same content for everyone) ──
+  let plenary='';
+  if(day<=2){
+    plenary=renderChartCard(charts[day],day,weekIndex)+renderOurWordsCard(weekIndex,day,ourY5,ourY6);
+  }else if(day===3){
+    plenary=renderChartReviewCard(charts,weekIndex)+renderOurWordsCard(weekIndex,day,ourY5,ourY6);
   }else{
+    plenary=renderAssessmentCard(assess,charts,weekIndex,ourY5,ourY6);
+  }
+
+  // ── PRACTICE (10 min, differentiated) ──
+  let practice='';
+  if(day<=2){
+    const rest=charts[day].w.slice(1,7);
+    practice=renderWordGrid(weekIndex,day,rest,'Grid up to 6 more chart words',
+        `Chart words from today's "${charts[day].p}" chart — the class gridded the first one together.`)
+      +renderOurWordsPractice(weekIndex,day,ourY5,ourY6);
+  }else if(day===3){
+    practice=renderWordGrid(weekIndex,day,jumbledReviewWords(charts,weekIndex),'Chart review — grid these 6 words',
+        'A jumbled set drawn from all three of this week\'s charts.')
+      +renderOurWordsPractice(weekIndex,day,ourY5,ourY6);
+  }else{
+    practice=`<div class="wl-block"><div class="wl-block-head"><span class="wl-step-n">—</span>
+      <div><div class="wl-block-title">No separate practice on assessment day</div>
+      <div class="wl-block-sub">The 20 minutes go to the assessment activity above.</div></div></div></div>`;
+  }
+
+  // ── Optional extra activity (early finishers / practice games) ──
+  const bakedWords=getBakedWords(year,weekIndex,day);
+  let extra='';
+  if(bakedWords.length){
     const key=`${weekIndex}-${day}`;
-    const actId=lessonOverrides[key]||pickActivitiesForWeek(weekIndex)[day].id;
-    const act=ACTIVITIES.find(a=>a.id===actId);
-    body=renderActivityCard(act,words,weekIndex,day);
+    const actId=lessonOverrides[key]||(pickActivitiesForWeek(weekIndex)[day]||ACTIVITIES[0]).id;
+    const act=ACTIVITIES.find(a=>a.id===actId)||ACTIVITIES[0];
+    extra=`<details class="wl-extra"><summary>🎲 Extra practice game for early finishers — ${esc(act.emoji+' '+act.title)}</summary>
+      <div style="margin-top:14px;">${renderActivityCard(act,bakedWords,weekIndex,day)}</div></details>`;
   }
 
   el.innerHTML=`
-    <div class="card">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div class="avatar" style="width:40px;height:40px;font-size:.95rem;background:${YC[year]}">Y${year}</div>
-        <div>
-          <div style="font-family:'Fredoka One',cursive;font-size:1.15rem;">Year ${year} · Term ${term}, Week ${week} · ${dayNames[day]}</div>
-          <div style="font-size:.78rem;color:var(--muted);font-weight:700;">Same activity for every Year ${year} student (${words.length} words)</div>
-        </div>
+    <div class="card wl-daybar">
+      <div class="avatar" style="width:44px;height:44px;font-size:.85rem;background:${YC[cycle]}">Y${cycle}</div>
+      <div>
+        <div class="wl-daytitle">Term ${term}, Week ${week} · ${dayNames[day]}</div>
+        <div class="wl-daysub">Chart cycle: Year ${cycle} charts · Our Words: Y5 and Y6 lists running in parallel</div>
       </div>
-      ${bakedWordChipsHtml(words)}
+      <div class="wl-daybadges">
+        <span class="wl-badge wl-badge-plen">10 min plenary</span>
+        <span class="wl-badge wl-badge-prac">10 min practice</span>
+        <span class="wl-badge" title="Friday's assessment this week">${assess.emoji} Fri: ${esc(assess.name)}</span>
+      </div>
     </div>
-    ${body}`;
+
+    <div class="wl-sec-head"><span class="wl-sec-tag wl-tag-plen">Plenary</span> Whole class, same content for everyone — 10 minutes</div>
+    ${plenary}
+
+    <div class="wl-sec-head"><span class="wl-sec-tag wl-tag-prac">Independent practice</span> Differentiated by level — 10 minutes</div>
+    ${practice}
+
+    ${extra}`;
+}
+
+// A jumbled six drawn across the week's three charts, deterministic per week.
+function jumbledReviewWords(charts,weekIndex){
+  const pool=[];
+  charts.forEach((c,ci)=>c.w.forEach((w,wi)=>pool.push({w,k:ci*100+wi})));
+  const rand=seededRand(weekIndex*7919+13);
+  const arr=[...pool];
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr.slice(0,6).map(x=>x.w);
+}
+
+function chartWordChips(words,highlight){
+  return `<div class="word-chip-row">${words.map((w,i)=>
+    `<span class="wchip ${highlight&&highlight.includes(w)?'wl-chip-focus':''}">${esc(w)}</span>`).join('')}</div>`;
+}
+
+function renderChartCard(ch,day,weekIndex){
+  if(!ch)return '';
+  // The three words the class spells together — first, middle, last, so the
+  // chart gets covered across the week rather than always the top of the list.
+  const three=[ch.w[0],ch.w[Math.floor(ch.w.length/2)],ch.w[ch.w.length-1]].filter((v,i,a)=>a.indexOf(v)===i);
+  const meta=[];
+  if(ch.m)meta.push(`<div class="wl-meta"><b>Meaning:</b> ${esc(ch.m)}</div>`);
+  if(ch.o)meta.push(`<div class="wl-meta"><b>Origin:</b> ${esc(ch.o)}</div>`);
+  if(ch.c)meta.push(`<div class="wl-meta wl-meta-code">Printed chart: <code>${esc(ch.c)}</code></div>`);
+  return `<div class="wl-block wl-chart">
+    <div class="wl-block-head">
+      <span class="wl-step-n wl-chart-n">${day+1}</span>
+      <div>
+        <div class="wl-block-title">Chart ${day+1} of 3 — <span class="wl-pattern">${esc(ch.p)}</span></div>
+        <div class="wl-block-sub">${esc(CHART_TYPE_LABEL[ch.t]||'Chart')} · ${ch.w.length} words</div>
+      </div>
+      <button class="tm-teachbtn" onclick="openTeachMode(${weekIndex},${day})">▶ Teach this on the big screen</button>
+    </div>
+    <div class="wl-intro">${esc(CHART_TYPE_INTRO[ch.t]||'')}</div>
+    ${chartWordChips(ch.w,three)}
+    <div class="wl-meta-wrap">${meta.join('')}</div>
+    <ol class="wl-steps">
+      <li><b>Introduce the pattern.</b> "Today we are learning about <b>${esc(ch.p)}</b>."${ch.m?` It means <i>${esc(ch.m)}</i>.`:''}${ch.o?` It comes from <i>${esc(ch.o)}</i>.`:''}</li>
+      <li><b>Read the words.</b> You point and read all ${ch.w.length} words first, then the children read them all.</li>
+      <li><b>Question, discover, feedback.</b> In pairs: "What are two facts you can discover about the spelling pattern in these words?" Take feedback from about four pairs.${ch.e?`<div class="wl-prompt">From the chart: ${esc(ch.e)}</div>`:''}</li>
+      <li><b>Spell three words.</b> ${three.map(w=>`<span class="wl-focusword">${esc(w)}</span>`).join(' ')}
+        <div class="wl-substeps">For each one: read it together → clap the syllables → 10 seconds on what it means → close eyes and <b>visualise</b> it, noticing where the pattern sits → cover the word → children <b>whisper-spell</b> → uncover and check.</div></li>
+      <li><b>Review and grid one word.</b> Model one word on the Word Grid below, then the class grids the rest in practice time.</li>
+    </ol>
+  </div>`;
+}
+
+function renderChartReviewCard(charts,weekIndex){
+  const jumble=jumbledReviewWords(charts,weekIndex);
+  return `<div class="wl-block wl-chart">
+    <div class="wl-block-head"><span class="wl-step-n wl-chart-n">↻</span>
+      <div><div class="wl-block-title">Chart review — all three charts</div>
+      <div class="wl-block-sub">Reread the week's charts, spell some words orally, review a word on the Word Grid.</div></div></div>
+    <div class="wl-chartrow">
+      ${charts.map((c,i)=>`<div class="wl-minichart">
+        <div class="wl-mini-n">${i+1}</div>
+        <div class="wl-mini-p">${esc(c.p)}</div>
+        <div class="wl-mini-t">${esc(CHART_TYPE_LABEL[c.t]||'')}</div>
+        <div class="wl-mini-m">${esc(c.m||'')}</div>
+      </div>`).join('')}
+    </div>
+    <ol class="wl-steps">
+      <li><b>Reread all three charts</b> — children read the words this time, you prompt for the pattern in each.</li>
+      <li><b>Spell some words orally.</b> Pick a few from each chart; whisper-spell and check.</li>
+      <li><b>Review one word on the grid</b> together, then the jumbled six below in practice time.</li>
+    </ol>
+    <div class="wl-jumble"><b>This week's jumbled six:</b> ${jumble.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+    <div class="tm-teachrow">${charts.map((c,i)=>`<button class="tm-teachbtn" onclick="openTeachMode(${weekIndex},${i})">▶ Reteach ${esc(c.p)}</button>`).join('')}</div>
+  </div>`;
+}
+
+// The Our Words routine. Year 5 level stops at "Interesting Parts —
+// what does the affix mean?"; Year 6 level adds the etymology question.
+// Both lists run side by side, which is what a composite class needs.
+function renderOurWordsCard(weekIndex,day,ourY5,ourY6){
+  const isReview=(day===3);
+  const w5=ourY5[day]||ourY5[ourY5.length-1]||'';
+  const w6=ourY6[day]||ourY6[ourY6.length-1]||'';
+  function routine(word,level){
+    if(!word)return '';
+    const syl=syllablePrompt(word);
+    return `<div class="wl-ow-col">
+      <div class="wl-ow-head" style="background:${YC[level]}">Year ${level} list</div>
+      <div class="wl-ow-word">${esc(word)}</div>
+      <ol class="wl-steps wl-steps-tight">
+        <li><b>The New.</b> "Today we are learning to spell the word <b>${esc(word)}</b>."</li>
+        <li><b>Syllables.</b> Clap them and mark the breaks: <span class="wl-syl">${syl.map(s=>esc(s)).join(' | ')}</span> <span class="wl-hint-inline">(check by ear — this is a prompt, not a rule)</span></li>
+        <li><b>What can I hear?</b> Underline single letters making a sound, circle two or three letters making one sound, zig-zag under silent letters.</li>
+        <li><b>Tricky parts.</b> Ask the class what's tricky here — silent letters, a letter that sounds like another, letter groups making one sound.</li>
+        <li><b>Interesting parts.</b> Is there a prefix or suffix? What does it do to the word — plural, tense, part of speech?${level===6?` <b>And where does that word part come from?</b> What other words share this root?`:` Can anyone think of other words with the same affix?`}</li>
+        <li><b>Spell and write it.</b> Read and spell it orally syllable by syllable, close eyes and spell it, then write it and show you.</li>
+        <li><b>Review it.</b> In pairs: "What did we learn?"</li>
+      </ol>
+    </div>`;
+  }
+  const reviewBlock=isReview?`<div class="wl-ow-review">
+      <b>Or run Our Words review instead:</b> read and spell all of this week's words, pairs test each other and check, or write every word twice.
+      <div class="wl-ow-lists">
+        <div><span class="wl-ow-tag" style="background:${YC[5]}">Y5</span> ${ourY5.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+        <div><span class="wl-ow-tag" style="background:${YC[6]}">Y6</span> ${ourY6.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+      </div></div>`:'';
+  return `<div class="wl-block wl-ow">
+    <div class="wl-block-head"><span class="wl-step-n wl-ow-n">✍️</span>
+      <div><div class="wl-block-title">Our Words — ${isReview?'word 4 of the week, or review':'new word for today'}</div>
+      <div class="wl-block-sub">Two parallel lists: everyone joins the teaching, each child is accountable for their own level.</div></div>
+      <div class="tm-teachrow" style="margin-left:auto;margin-top:0;">
+        ${w5?`<button class="tm-teachbtn" onclick="openOWTeach(5,${weekIndex},${day})">▶ Teach ${esc(w5)}</button>`:''}
+        ${w6?`<button class="tm-teachbtn" onclick="openOWTeach(6,${weekIndex},${day})">▶ Teach ${esc(w6)}</button>`:''}
+      </div></div>
+    <div class="wl-ow-grid">${routine(w5,5)}${routine(w6,6)}</div>
+    ${reviewBlock}
+  </div>`;
+}
+
+function renderOurWordsPractice(weekIndex,day,ourY5,ourY6){
+  const isReview=(day===3);
+  const w5=ourY5[day]||'', w6=ourY6[day]||'';
+  if(isReview){
+    return `<div class="wl-block">
+      <div class="wl-block-head"><span class="wl-step-n wl-ow-n">👥</span>
+        <div><div class="wl-block-title">Our Words review</div>
+        <div class="wl-block-sub">Pairs test, written in books, checked by each other — or write all of the week's words twice.</div></div></div>
+      <div class="wl-ow-lists">
+        <div><span class="wl-ow-tag" style="background:${YC[5]}">Y5</span> ${ourY5.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+        <div><span class="wl-ow-tag" style="background:${YC[6]}">Y6</span> ${ourY6.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+      </div></div>`;
+  }
+  return `<div class="wl-block">
+    <div class="wl-block-head"><span class="wl-step-n wl-ow-n">✏️</span>
+      <div><div class="wl-block-title">Our Words practice</div>
+      <div class="wl-block-sub">Copy today's word, then mark it up: line, circle, zigzag, and syllable lines.</div></div></div>
+    <div class="wl-ow-lists">
+      <div><span class="wl-ow-tag" style="background:${YC[5]}">Y5</span> <span class="wchip wl-chip-focus">${esc(w5)}</span></div>
+      <div><span class="wl-ow-tag" style="background:${YC[6]}">Y6</span> <span class="wchip wl-chip-focus">${esc(w6)}</span></div>
+    </div>
+    <div class="wl-hint">Underline single letters making a sound · circle letter groups making one sound · zig-zag under silent letters · vertical lines between syllables.</div>
+  </div>`;
+}
+
+function renderAssessmentCard(assess,charts,weekIndex,ourY5,ourY6){
+  const chartWords=jumbledReviewWords(charts,weekIndex);
+  let specifics='';
+  if(assess.id==='sort'){
+    specifics=`<div class="wl-jumble"><b>Board words (from this week's charts):</b> ${chartWords.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+      <div class="wl-hint">Closed sort suggestion: group by the vowel sound, or by whether the base word changed when the affix was added.</div>`;
+  }else if(assess.id==='formal'){
+    specifics=`<div class="wl-cta"><button class="btn btn-primary" onclick="showPage('test')">📝 Go to the Spelling Test page</button>
+      <span class="wl-hint-inline">Mastery, correct/incorrect and the rolling list all live there — unchanged.</span></div>`;
+  }else{
+    const pats=charts.map(c=>c.p).join(', ');
+    specifics=`<div class="wl-jumble"><b>Hunt prompts from this week's patterns:</b> ${charts.map(c=>`<span class="wchip">words with ${esc(c.p)}</span>`).join(' ')}</div>
+      <div class="wl-hint">Students hunt their own reading books, not a supplied list — that's what makes it formative.</div>`;
+  }
+  const cyclePos=((weekIndex-1)%3)+1;
+  return `<div class="wl-block wl-assess">
+    <div class="wl-block-head"><span class="wl-step-n wl-assess-n">${assess.emoji}</span>
+      <div><div class="wl-block-title">${esc(assess.name)} <span class="wl-cyclepill">week ${cyclePos} of the 3-week cycle</span></div>
+      <div class="wl-block-sub">${esc(assess.sub)}</div></div></div>
+    <div class="wl-intro">${esc(assess.body)}</div>
+    ${specifics}
+    <div class="wl-cyclerow">${ASSESS_CYCLE.map((a,i)=>
+      `<div class="wl-cyclestep ${a.id===assess.id?'on':''}"><span>${a.emoji}</span> ${esc(a.name)}</div>`).join('')}</div>
+    <div class="wl-ow-lists" style="margin-top:12px;">
+      <div><span class="wl-ow-tag" style="background:${YC[5]}">Y5 Our Words</span> ${ourY5.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+      <div><span class="wl-ow-tag" style="background:${YC[6]}">Y6 Our Words</span> ${ourY6.map(w=>`<span class="wchip">${esc(w)}</span>`).join(' ')}</div>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//   PRE-TEST PAGE
+// ════════════════════════════════════════════════════════
+let pretestDraft=null; // {sid, marks:{}, revealed:bool}
+
+function renderPretestPage(){
+  const sel=document.getElementById('pt-pre-student');
+  if(!sel)return;
+  const students=[...LS.students()].sort((a,b)=>a.name.localeCompare(b.name));
+  const prev=sel.value;
+  sel.innerHTML=students.length
+    ? students.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(levelLabel(s))})</option>`).join('')
+    : `<option value="">No students yet</option>`;
+  if(prev&&students.find(s=>String(s.id)===prev))sel.value=prev;
+  renderPretestContent();
+}
+
+function startPretest(){
+  const sidRaw=document.getElementById('pt-pre-student').value;
+  if(!sidRaw)return;
+  pretestDraft={sid:parseInt(sidRaw),marks:{}};
+  renderPretestContent();
+}
+
+function markPretest(i,val){
+  if(!pretestDraft)return;
+  pretestDraft.marks[i]=(pretestDraft.marks[i]===val)?undefined:val;
+  if(pretestDraft.marks[i]===undefined)delete pretestDraft.marks[i];
+  renderPretestContent();
+}
+
+function savePretestResult(){
+  if(!pretestDraft)return;
+  const r=suggestLevel(pretestDraft.marks);
+  savePretest(pretestDraft.sid,{date:tod(),marks:pretestDraft.marks,suggested:r.suggested,extension:r.extension});
+  renderPretestContent();
+}
+
+function applyPretestLevel(sid,level){
+  const students=LS.students();
+  const s=students.find(x=>x.id===sid);if(!s)return;
+  showConfirmModal(`Set ${s.name}'s spelling level to Year ${level}? Their lessons and tests will use the Year ${level} word list from now on. Words they've already mastered are kept.`,()=>{
+    s.year=level;
+    LS.saveStudents(students);
+    renderStudents();
+    renderPretestContent();
+  },'Set level');
+}
+
+function renderPretestContent(){
+  const el=document.getElementById('pretest-content');
+  if(!el)return;
+  const sidRaw=document.getElementById('pt-pre-student').value;
+  if(!sidRaw){el.innerHTML=`<div class="empty-state"><div class="emoji">🎯</div><p>Add a student first, then run their pre-test.</p></div>`;return;}
+  const sid=parseInt(sidRaw);
+  const s=LS.students().find(x=>x.id===sid);if(!s)return;
+  const saved=pretestStore()[sid];
+  const active=pretestDraft&&pretestDraft.sid===sid;
+
+  const enrol=getEnrol(sid)||s.year;
+  const header=`<div class="card wl-daybar" style="margin-bottom:16px;">
+    <div class="avatar" style="width:44px;height:44px;font-size:1rem;background:${s.color}">${ini(s.name)}</div>
+    <div>
+      <div class="wl-daytitle">${esc(s.name)}</div>
+      <div class="wl-daysub">On the roll: Year ${enrol} · Spelling level: <b>Year ${s.year}</b>${enrol!==s.year?` — working ${s.year<enrol?'below':'above'} their year group, which is exactly what the pre-test is for`:''}</div>
+    </div>
+    <div class="wl-daybadges">
+      <div class="form-group"><label>Year group (roll)</label>
+        <select onchange="setEnrol(${sid},this.value);renderPretestContent();renderStudents();">
+          ${[4,5,6,7,8].map(y=>`<option value="${y}" ${y===enrol?'selected':''}>Year ${y}</option>`).join('')}
+        </select></div>
+    </div>
+  </div>`;
+
+  const savedBlock=saved?`<div class="wl-block wl-saved">
+      <div class="wl-block-head"><span class="wl-step-n">✅</span>
+      <div><div class="wl-block-title">Last pre-test: ${esc(saved.date)}</div>
+      <div class="wl-block-sub">Suggested spelling level was <b>Year ${saved.suggested}</b>${saved.extension?' with chart extension work':''}. Current level: Year ${s.year}.</div></div>
+      ${saved.suggested!==s.year?`<button class="btn btn-primary" style="margin-left:auto;" onclick="applyPretestLevel(${sid},${saved.suggested})">Set level to Year ${saved.suggested}</button>`:''}
+      </div></div>`:'';
+
+  if(!active){
+    el.innerHTML=header+savedBlock+`<div class="wl-block">
+      <div class="wl-block-head"><span class="wl-step-n">🎯</span>
+      <div><div class="wl-block-title">Run the placement pre-test</div>
+      <div class="wl-block-sub">15 words — five each from the Year 4, Year 5 and Year 6 lists. You read each word aloud, the student writes it, you tick or cross.</div></div></div>
+      <div class="wl-intro">WordLab places students by pre-test, not by age. A struggling speller learns the list that matches their result; a very able speller stays on their own list and gets chart-based extension work instead of being pushed up a level.</div>
+      <button class="btn btn-primary" onclick="startPretest()">▶ Start pre-test for ${esc(s.name)}</button>
+    </div>`;
+    return;
+  }
+
+  const words=pretestWords();
+  const marks=pretestDraft.marks;
+  const r=suggestLevel(marks);
+  const doneCount=Object.keys(marks).length;
+
+  const rows=words.map((w,i)=>{
+    const m=marks[i];
+    return `<tr class="${m?'wl-pt-done':''}">
+      <td class="wl-pt-lvl" style="color:${YC[w.year]}">Y${w.year}</td>
+      <td class="wl-pt-word">${esc(w.word)}</td>
+      <td class="wl-pt-btns">
+        <button class="ftest-btn ${m==='correct'?'correct-active':''}" onclick="markPretest(${i},'correct')" title="Correct">✓</button>
+        <button class="ftest-btn ${m==='incorrect'?'incorrect-active':''}" onclick="markPretest(${i},'incorrect')" title="Incorrect">✗</button>
+      </td></tr>`;
+  }).join('');
+
+  const scoreCards=PRETEST_LEVELS.map(y=>`
+    <div class="wl-scorecard" style="border-color:${YC[y]}">
+      <div class="wl-score-y" style="color:${YC[y]}">Year ${y}</div>
+      <div class="wl-score-n">${r.score[y].c}<span>/5</span></div>
+      <div class="wl-score-s">${r.score[y].done<5?`${5-r.score[y].done} still to mark`:(r.score[y].c>=4?'secure':'not secure yet')}</div>
+    </div>`).join('');
+
+  el.innerHTML=header+`
+    <div class="wl-block">
+      <div class="wl-block-head"><span class="wl-step-n">🎯</span>
+        <div><div class="wl-block-title">Pre-test in progress — ${doneCount}/15 marked</div>
+        <div class="wl-block-sub">Read each word aloud in a sentence, then tick or cross what the student wrote.</div></div>
+        <button class="btn btn-ghost" style="margin-left:auto;" onclick="pretestDraft=null;renderPretestContent();">Cancel</button>
+      </div>
+      <table class="wl-pt-table"><tbody>${rows}</tbody></table>
+    </div>
+    <div class="wl-block">
+      <div class="wl-block-head"><span class="wl-step-n">📊</span>
+        <div><div class="wl-block-title">Suggested placement</div>
+        <div class="wl-block-sub">Four or five correct at a level means that level is secure.</div></div></div>
+      <div class="wl-scorerow">${scoreCards}</div>
+      <div class="wl-suggest">
+        Start <b>${esc(s.name)}</b> on the <b>Year ${r.suggested}</b> list.
+        ${r.extension?`<div class="wl-hint">They were secure at Year 6 too — keep them on Year 6 and give chart-word extension (the Word Inquiry task) rather than moving them up a list.</div>`:''}
+        ${r.suggested<4?'':''}
+      </div>
+      <div class="wl-cta">
+        <button class="btn btn-primary" onclick="savePretestResult()" ${doneCount<15?'disabled':''}>${doneCount<15?`Mark all 15 to finish`:'💾 Save result'}</button>
+        ${r.suggested!==s.year?`<button class="btn btn-ghost" onclick="applyPretestLevel(${sid},${r.suggested})">Set spelling level to Year ${r.suggested} now</button>`:`<span class="wl-hint-inline">Already on the Year ${s.year} list.</span>`}
+      </div>
+    </div>`;
 }
 
 // ════════════════════════════════════════════════════════
@@ -3142,6 +5174,12 @@ function renderTestContent(){
   justSavedTest=null; // only ever show this once, right after saving
 
   const body=(isTeacher()||isHelperActive()||isRelieverActive())?renderFridayTest(s,wl,weekIndex):renderQuietZone(wl,weekIndex);
+  // Where this round sits in WordLab's 3-week Friday cycle. Purely advisory:
+  // the test still runs every week, so nothing a teacher wants to do is blocked.
+  const acyc=assessmentForWeek(weekIndex);
+  const cycBanner=acyc.id==='formal'
+    ? `<div class="wl-block wl-assess" style="margin-bottom:14px;"><div class="wl-block-head"><span class="wl-step-n wl-assess-n">${acyc.emoji}</span><div><div class="wl-block-title">Formal Test week</div><div class="wl-block-sub">Round ${weekIndex} is week 2 of the 3-week cycle — this is the week mastery is meant to move.</div></div></div></div>`
+    : `<div class="wl-block" style="margin-bottom:14px;border-left:5px solid var(--accent);"><div class="wl-block-head"><span class="wl-step-n">${acyc.emoji}</span><div><div class="wl-block-title">This week's assessment is ${acyc.name}, not a formal test</div><div class="wl-block-sub">${acyc.sub} — the Lesson Planner has the activity. You can still run a formal test here if you want to; it records as usual.</div></div></div></div>`;
 
   el.innerHTML=`
     <div class="card">
@@ -3154,6 +5192,7 @@ function renderTestContent(){
       </div>
       ${wordChipsHtml(sid,wl)}
     </div>
+    ${cycBanner}
     ${savedBanner}
     ${body}`;
 }
@@ -3316,13 +5355,23 @@ function renderFridayTest(s,wl,weekIndex){
   const paddedCount=wl.words.length-testWords.length;
   const rows=testWords.map(w=>{
     const r=wl.results[w];
+    const wq=esc(w).replace(/'/g,"\\'");
+    // Only offered once a word is actually marked wrong, and never required —
+    // a few classified misses a term is what makes the pattern readable.
+    const errPick=(r==='incorrect')?`<div class="ftest-errrow">
+        <label>What kind of error?</label>
+        <select class="err-pick ${getErrorFor(s.id,weekIndex,w)?'set':''}"
+          onchange="setErrorFor(${s.id},${weekIndex},'${wq}',this.value);renderTestContent();">
+          <option value="">— optional —</option>
+          ${ERROR_CATS.map(c=>`<option value="${c.id}" ${getErrorFor(s.id,weekIndex,w)===c.id?'selected':''}>${esc(c.label)}</option>`).join('')}
+        </select></div>`:'';
     return `<div class="ftest-row">
       <div class="ftest-word">${esc(w)}</div>
       <div class="ftest-actions">
-        <button class="ftest-btn ${r==='correct'?'correct-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','correct');renderTestContent();" title="Correct">✓</button>
-        <button class="ftest-btn ${r==='incorrect'?'incorrect-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${esc(w).replace(/'/g,"\\'")}','incorrect');renderTestContent();" title="Incorrect">✗</button>
+        <button class="ftest-btn ${r==='correct'?'correct-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${wq}','correct');renderTestContent();" title="Correct">✓</button>
+        <button class="ftest-btn ${r==='incorrect'?'incorrect-active':''}" onclick="setWeeklyResult(${s.id},${weekIndex},'${wq}','incorrect');renderTestContent();" title="Incorrect">✗</button>
       </div>
-    </div>`;
+    </div>${errPick}`;
   }).join('');
 
   const helperBanner=isHelperActive()?`<div class="test-done-banner" style="background:#fff3d6;border-color:#f0c96a;color:#7a5800;">🌟 You're testing as a trusted tester (${esc(helperSession.name)}). <button class="btn btn-ghost" style="margin-left:auto;" onclick="helperLogOut()">🔒 Log Out</button></div>`:'';
@@ -3686,9 +5735,10 @@ function showPage(id){
   if(id==='data'&&!isTeacher()){openLoginModal();return;}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('header nav button').forEach((b,i)=>b.classList.toggle('active',['students','lessons','test','wordlists','data'][i]===id));
+  document.querySelectorAll('header nav button').forEach((b,i)=>b.classList.toggle('active',['students','pretest','lessons','test','wordlists','data'][i]===id));
   if(id==='wordlists')renderWordListPage();
   if(id==='students')renderStudents();
+  if(id==='pretest')renderPretestPage();
   if(id==='lessons')renderLessonPlannerPage();
   if(id==='test')renderTestPage();
   if(id==='data')renderTestsByDate();
@@ -3961,6 +6011,8 @@ async function handlePasswordRecoveryLink(){
 }
 
 async function boot(){
+  const cycSel=document.getElementById('lp-cycle');
+  if(cycSel)cycSel.value=String(WLSET.chartCycle);
   showBootOverlay('Loading your class…');
   const isRecovery=await handlePasswordRecoveryLink();
   await restoreSession();
